@@ -39,7 +39,11 @@ export default function BookingsPage() {
   const [bookings, setBookings] = useState<BookingRequest[]>([]);
 
   useEffect(() => {
-    setBookings(readBookings());
+    const timer = window.setTimeout(() => {
+      setBookings(readBookings());
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   const updateStatus = (id: string, status: BookingStatus) => {

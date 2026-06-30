@@ -5,10 +5,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        navy: "#102A43",
-        saffron: "#B45309",
-        teal: "#0F766E",
-        ownerGreen: "#15803D",
+        navy: "#24113F",
+        saffron: "#7C3AED",
+        teal: "#EDE9FE",
+        ownerGreen: "#6D28D9",
       },
       fontFamily: {
         display: ["var(--font-jakarta)", "sans-serif"],

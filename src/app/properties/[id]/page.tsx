@@ -7,6 +7,8 @@ import SavePropertyButton from "@/components/SavePropertyButton";
 import { cityGuides, properties } from "@/data/mockData";
 import { titleCase } from "@/lib/utils";
 
+const availableFromLabel = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+
 export function generateStaticParams() {
   return properties.map((property) => ({ id: property.id }));
 }
@@ -22,7 +24,6 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
     `https://picsum.photos/seed/${property.id}-room/800/600`,
   ];
   const deposit = property.rent * (property.type === "Flat" ? 2 : 1);
-  const availableFrom = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
   const amenities = [
     [Wifi, "Wifi"],
     [Wind, "AC"],
@@ -73,7 +74,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                 {([
                   [IndianRupee, "Monthly Rent", `Rs.${property.rent.toLocaleString("en-IN")}`],
                   [ShieldCheck, "Deposit Estimate", `Rs.${deposit.toLocaleString("en-IN")}`],
-                  [Building2, "Available From", availableFrom],
+                  [Building2, "Available From", availableFromLabel],
                 ] as const).map(([Icon, label, value]) => (
                   <div key={label} className="rounded-md border border-slate-200 p-4">
                     <Icon className="h-6 w-6 text-saffron" />

@@ -30,7 +30,11 @@ export default function SavePropertyButton({
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    setSaved(readSaved().includes(propertyId));
+    const timer = window.setTimeout(() => {
+      setSaved(readSaved().includes(propertyId));
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [propertyId]);
 
   const toggleSaved = () => {

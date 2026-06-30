@@ -15,21 +15,23 @@ export function AuthShell({ role, children }: { role: "tenant" | "owner"; childr
         initial={{ opacity: 0, x: -40 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, ease: easeOutQuart }}
-        className={`hidden overflow-hidden bg-gradient-to-br ${owner ? "from-navy to-navy" : "from-navy to-teal"} px-8 py-10 text-white md:flex md:flex-col md:justify-start lg:px-12`}
+        className="hidden overflow-hidden border-r border-violet-100 bg-[#f5f7ff] px-8 py-10 text-navy md:flex md:flex-col md:justify-start lg:px-12"
       >
         <div>
-          <Link href="/" className="flex items-center gap-2 font-display text-2xl font-bold">
-            <Home className="h-7 w-7 text-amber-200" />
+          <Link href="/" className="flex items-center gap-3 font-display text-2xl font-bold text-saffron">
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-saffron text-lg font-black text-white">
+              G
+            </span>
             GharStay
           </Link>
 
           <div className="mt-10 max-w-md">
-            <span className="text-sm font-bold uppercase tracking-[0.18em] text-amber-100/90">{owner ? "Owner dashboard" : "Tenant signup"}</span>
-            <div className="mt-6 flex h-16 w-16 items-center justify-center rounded-md bg-white/12 ring-1 ring-white/20">
+            <span className="text-sm font-bold uppercase tracking-[0.18em] text-saffron">{owner ? "Owner dashboard" : "Tenant signup"}</span>
+            <div className="mt-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-saffron shadow-sm ring-1 ring-violet-100">
               {owner ? <Building2 className="h-9 w-9" /> : <Home className="h-9 w-9" />}
             </div>
             <h1 className="mt-6 font-display text-3xl font-bold leading-tight lg:text-4xl">{owner ? "Grow your rental income with GharStay" : "Find a verified home that feels right"}</h1>
-            <p className="mt-4 text-base leading-7 text-white/78">
+            <p className="mt-4 text-base leading-7 text-slate-600">
               {owner ? "Reach serious tenants and manage your property details from one simple account." : "Create your account to save homes, contact owners, and compare places with confidence."}
             </p>
           </div>
@@ -38,10 +40,10 @@ export function AuthShell({ role, children }: { role: "tenant" | "owner"; childr
         <div className="mt-8 max-w-md">
           <motion.div className="grid gap-3" variants={staggerContainer} initial="hidden" animate="visible">
             {benefits.map((benefit) => (
-              <motion.p key={benefit} variants={staggerItem} className="flex items-center gap-3 rounded-md bg-white/10 px-4 py-3 text-sm font-semibold text-white/90 ring-1 ring-white/10"><CheckCircle className="h-5 w-5 shrink-0 text-amber-100" />{benefit}</motion.p>
+              <motion.p key={benefit} variants={staggerItem} className="flex items-center gap-3 rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-violet-100"><CheckCircle className="h-5 w-5 shrink-0 text-saffron" />{benefit}</motion.p>
             ))}
           </motion.div>
-          <span className="mt-6 block text-sm text-white/65">GharStay India</span>
+          <span className="mt-6 block text-sm text-slate-500">GharStay India</span>
         </div>
       </motion.aside>
       <motion.div

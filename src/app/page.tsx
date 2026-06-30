@@ -1,45 +1,95 @@
 "use client";
 
 import Link from "next/link";
-import { BedDouble, Building2, ChevronDown, DoorOpen, Handshake, Home, Star, User, Users } from "lucide-react";
-import { IconAward, IconEye, IconKey, IconLock, IconMessageCircle, IconPhoneCall, IconSearch, IconShieldCheck } from "@tabler/icons-react";
+import Image from "next/image";
+import { ArrowRight, BadgeCheck, ChevronDown, Eye, KeyRound, MapPin, MapPinned, PhoneCall, Search, Star, User, Users, Building2 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import AreaCard from "@/components/AreaCard";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import PropertyCard from "@/components/PropertyCard";
 import ScrollReveal from "@/components/ScrollReveal";
 import SearchBar from "@/components/SearchBar";
 import { areas, properties } from "@/data/mockData";
 import { easeOutQuart, staggerContainer, staggerItem } from "@/lib/animations";
-import { cn, titleCase } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 const quickPills = [
-  { label: "PG in Hyderabad", href: "/properties?city=hyderabad&type=PG" },
-  { label: "Flats in Bangalore", href: "/properties?city=bangalore&type=Flat" },
-  { label: "Hostels in Mumbai", href: "/properties?city=mumbai&type=Hostel" },
-  { label: "Co-Living in Pune", href: "/properties?city=pune&type=Co-Living" },
+  { label: "PG in HSR Layout", href: "/properties?city=bangalore&area=HSR%20Layout&type=PG" },
+  { label: "Hostel in Whitefield", href: "/properties?city=bangalore&area=Whitefield&type=Hostel" },
+  { label: "Co-Living in Indiranagar", href: "/properties?city=bangalore&area=Indiranagar&type=Co-Living" },
+  { label: "Flat in Koramangala", href: "/properties?city=bangalore&area=Koramangala&type=Flat" },
 ];
-const cityTabs = ["hyderabad", "bangalore", "mumbai", "pune", "chennai"];
-const propertyTypes = [
-  [Building2, "Apartments"],
-  [Home, "Independent House"],
-  [Users, "PG Accommodation"],
-  [BedDouble, "Hostels"],
-  [Handshake, "Co-Living"],
-  [DoorOpen, "Shared Room"],
+const propertyTypeTiles = [
+  { label: "PG", description: "Paying guest accommodations", type: "PG", image: "https://picsum.photos/seed/gharstay-type-pg/640/420" },
+  { label: "Hostel", description: "Shared hostel rooms", type: "Hostel", image: "https://picsum.photos/seed/gharstay-type-hostel/640/420" },
+  { label: "Flat", description: "Independent flats", type: "Flat", image: "https://picsum.photos/seed/gharstay-type-flat/640/420" },
+  { label: "Apartment", description: "Apartment complexes", type: "Flat", image: "https://picsum.photos/seed/gharstay-type-apartment/640/420" },
+  { label: "Co-Living", description: "Modern co-living spaces", type: "Co-Living", image: "https://picsum.photos/seed/gharstay-type-coliving/640/420" },
+  { label: "Independent House", description: "Standalone houses", type: "Room", image: "https://picsum.photos/seed/gharstay-type-house/640/420" },
+] as const;
+const featuredOrder = ["hsr-layout-premium-pg", "koramangala-co-living", "indiranagar-furnished-flat", "whitefield-family-flat", "marathahalli-studio-pg"];
+const bangaloreAreaImages: Record<string, { image: string; landmark: string }> = {
+  Marathahalli: { image: "https://picsum.photos/seed/gharstay-area-marathahalli/760/460", landmark: "Near ORR Junction" },
+  Whitefield: { image: "https://picsum.photos/seed/gharstay-area-whitefield/760/460", landmark: "Near ITPL Tech Park" },
+  Indiranagar: { image: "https://picsum.photos/seed/gharstay-area-indiranagar/760/460", landmark: "Near 100 Feet Road" },
+  Koramangala: { image: "https://picsum.photos/seed/gharstay-area-koramangala/760/460", landmark: "Near Forum Mall" },
+  Bellandur: { image: "https://picsum.photos/seed/gharstay-area-bellandur/760/460", landmark: "Near Ecospace" },
+  "Electronic City": { image: "https://picsum.photos/seed/gharstay-area-electronic-city/760/460", landmark: "Near Phase 1" },
+  "JP Nagar": { image: "https://picsum.photos/seed/gharstay-area-jp-nagar/760/460", landmark: "Near Metro Line" },
+  "HSR Layout": { image: "https://picsum.photos/seed/gharstay-area-hsr-layout/760/460", landmark: "Near Sector 7" },
+  "BTM Layout": { image: "https://picsum.photos/seed/gharstay-area-btm-layout/760/460", landmark: "Near Silk Board" },
+  Yelahanka: { image: "https://picsum.photos/seed/gharstay-area-yelahanka/760/460", landmark: "Near Airport Road" },
+  Jayanagar: { image: "https://picsum.photos/seed/gharstay-area-jayanagar/760/460", landmark: "Near 4th Block" },
+  Hebbal: { image: "https://picsum.photos/seed/gharstay-area-hebbal/760/460", landmark: "Near Manyata Tech Park" },
+};
+const bangaloreAreaOrder = ["Hebbal", "Marathahalli", "Indiranagar", "JP Nagar", "Whitefield", "Bellandur", "Koramangala", "Yelahanka", "Electronic City", "HSR Layout", "Jayanagar", "BTM Layout"];
+const stats = [
+  { icon: Users, label: "Happy Tenants", target: 12500, suffix: "+" },
+  { icon: Building2, label: "Stays Listed", target: 3600, suffix: "+" },
+  { icon: MapPinned, label: "Bangalore Localities", target: 18, suffix: "" },
+  { icon: BadgeCheck, label: "Verified Properties", target: 2100, suffix: "+" },
 ] as const;
 const tenantSteps = [
-  { icon: IconSearch, label: "Search", description: "Find verified homes by city, area, type, and budget." },
-  { icon: IconEye, label: "Explore", description: "Compare photos, amenities, rent, and owner details." },
-  { icon: IconPhoneCall, label: "Connect", description: "Call or message owners directly without middlemen." },
-  { icon: IconKey, label: "Move In", description: "Visit, confirm details, and plan your move with confidence." },
+  {
+    icon: Search,
+    label: "Search",
+    description: "Find verified homes by city, area, type, and budget.",
+  },
+  {
+    icon: Eye,
+    label: "Explore",
+    description: "Compare photos, amenities, rent, and owner details.",
+  },
+  {
+    icon: PhoneCall,
+    label: "Connect",
+    description: "Call or message owners directly without middlemen.",
+  },
+  {
+    icon: KeyRound,
+    label: "Move In",
+    description: "Visit, confirm details, and plan your move with confidence.",
+  },
 ] as const;
 const whyFeatures = [
-  { icon: IconShieldCheck, label: "Verified Listings", description: "Properties checked for genuine details.", accent: "#F5A623", tile: "#FEF3E2" },
-  { icon: IconLock, label: "Secure Bookings", description: "Track requests before you commit.", accent: "#22C55E", tile: "#EAF8EF" },
-  { icon: IconMessageCircle, label: "Direct Contact", description: "Talk to owners on call or WhatsApp.", accent: "#3B82F6", tile: "#EAF2FF" },
-  { icon: IconAward, label: "Best Deals", description: "Compare rent and negotiate directly.", accent: "#EC4899", tile: "#FCEAF3" },
+  { label: "Verified Listings", description: "Properties checked for genuine details.", accent: "#7C3AED", image: "https://picsum.photos/seed/gharstay-verified-listings/640/420" },
+  { label: "Secure Bookings", description: "Track requests before you commit.", accent: "#6D28D9", image: "https://picsum.photos/seed/gharstay-secure-bookings/640/420" },
+  { label: "Direct Contact", description: "Talk to owners on call or WhatsApp.", accent: "#8B5CF6", image: "https://picsum.photos/seed/gharstay-direct-contact/640/420" },
+  { label: "Best Deals", description: "Compare rent and negotiate directly.", accent: "#A855F7", image: "https://picsum.photos/seed/gharstay-best-deals/640/420" },
+] as const;
+const tenantReviews = [
+  {
+    name: "Priya S.",
+    quote: "Booked a clean PG near work without chasing brokers. The rent, amenities, and owner contact were all clear.",
+  },
+  {
+    name: "Arjun M.",
+    quote: "The Bangalore area filters helped me compare HSR and Indiranagar quickly before scheduling visits.",
+  },
+  {
+    name: "Nisha R.",
+    quote: "Saved my shortlist, spoke directly with owners, and found a comfortable stay within my budget.",
+  },
 ] as const;
 const faqs = [
   {
@@ -75,18 +125,21 @@ const faqs = [
 ];
 
 export default function HomePage() {
-  const [activeCity, setActiveCity] = useState("hyderabad");
   const [openFaqId, setOpenFaqId] = useState<number | null>(null);
-  const featured = properties.filter((property) => property.isFeatured).slice(0, 3);
-  const activeAreas = areas.filter((area) => area.city === activeCity);
+  const featured = featuredOrder
+    .map((id) => properties.find((property) => property.id === id))
+    .filter((property): property is (typeof properties)[number] => Boolean(property));
+  const bangaloreAreas = bangaloreAreaOrder
+    .map((name) => areas.find((area) => area.city === "bangalore" && area.name === name))
+    .filter((area): area is (typeof areas)[number] => Boolean(area));
 
   return (
-    <div>
-      <section className="bg-gradient-to-br from-navy to-teal text-white">
-        <div className="mx-auto max-w-7xl px-4 py-10 text-center sm:px-6 sm:py-16 lg:px-8 lg:py-24">
+    <div className="bg-white">
+      <section className="bg-[#f5f7ff]">
+        <div className="mx-auto max-w-7xl px-4 pb-12 pt-10 text-center sm:px-6 sm:pb-16 sm:pt-12 lg:px-8 lg:pb-20 lg:pt-14">
           <div className="mx-auto max-w-4xl">
             <motion.p
-              className="text-xs font-bold tracking-[0.12em] text-white/75 sm:text-sm sm:tracking-[0.18em]"
+              className="mx-auto inline-flex items-center rounded-full bg-white/70 px-5 py-2 text-xs font-bold tracking-normal text-saffron shadow-sm ring-1 ring-violet-100 sm:text-sm"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: easeOutQuart }}
@@ -94,15 +147,17 @@ export default function HomePage() {
               INDIA&apos;S TRUSTED RENTAL PLATFORM
             </motion.p>
             <motion.h1
-              className="mt-4 font-display text-3xl font-bold leading-tight sm:text-5xl lg:text-6xl"
+              className="mt-8 font-display text-4xl font-bold leading-tight text-navy sm:text-6xl lg:text-7xl"
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.15, ease: easeOutQuart }}
             >
-              Find Your Next Home With Ease
+              Find Your Next Home
+              <br />
+              With Ease
             </motion.h1>
             <motion.p
-              className="mt-4 text-base leading-7 text-white/85 sm:mt-5 sm:text-xl"
+              className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-xl"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.25, ease: easeOutQuart }}
@@ -111,83 +166,87 @@ export default function HomePage() {
             </motion.p>
           </div>
           <motion.div
-            className="mx-auto mt-8 max-w-6xl"
+            className="mx-auto mt-12 max-w-5xl"
             initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.55, delay: 0.4, ease: easeOutQuart }}
           >
             <SearchBar />
           </motion.div>
-          <motion.div className="mt-5 flex flex-wrap justify-center gap-2 sm:gap-3" initial="hidden" animate="visible" variants={staggerContainer}>
+          <motion.div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm text-slate-500 sm:gap-3" initial="hidden" animate="visible" variants={staggerContainer}>
+            <span className="font-medium">Popular:</span>
             {quickPills.map((pill) => (
               <motion.div key={pill.label} variants={staggerItem} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }} transition={{ duration: 0.15 }}>
-                <Link href={pill.href} className="inline-flex rounded-full bg-white/15 px-3 py-2 text-xs font-semibold text-white transition-all duration-200 hover:bg-white/25 sm:px-4 sm:text-sm">{pill.label}</Link>
-              </motion.div>
-            ))}
+                <Link href={pill.href} className="inline-flex rounded-full bg-violet-100/75 px-3 py-2 text-xs font-semibold text-saffron transition-all duration-200 hover:bg-violet-200 sm:px-4 sm:text-sm">{pill.label}</Link>
+            </motion.div>
+          ))}
           </motion.div>
-          <motion.div
-            className="mt-8 grid gap-3 text-center sm:mt-10 sm:grid-cols-3 sm:gap-4"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.55, ease: easeOutQuart }}
-          >
-            {[
-              ["Properties", 10000],
-              ["Cities", 50],
-              ["Tenants", 25000],
-            ].map(([label, target]) => (
-              <div key={label as string} className="rounded-md bg-white/10 px-4 py-3 font-display text-lg font-bold sm:px-5 sm:py-4 sm:text-xl">
-                <AnimatedCounter target={target as number} suffix="+" /> {label as string}
+        </div>
+      </section>
+
+      <section className="border-b border-violet-100 bg-white">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-8 text-center sm:grid-cols-2 sm:px-6 sm:py-10 lg:grid-cols-4 lg:px-8">
+          {stats.map((item) => (
+            <ScrollReveal key={item.label}>
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-saffron ring-1 ring-violet-100">
+                <item.icon className="h-6 w-6" />
               </div>
-            ))}
-          </motion.div>
+              <p className="mt-4 font-display text-3xl font-bold text-navy sm:text-4xl">
+                <AnimatedCounter target={item.target} suffix={item.suffix} />
+              </p>
+              <p className="mt-2 text-sm font-medium text-slate-500 sm:text-base">{item.label}</p>
+            </ScrollReveal>
+          ))}
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
-        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-          <ScrollReveal>
-            <p className="text-xs font-bold tracking-[0.12em] text-saffron sm:text-sm sm:tracking-[0.16em]">EXPLORE BY LOCATION</p>
-            <h2 className="mt-2 font-display text-2xl font-bold text-navy sm:text-3xl">Explore Properties by Area</h2>
-          </ScrollReveal>
-          <ScrollReveal delay={0.1} className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0">
-            {cityTabs.map((city) => (
-              <motion.button key={city} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }} onClick={() => setActiveCity(city)} className={cn("shrink-0 rounded-md px-4 py-2 text-sm font-bold transition-all duration-200", activeCity === city ? "bg-saffron text-white" : "bg-white text-navy hover:bg-saffron/10")}>{titleCase(city)}</motion.button>
-            ))}
-          </ScrollReveal>
-        </div>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeCity}
-            className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3"
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.25, ease: easeOutQuart }}
-          >
-            {activeAreas.map((area) => (
-              <motion.div key={area.slug} variants={staggerItem} whileHover={{ y: -4, boxShadow: "0 8px 24px rgba(26,60,94,0.10)" }} whileTap={{ scale: 0.99 }} transition={{ duration: 0.2 }}>
-                <AreaCard area={area} />
-              </motion.div>
-            ))}
-          </motion.div>
-        </AnimatePresence>
-      </section>
-
-      <section className="bg-white py-10 sm:py-16">
+      <section id="how-it-works" className="scroll-mt-24 bg-white py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
-            <h2 className="font-display text-2xl font-bold text-navy sm:text-3xl">What are you looking for?</h2>
+            <h2 className="font-display text-2xl font-bold text-navy sm:text-3xl">How <span className="text-saffron">GharStay</span> Works</h2>
           </ScrollReveal>
-          <motion.div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-6" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}>
-            {propertyTypes.map(([Icon, label]) => (
-              <motion.div key={label} variants={staggerItem} whileHover={{ y: -4, boxShadow: "0 4px 16px rgba(245,166,35,0.12)" }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.2 }}>
-                <Link href={`/properties?type=${encodeURIComponent(label.replace(" Accommodation", "").replace("Apartments", "Flat").replace("Independent House", "Room").replace("Shared Room", "Room"))}`} className="block rounded-md border border-slate-200 bg-white p-4 text-center transition-all duration-200 hover:border-saffron sm:p-5">
-                  <motion.span className="block" whileHover={{ scale: 1.15 }} transition={{ duration: 0.2, ease: "easeOut" }}>
-                    <Icon className="mx-auto h-8 w-8 text-navy" />
-                  </motion.span>
-                  <span className="mt-3 block text-sm font-bold text-slate-700">{label}</span>
+          <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {tenantSteps.map(({ icon: Icon, label, description }, index) => (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -4, boxShadow: "0 16px 36px rgba(36,17,63,0.08)" }}
+                transition={{ duration: 0.3, delay: index * 0.08, ease: easeOutQuart }}
+                className="rounded-md border border-slate-100 bg-white px-6 py-8 text-center shadow-sm"
+              >
+                <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-saffron font-display text-sm font-bold text-white shadow-[0_10px_24px_rgba(124,58,237,0.24)]">
+                  {index + 1}
+                </span>
+                <div className="mx-auto mt-6 flex h-12 w-12 items-center justify-center rounded-xl bg-saffron/10 text-saffron">
+                  <Icon className="h-6 w-6" />
+                </div>
+                <h3 className="mt-5 font-display text-lg font-bold text-navy">{label}</h3>
+                <p className="mx-auto mt-2 max-w-xs text-sm leading-6 text-slate-500">{description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="property-types" className="scroll-mt-24 bg-white py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <ScrollReveal className="text-center">
+            <h2 className="font-display text-3xl font-bold text-navy sm:text-4xl">Explore by Property Type</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base text-slate-500 sm:text-lg">Choose the living space that fits the way you live</p>
+          </ScrollReveal>
+          <motion.div className="mx-auto mt-12 grid max-w-4xl gap-5 sm:grid-cols-2 lg:grid-cols-3" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}>
+            {propertyTypeTiles.map((tile) => (
+              <motion.div key={tile.label} variants={staggerItem} whileHover={{ y: -4, boxShadow: "0 14px 34px rgba(36,17,63,0.10)" }} whileTap={{ scale: 0.98 }} transition={{ duration: 0.2 }}>
+                <Link href={`/properties?city=bangalore&type=${encodeURIComponent(tile.type)}`} className="block overflow-hidden rounded-2xl border border-slate-200 bg-white text-center transition-all duration-200 hover:border-saffron/40">
+                  <div className="relative h-32">
+                    <Image src={tile.image} alt={`${tile.label} accommodation`} fill sizes="(min-width: 1024px) 280px, (min-width: 640px) 50vw, 100vw" className="object-cover" />
+                  </div>
+                  <div className="px-5 py-5">
+                    <h3 className="font-display text-lg font-bold text-navy">{tile.label}</h3>
+                    <p className="mt-2 text-sm font-medium text-slate-500">{tile.description}</p>
+                  </div>
                 </Link>
               </motion.div>
             ))}
@@ -195,75 +254,111 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
-        <div className="flex items-center justify-between gap-4">
-          <ScrollReveal>
-            <h2 className="font-display text-2xl font-bold text-navy sm:text-3xl">Featured Properties Near You</h2>
+      <section id="popular-areas" className="scroll-mt-24 bg-[#f6f8fb] py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <ScrollReveal className="text-center">
+            <h2 className="font-display text-3xl font-bold text-navy sm:text-4xl">Popular Areas in Bangalore</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-500 sm:text-lg">Popular areas in Bangalore for PGs, hostels, apartments, and easy daily commutes.</p>
           </ScrollReveal>
-          <span className="hidden items-center gap-2 rounded-full bg-saffron/15 px-4 py-2 text-sm font-bold text-saffron sm:inline-flex"><Star className="h-4 w-4 fill-saffron" />Top Rated</span>
+          <motion.div className="mx-auto mt-12 grid max-w-6xl gap-6 md:grid-cols-2 xl:grid-cols-3" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}>
+            {bangaloreAreas.map((area) => {
+              const imageMeta = bangaloreAreaImages[area.name] ?? { image: `https://picsum.photos/seed/gharstay-area-${area.slug}/760/460`, landmark: "Near daily essentials" };
+
+              return (
+                <motion.article key={area.slug} variants={staggerItem} whileHover={{ y: -5, boxShadow: "0 16px 34px rgba(36,17,63,0.10)" }} transition={{ duration: 0.2 }} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                  <Link href={`/properties?city=bangalore&area=${encodeURIComponent(area.name)}`} className="block">
+                    <div className="relative h-40">
+                      <Image src={imageMeta.image} alt={`${area.name} rental area`} fill sizes="(min-width: 1280px) 25vw, (min-width: 768px) 50vw, 100vw" className="object-cover" />
+                    </div>
+                    <div className="p-5">
+                      <h3 className="font-display text-xl font-bold text-navy">{area.name}</h3>
+                      <p className="mt-2 flex items-center gap-2 text-sm text-slate-500">
+                        <MapPin className="h-4 w-4 fill-pink-500 text-pink-500" />
+                        {imageMeta.landmark}
+                      </p>
+                      <div className="mt-5 flex items-center justify-between border-t border-slate-200 pt-4">
+                        <span className="font-display text-base font-bold text-saffron">{area.propertyCount}+ Stays</span>
+                        <ArrowRight className="h-4 w-4 text-slate-400" />
+                      </div>
+                    </div>
+                  </Link>
+                </motion.article>
+              );
+            })}
+          </motion.div>
         </div>
-        <motion.div className="mt-8 grid gap-6 lg:grid-cols-3" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}>
-          {featured.map((property) => (
-            <motion.div key={property.id} variants={staggerItem} whileHover={{ y: -6, boxShadow: "0 12px 32px rgba(26,60,94,0.12)" }} whileTap={{ scale: 0.99 }} transition={{ duration: 0.2 }}>
-              <PropertyCard property={property} />
+      </section>
+
+      <section id="featured" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <ScrollReveal>
+            <h2 className="font-display text-2xl font-bold text-navy sm:text-3xl">Featured Bangalore Properties</h2>
+            <p className="mt-2 text-slate-500">Handpicked verified stays across HSR Layout, Indiranagar, Whitefield, Marathahalli, and Koramangala.</p>
+          </ScrollReveal>
+          <Link href="/properties?city=bangalore" className="inline-flex items-center justify-center rounded-xl border border-violet-200 px-4 py-2 text-sm font-bold text-saffron transition-all duration-200 hover:bg-violet-50">
+            View All Properties
+          </Link>
+        </div>
+        <motion.div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-6" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}>
+          {featured.map((property, index) => (
+            <motion.div
+              key={property.id}
+              variants={staggerItem}
+              whileHover={{ y: -5, boxShadow: "0 12px 30px rgba(26,60,94,0.12)" }}
+              whileTap={{ scale: 0.99 }}
+              transition={{ duration: 0.2 }}
+              className={cn("lg:col-span-2", index === 3 && "lg:col-start-2")}
+            >
+              <PropertyCard property={property} compact />
             </motion.div>
           ))}
         </motion.div>
       </section>
 
-      <section className="bg-white py-10 sm:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-            <ScrollReveal>
-              <h2 className="font-display text-2xl font-bold text-navy sm:text-3xl">How <span className="text-saffron">GharStay</span> Works</h2>
-            </ScrollReveal>
-          </div>
-          <div className="mt-8 grid gap-4 sm:mt-10 sm:gap-6 lg:grid-cols-4">
-            {tenantSteps.map(({ icon: Icon, label, description }, index) => (
-              <motion.div
-                key={label}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -3, boxShadow: "0 14px 34px rgba(26,60,94,0.10)" }}
-                transition={{ duration: 0.3, delay: index * 0.08, ease: easeOutQuart }}
-                className="relative rounded-md border-[0.5px] border-slate-200 bg-white p-5 text-center sm:rounded-2xl sm:p-6"
-              >
-                <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-[#F5A623] to-[#E8920A] font-display text-base font-bold text-white shadow-[0_8px_22px_rgba(245,166,35,0.32)]">{index + 1}</span>
-                <div className="mx-auto mt-5 flex h-14 w-14 items-center justify-center rounded-xl bg-[#FEF3E2] text-saffron">
-                  <Icon size={30} stroke={1.8} />
-                </div>
-                <h3 className="mt-4 font-display text-lg font-bold text-navy">{label}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
-                {index < tenantSteps.length - 1 && <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.3, ease: easeOutQuart }} style={{ transformOrigin: "left" }} className="absolute left-[62%] top-11 hidden w-[86%] border-t-2 border-dashed border-[#F5A623]/70 lg:block" />}
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
+      <section id="why" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
         <ScrollReveal>
           <h2 className="font-display text-2xl font-bold text-navy sm:text-3xl">Why <span className="text-saffron">GharStay</span></h2>
         </ScrollReveal>
         <motion.div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}>
-          {whyFeatures.map(({ icon: Icon, label, description, accent, tile }) => (
+          {whyFeatures.map(({ label, description, accent, image }) => (
             <motion.div
               key={label}
               variants={staggerItem}
               whileHover={{ y: -3, boxShadow: "0 14px 34px rgba(26,60,94,0.10)" }}
               transition={{ duration: 0.2 }}
-              className="overflow-hidden rounded-md border-[0.5px] border-slate-200 bg-white p-5 shadow-sm sm:rounded-2xl sm:p-6"
+              className="overflow-hidden rounded-md border-[0.5px] border-slate-200 bg-white shadow-sm sm:rounded-2xl"
             >
-              <div className="mb-5 h-[3px] rounded-full" style={{ backgroundColor: accent }} />
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl" style={{ backgroundColor: tile, color: accent }}>
-                <Icon size={26} stroke={1.8} />
+              <div className="h-[3px]" style={{ backgroundColor: accent }} />
+              <div className="relative h-36">
+                <Image src={image} alt={`${label} preview`} fill sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw" className="object-cover" />
               </div>
-              <h3 className="mt-4 font-display text-lg font-bold text-navy">{label}</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
+              <div className="p-5 sm:p-6">
+                <h3 className="font-display text-lg font-bold text-navy">{label}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
+              </div>
             </motion.div>
           ))}
         </motion.div>
+      </section>
+
+      <section id="testimonials" className="scroll-mt-24 bg-white py-10 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <ScrollReveal>
+            <h2 className="font-display text-2xl font-bold text-navy sm:text-3xl">Testimonials</h2>
+          </ScrollReveal>
+          <motion.div className="mt-8 grid gap-6 lg:grid-cols-3" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}>
+            {tenantReviews.map((review) => (
+              <motion.article key={review.name} variants={staggerItem} whileHover={{ y: -4, boxShadow: "0 8px 24px rgba(26,60,94,0.08)" }} transition={{ duration: 0.2 }} className="rounded-md border border-slate-200 p-5 sm:p-6">
+                <div className="flex gap-1 text-yellow-400">{Array.from({ length: 5 }).map((_, i) => <motion.span key={i} initial={{ opacity: 0, scale: 0.5 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.06, duration: 0.3, ease: "backOut" }}><Star className="h-4 w-4 fill-yellow-400" /></motion.span>)}</div>
+                <p className="mt-4 text-slate-600">{review.quote}</p>
+                <div className="mt-5 flex items-center gap-3">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-navy text-white"><User className="h-5 w-5" /></span>
+                  <span className="font-bold text-navy">{review.name}</span>
+                </div>
+              </motion.article>
+            ))}
+          </motion.div>
+        </div>
       </section>
 
       <section id="faq" className="scroll-mt-24 py-10 sm:py-16">
@@ -291,26 +386,6 @@ export default function HomePage() {
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="bg-white py-10 sm:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <ScrollReveal>
-            <h2 className="font-display text-2xl font-bold text-navy sm:text-3xl">Loved by Tenants</h2>
-          </ScrollReveal>
-          <motion.div className="mt-8 grid gap-6 lg:grid-cols-3" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}>
-            {["Priya S.", "Arjun M.", "Nisha R."].map((name) => (
-              <motion.article key={name} variants={staggerItem} whileHover={{ y: -4, boxShadow: "0 8px 24px rgba(26,60,94,0.08)" }} transition={{ duration: 0.2 }} className="rounded-md border border-slate-200 p-5 sm:p-6">
-                <div className="flex gap-1 text-saffron">{Array.from({ length: 5 }).map((_, i) => <motion.span key={i} initial={{ opacity: 0, scale: 0.5 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.06, duration: 0.3, ease: "backOut" }}><Star className="h-4 w-4 fill-saffron" /></motion.span>)}</div>
-                <p className="mt-4 text-slate-600">Found a verified place in two days, with direct owner contact and clear rent details.</p>
-                <div className="mt-5 flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-navy text-white"><User className="h-5 w-5" /></span>
-                  <span className="font-bold text-navy">{name}</span>
-                </div>
-              </motion.article>
-            ))}
-          </motion.div>
         </div>
       </section>
     </div>
