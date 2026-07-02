@@ -1,58 +1,45 @@
-const sections = [
-  {
-    title: "1. About GharStay",
-    body: "GharStay is an online platform that connects tenants with property owners offering PGs, hostels, flats, apartments, and co-living spaces. GharStay acts solely as a listing and discovery platform and is not a party to any rental, lease, or accommodation agreement between tenants and property owners.",
-  },
-  {
-    title: "2. Eligibility",
-    body: "You must be at least 18 years old to create an account or use GharStay's services. By using this platform, you confirm that the information you provide is accurate and that you have the legal capacity to enter into agreements.",
-  },
-  {
-    title: "3. Listings and Accuracy of Information",
-    body: 'Property listings on GharStay are provided by property owners or their representatives. While we make reasonable efforts to verify listings through our "Verified" badge process, GharStay does not guarantee the accuracy, completeness, or current availability of any listing. Users are encouraged to independently verify property details, photos, pricing, and amenities before making any commitments.',
-  },
-  {
-    title: "4. User Responsibilities",
-    body: "Users agree not to misuse the platform, including posting false information, harassing other users or property owners, or attempting to bypass the platform for fraudulent purposes. Users are responsible for any communication, negotiation, and agreements made directly with property owners.",
-  },
-  {
-    title: "5. No Guarantee of Transaction",
-    body: "GharStay does not collect rent, security deposits, or any transactional payments between tenants and property owners unless explicitly stated for specific paid services (such as Relocation Support). Any financial transactions conducted directly between users are outside GharStay's control and responsibility.",
-  },
-  {
-    title: "6. Account Suspension",
-    body: "GharStay reserves the right to suspend or terminate any user account found violating these terms, posting fraudulent listings, or engaging in harmful conduct on the platform.",
-  },
-  {
-    title: "7. Limitation of Liability",
-    body: "GharStay shall not be held liable for any direct, indirect, incidental, or consequential damages arising from the use of the platform, including disputes between tenants and property owners, inaccurate listings, or any losses incurred during the rental process.",
-  },
-  {
-    title: "8. Changes to Terms",
-    body: "GharStay reserves the right to update these Terms & Conditions at any time. Continued use of the platform after changes constitutes acceptance of the revised terms.",
-  },
-  {
-    title: "9. Contact Us",
-    body: "For any questions regarding these terms, please contact us at hello@gharstay.in.",
-  },
-];
+import React from "react";
 
 export default function TermsPage() {
   return (
-    <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-      <h1 className="font-display text-3xl font-bold text-navy sm:text-4xl">Terms & Conditions</h1>
-      <p className="mt-3 text-sm font-semibold text-slate-500">Last Updated: June 30, 2026</p>
-      <p className="mt-8 leading-7 text-slate-600">
-        Welcome to GharStay. By accessing or using our website and services, you agree to be bound by the following terms and conditions. Please read them carefully.
-      </p>
-      <div className="mt-8 space-y-7">
-        {sections.map((section) => (
-          <section key={section.title}>
-            <h2 className="font-display text-xl font-bold text-navy">{section.title}</h2>
-            <p className="mt-3 leading-7 text-slate-600">{section.body}</p>
-          </section>
-        ))}
+    <div className="max-w-4xl mx-auto px-4 py-16 sm:px-6 lg:px-8 font-sans">
+      <div className="space-y-8">
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl font-black text-gray-900 tracking-tight">Terms &amp; Conditions</h1>
+          <p className="text-sm text-gray-400 font-bold">Last Updated: July 2026</p>
+        </div>
+
+        <div className="prose prose-purple max-w-none text-gray-600 text-sm leading-relaxed space-y-6">
+          <p>
+            Welcome to PGMove. By accessing or using our website, platform, and services, you agree to comply with and be bound by the following Terms &amp; Conditions.
+          </p>
+
+          <h2 className="text-lg font-bold text-gray-900 mt-6 mb-2">1. Scope of Services</h2>
+          <p>
+            PGMove provides a digital listing platform that allows property owners and representatives to list guest houses, hostels, and paying guest (PG) accommodations, and enables users to browse, search, and contact these owners directly.
+          </p>
+
+          <h2 className="text-lg font-bold text-gray-900 mt-6 mb-2">2. Zero Brokerage Guarantee</h2>
+          <p>
+            We do not act as agents or intermediaries in transactions between tenants and owners. No booking commissions or brokerage fees are collected from tenants. All negotiations, deposit agreements, and rental contracts are finalized directly between the user and the PG owner.
+          </p>
+
+          <h2 className="text-lg font-bold text-gray-900 mt-6 mb-2">3. Verification Disclaimer</h2>
+          <p>
+            While our quality check team makes best efforts to physically inspect PGs marked as "Verified" to confirm photo authenticity and amenities, PGMove does not guarantee the safety, standard, food quality, or security of any property. Users are strongly advised to perform a physical inspection before handing over deposit monies.
+          </p>
+
+          <h2 className="text-lg font-bold text-gray-900 mt-6 mb-2">4. User Account &amp; OTP Verification</h2>
+          <p>
+            To obtain property owner contact details, users must fill in a lead form and authenticate their phone number using OTP. By verifying, you agree to receive follow-up phone calls, SMS texts, and WhatsApp messages from PGMove representatives and PG owners.
+          </p>
+
+          <h2 className="text-lg font-bold text-gray-900 mt-6 mb-2">5. Governing Law</h2>
+          <p>
+            These terms are governed by and construed in accordance with the laws of India, and any disputes will be subject to the exclusive jurisdiction of the courts of Bangalore, Karnataka.
+          </p>
+        </div>
       </div>
-    </main>
+    </div>
   );
 }

@@ -1,447 +1,411 @@
-export type PropertyType = "PG" | "Flat" | "Hostel" | "CoLiving" | "Room";
+export interface SharingTypes {
+  single?: number;
+  double?: number;
+  triple?: number;
+}
 
-export type Property = {
+export interface FoodDetails {
+  available: boolean;
+  type: "Veg" | "NonVeg" | "Both";
+  meals: string[];
+}
+
+export interface NearbyPlaces {
+  companies: string[];
+  colleges: string[];
+  metro: string[];
+}
+
+export interface Property {
   id: string;
   name: string;
-  type: PropertyType;
   area: string;
   city: string;
-  rent: number;
-  images: string[];
-  amenities: string[];
-  highlights?: string[];
-  audience?: "Male" | "Female" | "Unisex" | "Family";
-  rating: number;
-  reviewCount: number;
-  isVerified: boolean;
-  isFeatured: boolean;
-  owner: { name: string; phone: string };
-};
-
-export type Area = {
-  name: string;
-  city: string;
-  slug: string;
-  propertyCount: number;
-  pgCount: number;
-  flatCount: number;
-  hostelCount: number;
+  gender: "Male" | "Female" | "Unisex";
+  type: "PG" | "Hostel" | "Co-Living";
+  sharingTypes: SharingTypes;
   startingRent: number;
-  gradient: string;
-};
-
-export type CityGuide = {
-  summary: string;
-  bestFor: string[];
-  commute: string[];
-  averageRent: {
-    pg: number;
-    flat: number;
-    hostel: number;
-  };
+  securityDeposit: number;
+  amenities: string[];
+  food: FoodDetails;
+  houseRules: string[];
+  images: string[];
+  rating: number;
+  reviews: number;
+  availableFrom: string;
+  availability: "Available" | "Limited" | "Full";
+  featured: boolean;
+  nearbyPlaces: NearbyPlaces;
+  latitude: number;
+  longitude: number;
+  ownerName: string;
+  verified: boolean;
   highlights: string[];
-};
+}
 
-export const cities = ["hyderabad", "bangalore", "mumbai", "pune", "chennai"];
-
-export const cityGuides: Record<string, CityGuide> = {
-  hyderabad: {
-    summary: "Hyderabad is strong for tech tenants, students, and working professionals who want roomy rentals near office corridors.",
-    bestFor: ["IT professionals", "Students", "Shared flats", "Budget PGs"],
-    commute: ["Metro access around Ameerpet and Hitech City", "Good cab availability near Madhapur and Gachibowli", "Outer Ring Road helps longer office commutes"],
-    averageRent: { pg: 8500, flat: 18000, hostel: 7200 },
-    highlights: ["Madhapur and Gachibowli for tech offices", "Kukatpally and Miyapur for lower rent", "Ameerpet and SR Nagar for coaching hubs"],
-  },
-  bangalore: {
-    summary: "Bangalore has the widest rental mix, from managed co-living to family flats near major business parks.",
-    bestFor: ["Startup employees", "Remote workers", "Co-living", "Family flats"],
-    commute: ["Metro helps in central and eastern corridors", "Whitefield and Electronic City work best when you stay close to office", "Two-wheelers are common for short commutes"],
-    averageRent: { pg: 10500, flat: 22000, hostel: 8500 },
-    highlights: ["Koramangala and HSR for social life", "Whitefield for IT parks", "Indiranagar for premium shared flats"],
-  },
-  mumbai: {
-    summary: "Mumbai rewards location-first searching because commute time matters as much as rent.",
-    bestFor: ["Students", "Working professionals", "Compact studios", "Hostels"],
-    commute: ["Local trains are the main connector", "Metro links are improving western suburbs", "Staying near work saves major travel time"],
-    averageRent: { pg: 13000, flat: 30000, hostel: 11000 },
-    highlights: ["Andheri and Bandra for office access", "Thane and Borivali for better space", "Powai for campus and tech crowd"],
-  },
-  pune: {
-    summary: "Pune is balanced for students and professionals, with practical rents and strong demand near IT parks.",
-    bestFor: ["Students", "IT employees", "Shared rooms", "Co-living"],
-    commute: ["Hinjewadi and Kharadi are office-heavy", "Bike commutes are common", "Stay near your college or office for easier weekdays"],
-    averageRent: { pg: 7800, flat: 16500, hostel: 6500 },
-    highlights: ["Hinjewadi for IT parks", "Kothrud for students", "Viman Nagar and Kharadi for professionals"],
-  },
-  chennai: {
-    summary: "Chennai offers stable rental pockets for students, families, and OMR tech employees.",
-    bestFor: ["Students", "Families", "OMR employees", "Budget hostels"],
-    commute: ["OMR works best for tech corridor tenants", "Local trains help southern suburbs", "Metro access is useful around central areas"],
-    averageRent: { pg: 7200, flat: 15000, hostel: 6200 },
-    highlights: ["Adyar and Anna Nagar for premium access", "OMR for tech offices", "Tambaram and Medavakkam for value rentals"],
-  },
-};
-
-const areaNames: Record<string, string[]> = {
-  hyderabad: ["Madhapur", "Kondapur", "Gachibowli", "Hitech City", "Kukatpally", "Miyapur", "Ameerpet", "SR Nagar", "Begumpet", "Secunderabad"],
-  bangalore: ["Whitefield", "Koramangala", "HSR Layout", "Indiranagar", "Electronic City", "Marathahalli", "Bellandur", "JP Nagar", "BTM Layout", "Yelahanka", "Jayanagar", "Hebbal"],
-  mumbai: ["Andheri", "Bandra", "Thane", "Powai", "Dadar", "Borivali", "Chembur", "Malad", "Vikhroli", "Lower Parel"],
-  pune: ["Kothrud", "Baner", "Hinjewadi", "Viman Nagar", "Wakad", "Hadapsar", "Kharadi", "Aundh", "Magarpatta", "Shivaji Nagar"],
-  chennai: ["Adyar", "Anna Nagar", "OMR", "Velachery", "T Nagar", "Porur", "Guindy", "Tambaram", "Nungambakkam", "Medavakkam"],
-};
-
-const gradients = [
-  "from-violet-600 to-indigo-600",
-  "from-purple-600 to-violet-500",
-  "from-indigo-600 to-blue-500",
-  "from-fuchsia-600 to-violet-600",
-  "from-violet-500 to-purple-700",
-  "from-blue-600 to-violet-600",
-  "from-purple-500 to-indigo-600",
-  "from-violet-700 to-fuchsia-600",
-  "from-indigo-500 to-purple-600",
-  "from-violet-600 to-blue-600",
+export const BANGALORE_AREAS = [
+  "Koramangala",
+  "Whitefield",
+  "HSR Layout",
+  "Marathahalli",
+  "Indiranagar",
+  "BTM Layout",
+  "Electronic City",
+  "Bellandur",
+  "Hebbal",
+  "Madhapur"
 ];
 
-export const areas: Area[] = Object.entries(areaNames).flatMap(([city, names], cityIndex) =>
-  names.map((name, index) => {
-    const propertyCount = 120 + cityIndex * 80 + index * 23;
-    return {
-      name,
-      city,
-      slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-      propertyCount,
-      pgCount: Math.round(propertyCount * 0.36),
-      flatCount: Math.round(propertyCount * 0.44),
-      hostelCount: Math.round(propertyCount * 0.2),
-      startingRent: 4500 + index * 450 + cityIndex * 650,
-      gradient: gradients[index % gradients.length],
-    };
-  }),
-);
+export const BUDGET_RANGES = [
+  { label: "Under ₹5,000", value: "under-5000" },
+  { label: "₹5,000 - ₹8,000", value: "5000-8000" },
+  { label: "₹8,000 - ₹12,000", value: "8000-12000" },
+  { label: "₹12,000 - ₹20,000", value: "12000-20000" },
+  { label: "Above ₹20,000", value: "above-20000" }
+];
 
-export const properties: Property[] = [
+export const mockProperties: Property[] = [
   {
-    id: "hsr-layout-premium-pg",
-    name: "Casa Crest Men's PG",
-    type: "PG",
+    id: "pg-1",
+    name: "Stanza Living Dublin House",
     area: "Koramangala",
-    city: "bangalore",
-    rent: 8500,
-    images: ["https://picsum.photos/seed/hsr-layout-premium-pg/800/600"],
-    amenities: ["Wifi", "AC", "Meals", "Parking"],
-    highlights: ["Double Sharing", "Fully Furnished"],
-    audience: "Male",
-    rating: 4.5,
-    reviewCount: 128,
-    isVerified: true,
-    isFeatured: true,
-    owner: { name: "Arvind Rao", phone: "+91 9000000001" },
-  },
-  {
-    id: "koramangala-co-living",
-    name: "Indira Commons Co-Living",
-    type: "CoLiving",
-    area: "Indiranagar",
-    city: "bangalore",
-    rent: 15000,
-    images: ["https://picsum.photos/seed/koramangala-co-living/800/600"],
-    amenities: ["Wifi", "AC", "Meals", "Parking"],
-    highlights: ["Single Occupancy", "Fully Furnished"],
-    audience: "Unisex",
+    city: "Bangalore",
+    gender: "Unisex",
+    type: "Co-Living",
+    sharingTypes: { single: 18000, double: 12000, triple: 9500 },
+    startingRent: 9500,
+    securityDeposit: 15000,
+    amenities: ["Wifi", "AC", "Food", "Parking", "Gym", "CCTV", "Laundry", "TV", "PowerBackup", "Housekeeping", "HotWater"],
+    food: {
+      available: true,
+      type: "Both",
+      meals: ["Breakfast", "Lunch", "Dinner"],
+    },
+    houseRules: [
+      "Gate closes at 11:30 PM",
+      "No external visitors allowed overnight",
+      "No smoking in common areas",
+      "No pets allowed",
+      "Keep noise levels low after 10 PM"
+    ],
+    images: [
+      "https://picsum.photos/800/500?random=1",
+      "https://picsum.photos/800/500?random=11",
+      "https://picsum.photos/800/500?random=12",
+      "https://picsum.photos/800/500?random=13",
+      "https://picsum.photos/800/500?random=14"
+    ],
     rating: 4.8,
-    reviewCount: 210,
-    isVerified: true,
-    isFeatured: true,
-    owner: { name: "Meera Nair", phone: "+91 9000000002" },
+    reviews: 142,
+    availableFrom: "2026-07-10",
+    availability: "Available",
+    featured: true,
+    nearbyPlaces: {
+      companies: ["Wipro (1.5 km)", "Flipkart (2.3 km)", "Microsoft (3.0 km)"],
+      colleges: ["Christ University (1.2 km)", "St. John's Medical College (0.8 km)"],
+      metro: ["Koramangala Metro Station (Proposed) (0.5 km)", "Trinity Metro Station (4.2 km)"]
+    },
+    latitude: 12.9352,
+    longitude: 77.6244,
+    ownerName: "Stanza Operations Manager",
+    verified: true,
+    highlights: ["2 min from Sony World Junction", "Premium Gym Access", "Delicious Veg & Non-Veg Meals"]
   },
   {
-    id: "indiranagar-furnished-flat",
-    name: "Blossom Haven Women's PG",
-    type: "PG",
+    id: "pg-2",
+    name: "Comfort Ladies PG",
     area: "HSR Layout",
-    city: "bangalore",
-    rent: 12000,
-    images: ["https://picsum.photos/seed/indiranagar-furnished-flat/800/600"],
-    amenities: ["Wifi", "AC", "Meals", "Parking"],
-    highlights: ["Triple Sharing", "Fully Furnished"],
-    audience: "Female",
-    rating: 4.6,
-    reviewCount: 94,
-    isVerified: true,
-    isFeatured: true,
-    owner: { name: "Nikhil Shetty", phone: "+91 9000000003" },
-  },
-  {
-    id: "baner-shared-room",
-    name: "Baner Shared Room",
-    type: "Room",
-    area: "Baner",
-    city: "pune",
-    rent: 6500,
-    images: ["https://picsum.photos/seed/baner-shared-room/800/600"],
-    amenities: ["Wifi", "Meals"],
-    highlights: ["Shared Room", "Meals Included"],
-    audience: "Unisex",
-    rating: 4.5,
-    reviewCount: 63,
-    isVerified: true,
-    isFeatured: false,
-    owner: { name: "Neha Patil", phone: "+91 9000000004" },
-  },
-  {
-    id: "whitefield-family-flat",
-    name: "Whitefield Grove Apartment",
-    type: "Flat",
-    area: "Whitefield",
-    city: "bangalore",
-    rent: 20000,
-    images: ["https://picsum.photos/seed/whitefield-family-flat/800/600"],
-    amenities: ["Wifi", "AC", "Parking"],
-    highlights: ["2 BHK", "Semi Furnished"],
-    audience: "Family",
-    rating: 4.6,
-    reviewCount: 81,
-    isVerified: true,
-    isFeatured: true,
-    owner: { name: "Kiran Rao", phone: "+91 9000000007" },
-  },
-  {
-    id: "whitefield-student-hostel",
-    name: "Whitefield Student Hostel",
-    type: "Hostel",
-    area: "Whitefield",
-    city: "bangalore",
-    rent: 9000,
-    images: ["https://picsum.photos/seed/whitefield-student-hostel/800/600"],
-    amenities: ["Wifi", "AC", "Meals", "Parking"],
-    highlights: ["Shared Room", "Food Included"],
-    audience: "Unisex",
-    rating: 4.4,
-    reviewCount: 88,
-    isVerified: true,
-    isFeatured: false,
-    owner: { name: "Ritika Shah", phone: "+91 9000000018" },
-  },
-  {
-    id: "koramangala-city-flat",
-    name: "Koramangala City Flat",
-    type: "Flat",
-    area: "Koramangala",
-    city: "bangalore",
-    rent: 23000,
-    images: ["https://picsum.photos/seed/koramangala-city-flat/800/600"],
-    amenities: ["Wifi", "AC", "Parking"],
-    highlights: ["1 BHK", "Fully Furnished"],
-    audience: "Family",
-    rating: 4.7,
-    reviewCount: 97,
-    isVerified: true,
-    isFeatured: false,
-    owner: { name: "Ramesh Bhat", phone: "+91 9000000019" },
-  },
-  {
-    id: "marathahalli-studio-pg",
-    name: "Cedar Lane Studio PG",
+    city: "Bangalore",
+    gender: "Female",
     type: "PG",
+    sharingTypes: { single: 12000, double: 7500, triple: 5500 },
+    startingRent: 5500,
+    securityDeposit: 10000,
+    amenities: ["Wifi", "Food", "CCTV", "Laundry", "PowerBackup", "Housekeeping", "HotWater"],
+    food: {
+      available: true,
+      type: "Veg",
+      meals: ["Breakfast", "Dinner"],
+    },
+    houseRules: [
+      "Gate closes at 10:00 PM",
+      "Only female guests/parents allowed during daytime",
+      "Strictly no smoking or drinking",
+      "No pets allowed"
+    ],
+    images: [
+      "https://picsum.photos/800/500?random=2",
+      "https://picsum.photos/800/500?random=21",
+      "https://picsum.photos/800/500?random=22",
+      "https://picsum.photos/800/500?random=23"
+    ],
+    rating: 4.2,
+    reviews: 64,
+    availableFrom: "2026-07-05",
+    availability: "Limited",
+    featured: true,
+    nearbyPlaces: {
+      companies: ["Startups in HSR Sector 6 (0.8 km)", "TCS HSR Office (2.0 km)"],
+      colleges: ["NIFT Bangalore (1.1 km)", "Oxford College of Science (2.5 km)"],
+      metro: ["Silk Board Metro Station (1.5 km)", "HSR Layout Metro Station (1.2 km)"]
+    },
+    latitude: 12.9100,
+    longitude: 77.6450,
+    ownerName: "Mrs. Sarita Reddy",
+    verified: true,
+    highlights: ["Walking distance to NIFT", "Strict 3-Tier Security", "Homely South Indian Food"]
+  },
+  {
+    id: "pg-3",
+    name: "Sri Sai PG for Men",
+    area: "Whitefield",
+    city: "Bangalore",
+    gender: "Male",
+    type: "PG",
+    sharingTypes: { single: 11000, double: 6500, triple: 4800 },
+    startingRent: 4800,
+    securityDeposit: 5000,
+    amenities: ["Wifi", "Food", "Parking", "CCTV", "PowerBackup", "Housekeeping", "HotWater", "TV"],
+    food: {
+      available: true,
+      type: "Both",
+      meals: ["Breakfast", "Lunch", "Dinner"],
+    },
+    houseRules: [
+      "No curfew timings",
+      "No female guests inside rooms",
+      "Alcohol strictly forbidden inside premises"
+    ],
+    images: [
+      "https://picsum.photos/800/500?random=3",
+      "https://picsum.photos/800/500?random=31",
+      "https://picsum.photos/800/500?random=32"
+    ],
+    rating: 4.0,
+    reviews: 88,
+    availableFrom: "2026-07-02",
+    availability: "Available",
+    featured: false,
+    nearbyPlaces: {
+      companies: ["ITPL (1.2 km)", "Oracle (2.5 km)", "Sigma Tech Park (3.0 km)"],
+      colleges: ["MVJ College of Engineering (3.5 km)", "Vydehi Institute (2.1 km)"],
+      metro: ["ITPL Metro Station (1.0 km)", "Kadugodi Metro Station (2.0 km)"]
+    },
+    latitude: 12.9698,
+    longitude: 77.7499,
+    ownerName: "Mr. K. Venkatesh",
+    verified: true,
+    highlights: ["10 mins walk to ITPL", "No Curfew", "Biometric Entry System"]
+  },
+  {
+    id: "pg-4",
+    name: "Zolo Stay Coliving Zenith",
     area: "Marathahalli",
-    city: "bangalore",
-    rent: 10500,
-    images: ["https://picsum.photos/seed/marathahalli-studio-pg/800/600"],
-    amenities: ["Wifi", "AC", "Meals", "Parking"],
-    highlights: ["Twin Sharing", "Near ORR"],
-    audience: "Unisex",
-    rating: 4.7,
-    reviewCount: 156,
-    isVerified: true,
-    isFeatured: true,
-    owner: { name: "Sanjay Kulkarni", phone: "+91 9000000010" },
-  },
-  {
-    id: "bellandur-lakeview-coliving",
-    name: "Lakeview Commons Bellandur",
-    type: "CoLiving",
-    area: "Bellandur",
-    city: "bangalore",
-    rent: 14000,
-    images: ["https://picsum.photos/seed/bellandur-lakeview-coliving/800/600"],
-    amenities: ["Wifi", "AC", "Meals", "Parking"],
-    highlights: ["Single Room", "Work Desk"],
-    audience: "Unisex",
+    city: "Bangalore",
+    gender: "Unisex",
+    type: "Co-Living",
+    sharingTypes: { single: 15000, double: 9000, triple: 7000 },
+    startingRent: 7000,
+    securityDeposit: 12000,
+    amenities: ["Wifi", "AC", "Food", "Parking", "Gym", "CCTV", "Laundry", "TV", "PowerBackup", "Housekeeping", "HotWater"],
+    food: {
+      available: true,
+      type: "Both",
+      meals: ["Breakfast", "Dinner"],
+    },
+    houseRules: [
+      "Gate closes at 12:00 AM",
+      "Guests allowed until 8:00 PM",
+      "Maintain cleanliness in common kitchen"
+    ],
+    images: [
+      "https://picsum.photos/800/500?random=4",
+      "https://picsum.photos/800/500?random=41",
+      "https://picsum.photos/800/500?random=42",
+      "https://picsum.photos/800/500?random=43"
+    ],
     rating: 4.6,
-    reviewCount: 118,
-    isVerified: true,
-    isFeatured: false,
-    owner: { name: "Lavanya Murthy", phone: "+91 9000000011" },
+    reviews: 215,
+    availableFrom: "2026-07-08",
+    availability: "Limited",
+    featured: true,
+    nearbyPlaces: {
+      companies: ["JPMorgan Chase (1.0 km)", "Intel (1.8 km)", "Cisco (2.5 km)"],
+      colleges: ["New Horizon College of Engineering (2.0 km)"],
+      metro: ["Kundanahalli Metro Station (1.5 km)", "Marathahalli Metro Station (0.8 km)"]
+    },
+    latitude: 12.9562,
+    longitude: 77.7011,
+    ownerName: "Zolo Property Manager",
+    verified: true,
+    highlights: ["Close to Outer Ring Road companies", "Professional Housekeeping", "PlayStation Zone in Lounge"]
   },
   {
-    id: "electronic-city-tech-pg",
-    name: "Tech Park PG Electronic City",
-    type: "PG",
-    area: "Electronic City",
-    city: "bangalore",
-    rent: 9500,
-    images: ["https://picsum.photos/seed/electronic-city-tech-pg/800/600"],
-    amenities: ["Wifi", "AC", "Meals", "Parking"],
-    highlights: ["Double Sharing", "Near Phase 1"],
-    audience: "Male",
-    rating: 4.4,
-    reviewCount: 86,
-    isVerified: true,
-    isFeatured: false,
-    owner: { name: "Rohit Menon", phone: "+91 9000000012" },
-  },
-  {
-    id: "jp-nagar-green-flat",
-    name: "Green Block Flat JP Nagar",
-    type: "Flat",
-    area: "JP Nagar",
-    city: "bangalore",
-    rent: 18500,
-    images: ["https://picsum.photos/seed/jp-nagar-green-flat/800/600"],
-    amenities: ["Wifi", "AC", "Parking"],
-    highlights: ["1 BHK", "Semi Furnished"],
-    audience: "Family",
-    rating: 4.7,
-    reviewCount: 73,
-    isVerified: true,
-    isFeatured: false,
-    owner: { name: "Divya Prasad", phone: "+91 9000000013" },
-  },
-  {
-    id: "btm-layout-student-hostel",
-    name: "BTM Student Stay",
+    id: "pg-5",
+    name: "Olive Suites Indiranagar",
+    area: "Indiranagar",
+    city: "Bangalore",
+    gender: "Unisex",
     type: "Hostel",
-    area: "BTM Layout",
-    city: "bangalore",
-    rent: 7800,
-    images: ["https://picsum.photos/seed/btm-layout-student-hostel/800/600"],
-    amenities: ["Wifi", "Meals", "Parking"],
-    highlights: ["Student Friendly", "Food Included"],
-    audience: "Unisex",
-    rating: 4.3,
-    reviewCount: 64,
-    isVerified: true,
-    isFeatured: false,
-    owner: { name: "Suresh Gowda", phone: "+91 9000000014" },
-  },
-  {
-    id: "yelahanka-airport-pg",
-    name: "North Nest Yelahanka PG",
-    type: "PG",
-    area: "Yelahanka",
-    city: "bangalore",
-    rent: 8200,
-    images: ["https://picsum.photos/seed/yelahanka-airport-pg/800/600"],
-    amenities: ["Wifi", "AC", "Meals"],
-    highlights: ["Triple Sharing", "Airport Road"],
-    audience: "Female",
-    rating: 4.5,
-    reviewCount: 91,
-    isVerified: true,
-    isFeatured: false,
-    owner: { name: "Anitha Raj", phone: "+91 9000000015" },
-  },
-  {
-    id: "jayanagar-calm-apartment",
-    name: "Jayanagar Calm Apartment",
-    type: "Flat",
-    area: "Jayanagar",
-    city: "bangalore",
-    rent: 21000,
-    images: ["https://picsum.photos/seed/jayanagar-calm-apartment/800/600"],
-    amenities: ["Wifi", "AC", "Parking"],
-    highlights: ["2 BHK", "Family Ready"],
-    audience: "Family",
-    rating: 4.8,
-    reviewCount: 109,
-    isVerified: true,
-    isFeatured: false,
-    owner: { name: "Manjunath Rao", phone: "+91 9000000016" },
-  },
-  {
-    id: "hebbal-manyata-coliving",
-    name: "Manyata Co-Living Hebbal",
-    type: "CoLiving",
-    area: "Hebbal",
-    city: "bangalore",
-    rent: 13500,
-    images: ["https://picsum.photos/seed/hebbal-manyata-coliving/800/600"],
-    amenities: ["Wifi", "AC", "Meals", "Parking"],
-    highlights: ["Single Occupancy", "Near Tech Park"],
-    audience: "Unisex",
-    rating: 4.6,
-    reviewCount: 102,
-    isVerified: true,
-    isFeatured: false,
-    owner: { name: "Prakash Hegde", phone: "+91 9000000017" },
-  },
-  {
-    id: "bandra-student-hostel",
-    name: "Bandra Student Hostel",
-    type: "Hostel",
-    area: "Bandra",
-    city: "mumbai",
-    rent: 11000,
-    images: ["https://picsum.photos/seed/bandra-student-hostel/800/600"],
-    amenities: ["Wifi", "Meals"],
-    highlights: ["Student Friendly", "Food Included"],
-    audience: "Unisex",
-    rating: 4.3,
-    reviewCount: 69,
-    isVerified: true,
-    isFeatured: false,
-    owner: { name: "Farah Shaikh", phone: "+91 9000000008" },
-  },
-  {
-    id: "hinjewadi-co-living",
-    name: "Hinjewadi Co-Living Hub",
-    type: "CoLiving",
-    area: "Hinjewadi",
-    city: "pune",
-    rent: 12500,
-    images: ["https://picsum.photos/seed/hinjewadi-co-living/800/600"],
-    amenities: ["Wifi", "AC", "Meals", "Parking"],
-    highlights: ["Single Occupancy", "Work Desk"],
-    audience: "Unisex",
-    rating: 4.5,
-    reviewCount: 74,
-    isVerified: true,
-    isFeatured: false,
-    owner: { name: "Amit Deshmukh", phone: "+91 9000000009" },
-  },
-  {
-    id: "adyar-student-hostel",
-    name: "Adyar Student Hostel",
-    type: "Hostel",
-    area: "Adyar",
-    city: "chennai",
-    rent: 7200,
-    images: ["https://picsum.photos/seed/adyar-student-hostel/800/600"],
-    amenities: ["Wifi", "AC", "Meals"],
-    highlights: ["Student Friendly", "Laundry"],
-    audience: "Female",
-    rating: 4.4,
-    reviewCount: 52,
-    isVerified: true,
-    isFeatured: false,
-    owner: { name: "Anand Iyer", phone: "+91 9000000005" },
-  },
-  {
-    id: "gachibowli-family-flat",
-    name: "Gachibowli Family Flat",
-    type: "Flat",
-    area: "Gachibowli",
-    city: "hyderabad",
-    rent: 18000,
-    images: ["https://picsum.photos/seed/gachibowli-family-flat/800/600"],
-    amenities: ["Wifi", "AC", "Parking"],
-    highlights: ["2 BHK", "Family Ready"],
-    audience: "Family",
+    sharingTypes: { single: 22000, double: 14000 },
+    startingRent: 14000,
+    securityDeposit: 25000,
+    amenities: ["Wifi", "AC", "Parking", "CCTV", "Laundry", "TV", "PowerBackup", "Housekeeping", "HotWater"],
+    food: {
+      available: false,
+      type: "Both",
+      meals: []
+    },
+    houseRules: [
+      "No curfew",
+      "Visitors allowed in rooms, overnight stay requires prior permission",
+      "Pet friendly (on request)",
+      "Strict waste segregation rules"
+    ],
+    images: [
+      "https://picsum.photos/800/500?random=5",
+      "https://picsum.photos/800/500?random=51",
+      "https://picsum.photos/800/500?random=52"
+    ],
     rating: 4.9,
-    reviewCount: 143,
-    isVerified: true,
-    isFeatured: true,
-    owner: { name: "Ayesha Khan", phone: "+91 9000000006" },
+    reviews: 57,
+    availableFrom: "2026-07-15",
+    availability: "Available",
+    featured: true,
+    nearbyPlaces: {
+      companies: ["Microsoft Signature Office (2.1 km)", "Indiranagar Startups (0.5 km)"],
+      colleges: ["Gitam University Bangalore Campus (9.0 km)"],
+      metro: ["Indiranagar Metro Station (0.4 km)", "Halasuru Metro Station (1.8 km)"]
+    },
+    latitude: 12.9718,
+    longitude: 77.6412,
+    ownerName: "Olive Property Manager",
+    verified: true,
+    highlights: ["4 mins walk to Metro Station", "Surrounded by Cafes and Pubs", "Pet Friendly Rooms"]
   },
+  {
+    id: "pg-6",
+    name: "Adarsh Men's Executive PG",
+    area: "BTM Layout",
+    city: "Bangalore",
+    gender: "Male",
+    type: "PG",
+    sharingTypes: { single: 10000, double: 6000, triple: 4500 },
+    startingRent: 4500,
+    securityDeposit: 4000,
+    amenities: ["Wifi", "Food", "Parking", "CCTV", "Laundry", "TV", "PowerBackup", "Housekeeping", "HotWater"],
+    food: {
+      available: true,
+      type: "Both",
+      meals: ["Breakfast", "Lunch", "Dinner"],
+    },
+    houseRules: [
+      "Gate closes at 11:00 PM",
+      "No external guests allowed inside rooms",
+      "No smoking/alcohol inside PG premises"
+    ],
+    images: [
+      "https://picsum.photos/800/500?random=6",
+      "https://picsum.photos/800/500?random=61"
+    ],
+    rating: 4.1,
+    reviews: 112,
+    availableFrom: "2026-07-02",
+    availability: "Available",
+    featured: false,
+    nearbyPlaces: {
+      companies: ["Oracle BTM (1.5 km)", "Accenture Bannerghatta (3.0 km)"],
+      colleges: ["Alliance Business Academy (2.2 km)", "Christ University (3.5 km)"],
+      metro: ["BTM Layout Metro Station (0.8 km)", "Rashtreeya Vidyalaya Road Metro (2.8 km)"]
+    },
+    latitude: 12.9166,
+    longitude: 77.6101,
+    ownerName: "Mr. Ramesh Gowda",
+    verified: false,
+    highlights: ["Super affordable starting price", "Unlimited Wi-Fi", "3-time home style meals"]
+  },
+  {
+    id: "pg-7",
+    name: "Elite Co-Living Electronic City",
+    area: "Electronic City",
+    city: "Bangalore",
+    gender: "Unisex",
+    type: "Co-Living",
+    sharingTypes: { single: 14000, double: 8000, triple: 6000 },
+    startingRent: 6000,
+    securityDeposit: 10000,
+    amenities: ["Wifi", "AC", "Food", "Parking", "Gym", "CCTV", "Laundry", "TV", "PowerBackup", "Housekeeping", "HotWater"],
+    food: {
+      available: true,
+      type: "Both",
+      meals: ["Breakfast", "Dinner"]
+    },
+    houseRules: [
+      "Gate closes at 12:00 AM",
+      "Visitors allowed in common areas",
+      "Keep common spaces tidy"
+    ],
+    images: [
+      "https://picsum.photos/800/500?random=7",
+      "https://picsum.photos/800/500?random=71",
+      "https://picsum.photos/800/500?random=72"
+    ],
+    rating: 4.5,
+    reviews: 95,
+    availableFrom: "2026-07-01",
+    availability: "Available",
+    featured: false,
+    nearbyPlaces: {
+      companies: ["Infosys Gate 1 (0.8 km)", "Wipro Electronic City (1.2 km)", "HP (2.0 km)"],
+      colleges: ["IIIT Bangalore (1.5 km)", "Symbiosis Institute (2.2 km)"],
+      metro: ["Electronic City Metro Station (1.0 km)"]
+    },
+    latitude: 12.8452,
+    longitude: 77.6635,
+    ownerName: "Elite Coliving Hub",
+    verified: true,
+    highlights: ["Walking distance to Infosys", "Equipped Gym and Gaming lounge", "High speed fiber Wi-Fi"]
+  },
+  {
+    id: "pg-8",
+    name: "Nesta Ladies PG Bellandur",
+    area: "Bellandur",
+    city: "Bangalore",
+    gender: "Female",
+    type: "PG",
+    sharingTypes: { single: 14500, double: 8500, triple: 6500 },
+    startingRent: 6500,
+    securityDeposit: 12000,
+    amenities: ["Wifi", "Food", "CCTV", "Laundry", "TV", "PowerBackup", "Housekeeping", "HotWater"],
+    food: {
+      available: true,
+      type: "Veg",
+      meals: ["Breakfast", "Lunch", "Dinner"]
+    },
+    houseRules: [
+      "Gate closes at 10:30 PM",
+      "No male visitors inside rooms",
+      "Inform warden if coming late"
+    ],
+    images: [
+      "https://picsum.photos/800/500?random=8",
+      "https://picsum.photos/800/500?random=81",
+      "https://picsum.photos/800/500?random=82"
+    ],
+    rating: 4.4,
+    reviews: 131,
+    availableFrom: "2026-07-04",
+    availability: "Limited",
+    featured: true,
+    nearbyPlaces: {
+      companies: ["EcoSpace (0.6 km)", "Intel EcoWorld (1.2 km)", "Honeywell (2.0 km)"],
+      colleges: ["Krupanidhi College (3.0 km)"],
+      metro: ["Bellandur Metro Station (Under Construction) (0.5 km)"]
+    },
+    latitude: 12.9279,
+    longitude: 77.6796,
+    ownerName: "Nesta Hostel Warden",
+    verified: true,
+    highlights: ["Opposite EcoSpace Tech Park", "Highly Secured Women's Facility", "Nutritious North & South Indian meals"]
+  }
 ];

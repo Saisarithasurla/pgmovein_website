@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
-import PageTransition from "@/components/PageTransition";
+import { Suspense } from "react";
+import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
+import LeadCapturePopup from "../components/LeadCapturePopup";
+import { LeadProvider } from "../context/LeadContext";
+import { PropertyProvider } from "../context/PropertyContext";
 import "./globals.css";
 
 const inter = Inter({
@@ -13,12 +16,23 @@ const inter = Inter({
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
   subsets: ["latin"],
-  weight: ["600", "700"],
+  weight: ["600", "700", "800"],
 });
 
 export const metadata: Metadata = {
-  title: "GharStay | Find PGs, Flats, Hostels & Co-Living Spaces",
-  description: "Find verified rental homes across India with GharStay.",
+  title: "PGMove — Find Verified PGs in Bangalore | Zero Brokerage",
+  description:
+    "Find verified PGs, hostels, and co-living spaces in Bangalore near your office or college. Zero brokerage. Instant contact with owners.",
+  keywords: "PG in Bangalore, paying guest Bangalore, PG near me, hostel Bangalore, co-living Bangalore",
+  openGraph: {
+    title: "PGMove — Find Verified PGs in Bangalore | Zero Brokerage",
+    description:
+      "Find verified PGs, hostels, and co-living spaces in Bangalore near your office or college. Zero brokerage. Instant contact with owners.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({
@@ -31,12 +45,20 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${jakarta.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <Navbar />
-        <main className="flex-1">
-          <PageTransition>{children}</PageTransition>
-        </main>
-        <Footer />
+      <body className="min-h-full flex flex-col bg-[#F5F7FF]">
+        <LeadProvider>
+          <Suspense fallback={<div className="p-4 text-center text-xs">Loading Search...</div>}>
+            <PropertyProvider>
+              {/* Note: Navbar and Footer are managed globally in layout */}
+              <Navbar />
+              <main className="flex-1">
+                {children}
+              </main>
+              <Footer />
+              <LeadCapturePopup />
+            </PropertyProvider>
+          </Suspense>
+        </LeadProvider>
       </body>
     </html>
   );

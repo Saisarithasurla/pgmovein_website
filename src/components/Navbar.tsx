@@ -1,202 +1,227 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogIn, Menu, UserPlus, X, Heart, Calendar } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { easeOutQuart, slideInRightFull, staggerContainer, staggerItem } from "@/lib/animations";
-import { cn } from "@/lib/utils";
-
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/#property-types", label: "Types" },
-  { href: "/#popular-areas", label: "Popular Areas" },
-  { href: "/#featured", label: "Featured" },
-  { href: "/#faq", label: "FAQ" },
-  { href: "/contact", label: "Contact" },
-];
+import { Menu, X, ArrowRight, Heart } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [wishlistCount, setWishlistCount] = useState(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    const updateCount = () => {
+      if (typeof window !== "undefined") {
+        const wishlist = JSON.parse(localStorage.getItem("pgmove_wishlist") || "[]");
+        setWishlistCount(wishlist.length);
+      }
+    };
+    updateCount();
+    window.addEventListener("storage", updateCount);
+    const interval = setInterval(updateCount, 1000);
+    return () => {
+      window.removeEventListener("storage", updateCount);
+      clearInterval(interval);
+    };
   }, []);
 
-  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href.split("?")[0]));
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Lock background scroll when mobile drawer is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  const navLinks = [
+    { label: "Home", href: "/" },
+    { label: "Properties", href: "/properties" },
+    { label: "About", href: "/about" },
+    { label: "Contact", href: "/contact" },
+    { label: "Areas", href: "/#popular-areas" },
+    { label: "How It Works", href: "/#how-it-works" },
+    { label: "FAQ", href: "/#faq" },
+  ];
 
   return (
-    <header className={cn("sticky top-0 z-50 border-b border-violet-50 transition-all duration-200", scrolled ? "bg-white/95 shadow-sm backdrop-blur-md" : "bg-white")}>
-      <motion.nav
-        role="navigation"
-        className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-18 sm:px-6 lg:px-8"
-        initial={{ opacity: 0, y: -16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: easeOutQuart }}
-      >
-        <motion.div whileHover={{ scale: 1.03 }} transition={{ duration: 0.2 }}>
-          <Link href="/" className="flex items-center gap-3 font-display text-xl font-bold text-saffron sm:text-2xl" onClick={() => setOpen(false)}>
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-saffron text-lg font-black text-white shadow-[0_10px_24px_rgba(124,58,237,0.24)]">
-              G
-            </span>
-            GharStay
-          </Link>
-        </motion.div>
+    <header
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-white/95 backdrop-blur-md shadow-md py-1.5 border-b border-purple-50"
+          : "bg-white py-2 border-b border-transparent"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex-shrink-0 flex items-center">
+            <a href="/" className="flex items-center gap-3 group">
+              <div className="h-16 w-16 overflow-hidden relative flex-shrink-0">
+                <img
+                  src="/logo.png"
+                  alt="PGMove Icon"
+                  className="absolute top-0 left-0 w-full h-auto object-cover"
+                  style={{ transform: "scale(1.8)", transformOrigin: "50% 6%" }}
+                />
+              </div>
+              <span className="text-xl sm:text-2xl font-black font-display tracking-tight text-[#1E1B2E] flex items-baseline">
+                PG<span className="text-purple-600">MOVE</span><span className="text-purple-600 text-sm font-bold ml-0.5">.in</span>
+              </span>
+            </a>
+          </div>
 
-        <div className="hidden items-center gap-5 md:flex lg:gap-7">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "nav-link py-6 text-sm font-semibold text-slate-500 transition-all duration-200 hover:text-saffron",
-                isActive(link.href) && "active text-saffron",
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex space-x-8 items-center">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  onClick={(e) => {
+                    if (link.href.startsWith("/#") && pathname === "/") {
+                      e.preventDefault();
+                      const id = link.href.replace("/#", "");
+                      const element = document.getElementById(id);
+                      if (element) {
+                        element.scrollIntoView({ behavior: "smooth" });
+                      }
+                    }
+                  }}
+                  className={`font-display text-sm font-semibold tracking-wide transition-colors hover:text-purple-600 ${
+                    isActive ? "text-purple-600 font-bold" : "text-gray-700"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
-          <Link
-            href="/saved"
-            aria-label="Saved Properties"
-            title="Saved Properties"
-            className={cn(
-              "relative flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition-all duration-200 hover:bg-violet-50 hover:text-saffron",
-              isActive("/saved") && "bg-violet-50 text-saffron"
-            )}
-          >
-            <Heart className="h-5 w-5" />
-          </Link>
-          <Link
-            href="/bookings"
-            aria-label="My Bookings"
-            title="My Bookings"
-            className={cn(
-              "relative flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition-all duration-200 hover:bg-violet-50 hover:text-saffron",
-              isActive("/bookings") && "bg-violet-50 text-saffron"
-            )}
-          >
-            <Calendar className="h-5 w-5" />
-          </Link>
-
-          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}>
-          <Link href="/auth/tenant/signup" className="inline-flex items-center gap-2 rounded-xl border border-violet-200 px-4 py-2.5 text-sm font-semibold text-saffron transition-all duration-200 hover:bg-violet-50">
-            <UserPlus className="h-4 w-4" />
-            Create Account
-          </Link>
-          </motion.div>
-          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}>
-          <Link href="/auth/tenant/login" className="inline-flex items-center gap-2 rounded-xl bg-saffron px-5 py-2.5 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(124,58,237,0.28)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-violet-700">
-            <LogIn className="h-4 w-4" />
-            Login
-          </Link>
-          </motion.div>
-        </div>
-
-        <button aria-label="Open menu" className="rounded-md p-2 text-navy md:hidden" onClick={() => setOpen(true)}>
-          <motion.span animate={{ rotate: open ? 90 : 0 }} transition={{ duration: 0.2 }} className="block">
-            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </motion.span>
-        </button>
-      </motion.nav>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            className="fixed inset-0 z-50 bg-navy/30 md:hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={() => setOpen(false)}
-          />
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {open && (
-      <motion.aside
-        className="fixed right-0 top-0 z-50 h-full w-[min(100vw,22rem)] overflow-y-auto bg-white p-5 shadow-2xl md:hidden"
-        variants={slideInRightFull}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-      >
-        <div className="mb-6 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 font-display text-xl font-bold text-saffron" onClick={() => setOpen(false)}>
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-saffron text-base font-black text-white">
-              G
-            </span>
-            GharStay
-          </Link>
-          <button aria-label="Close menu" className="rounded-md p-2 text-navy" onClick={() => setOpen(false)}>
-            <X className="h-6 w-6" />
-          </button>
-        </div>
-        <motion.div className="flex flex-col gap-2" variants={staggerContainer} initial="hidden" animate="visible">
-          {navLinks.map((link) => (
-            <motion.div key={link.href} variants={staggerItem}>
-            <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className={cn("block rounded-xl px-3 py-3 font-semibold text-slate-600 transition-all duration-200 hover:bg-violet-50", isActive(link.href) && "bg-saffron/10 text-saffron")}>
-              {link.label}
-            </Link>
-            </motion.div>
-          ))}
-
-          {/* Saved in Mobile Menu */}
-          <motion.div variants={staggerItem}>
+          {/* Buttons */}
+          <div className="hidden md:flex items-center space-x-6">
+            {/* Wishlist Heart Icon Badge */}
             <Link
               href="/saved"
-              onClick={() => setOpen(false)}
-              className={cn(
-                "flex items-center gap-3 rounded-xl px-3 py-3 font-semibold text-slate-600 transition-all duration-200 hover:bg-violet-50",
-                isActive("/saved") && "bg-saffron/10 text-saffron"
-              )}
+              className="relative h-10 w-10 bg-[#F5F3FF] hover:bg-[#EDE6FF] rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-105 group shrink-0"
+              title="Wishlist"
             >
-              <Heart className="h-5 w-5 shrink-0" />
+              <Heart
+                className={`h-5 w-5 transition-all duration-300 ${
+                  wishlistCount > 0 || pathname === "/saved"
+                    ? "fill-[#7C3AED] text-[#7C3AED] scale-110"
+                    : "text-[#7C3AED] group-hover:scale-105"
+                }`}
+                strokeWidth={2}
+              />
+              {/* Count badge */}
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 h-[18px] w-[18px] bg-[#7C3AED] text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white animate-scale-in">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+
+            <Link
+              href="/auth/tenant/login"
+              className="text-sm font-semibold text-purple-700 hover:text-purple-900 border border-purple-200 hover:border-purple-300 px-4 py-2 rounded-xl transition-all hover:bg-purple-50/50"
+            >
+              Login
+            </Link>
+            <Link
+              href="/auth/owner/signup"
+              className="text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 px-5 py-2.5 rounded-xl transition-all shadow-md shadow-purple-100 hover:shadow-lg hover:shadow-purple-200 hover:-translate-y-0.5 flex items-center gap-1.5"
+            >
+              List Your PG <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          {/* Mobile hamburger menu */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="inline-flex items-center justify-center p-2 rounded-lg text-gray-400 hover:text-purple-600 hover:bg-purple-50 focus:outline-none transition-colors"
+            >
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Drawer */}
+      {isOpen && (
+        <div className="md:hidden fixed inset-x-0 top-[81px] bottom-0 bg-white z-50 overflow-y-auto animate-fade-in border-t border-gray-100 shadow-xl">
+          <div className="px-4 pt-4 pb-12 space-y-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                onClick={(e) => {
+                  setIsOpen(false);
+                  if (link.href.startsWith("/#") && pathname === "/") {
+                    e.preventDefault();
+                    const id = link.href.replace("/#", "");
+                    const element = document.getElementById(id);
+                    if (element) {
+                      element.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }
+                }}
+                className="block px-3 py-2.5 rounded-xl text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-purple-50 transition-all"
+              >
+                {link.label}
+              </Link>
+            ))}
+            
+            {/* Mobile Drawer Heart Icon */}
+            <Link
+              href="/saved"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-base font-medium text-gray-700 hover:text-red-500 hover:bg-red-55 transition-all"
+            >
+              <Heart className={`h-5 w-5 shrink-0 ${pathname === "/saved" ? "fill-red-500 text-red-500" : "text-gray-500"}`} />
               <span>Saved Properties</span>
             </Link>
-          </motion.div>
-
-          {/* Bookings in Mobile Menu */}
-          <motion.div variants={staggerItem}>
-            <Link
-              href="/bookings"
-              onClick={() => setOpen(false)}
-              className={cn(
-                "flex items-center gap-3 rounded-xl px-3 py-3 font-semibold text-slate-600 transition-all duration-200 hover:bg-violet-50",
-                isActive("/bookings") && "bg-saffron/10 text-saffron"
-              )}
-            >
-              <Calendar className="h-5 w-5 shrink-0" />
-              <span>My Bookings</span>
-            </Link>
-          </motion.div>
-
-          <motion.div variants={staggerItem}>
-          <Link href="/auth/tenant/login" onClick={() => setOpen(false)} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-saffron px-4 py-3 font-semibold text-white transition-all duration-200">
-            <LogIn className="h-4 w-4" />
-            Login
-          </Link>
-          </motion.div>
-          <motion.div variants={staggerItem}>
-          <Link href="/auth/tenant/signup" onClick={() => setOpen(false)} className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-violet-200 px-4 py-3 font-semibold text-saffron transition-all duration-200 hover:bg-violet-50">
-            <UserPlus className="h-4 w-4" />
-            Create Account
-          </Link>
-          </motion.div>
-        </motion.div>
-      </motion.aside>
-        )}
-      </AnimatePresence>
+            <div className="pt-4 pb-2 border-t border-gray-100 px-3 flex flex-col gap-3">
+              <Link
+                href="/auth/tenant/login"
+                onClick={() => setIsOpen(false)}
+                className="w-full text-center font-semibold text-purple-700 border border-purple-200 px-4 py-2.5 rounded-xl transition-all hover:bg-purple-50"
+              >
+                Login
+              </Link>
+              <Link
+                href="/auth/owner/signup"
+                onClick={() => setIsOpen(false)}
+                className="w-full text-center font-semibold text-white bg-purple-600 px-4 py-2.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
+              >
+                List Your PG <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

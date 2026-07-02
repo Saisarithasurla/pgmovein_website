@@ -1,65 +1,74 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Heart, Search } from "lucide-react";
-import { useEffect, useState } from "react";
-import PropertyCard from "@/components/PropertyCard";
-import { properties } from "@/data/mockData";
-
-const savedKey = "gharstay_saved_properties";
-
-function readSaved() {
-  try {
-    const parsed = JSON.parse(window.localStorage.getItem(savedKey) ?? "[]");
-    return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === "string") : [];
-  } catch {
-    return [];
-  }
-}
+import { ArrowLeft, Heart, Sparkles } from "lucide-react";
+import PropertyCard from "../../components/PropertyCard";
+import { mockProperties, Property } from "../../data/mockData";
 
 export default function SavedPropertiesPage() {
-  const [savedIds, setSavedIds] = useState<string[]>([]);
+  const [savedProperties, setSavedProperties] = useState<Property[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const sync = () => setSavedIds(readSaved());
-    sync();
-    window.addEventListener("gharstay:saved-updated", sync);
-    window.addEventListener("storage", sync);
-    return () => {
-      window.removeEventListener("gharstay:saved-updated", sync);
-      window.removeEventListener("storage", sync);
-    };
+    if (typeof window !== "undefined") {
+      const wishlist: string[] = JSON.parse(localStorage.getItem("pgmove_wishlist") || "[]");
+      const matched = mockProperties.filter((p) => wishlist.includes(p.id));
+      setSavedProperties(matched);
+      setIsLoading(false);
+    }
   }, []);
 
-  const savedProperties = properties.filter((property) => savedIds.includes(property.id));
-
   return (
-    <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="inline-flex items-center gap-2 rounded-md bg-rose-50 px-3 py-1 text-sm font-bold text-rose-600">
-            <Heart className="h-4 w-4 fill-current" />
-            Saved Properties
-          </p>
-          <h1 className="mt-4 font-display text-3xl font-bold text-navy sm:text-4xl">Your Shortlist</h1>
-          <p className="mt-3 max-w-2xl text-slate-600">Keep your favorite homes in one place while you compare rent, location, and owner details.</p>
+    <div className="bg-[#F5F7FF] min-h-screen font-sans py-16">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-2">
+            <Link
+              href="/properties"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#6B7280] hover:text-purple-650 transition-colors mb-2"
+            >
+              <ArrowLeft className="h-4 w-4" /> Back to Search
+            </Link>
+            <h1 className="font-display text-4xl font-extrabold text-[#1E1B2E] tracking-tight flex items-center gap-2.5">
+              <Heart className="h-8 w-8 text-red-500 fill-red-500" /> Saved Properties
+            </h1>
+            <p className="text-gray-500 text-sm font-medium">
+              Manage your bookmarked paying guests, hostels & co-living options.
+            </p>
+          </div>
         </div>
-        <Link href="/properties" className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-saffron px-4 py-3 font-bold text-white transition-all duration-200 hover:-translate-y-0.5 sm:w-auto">
-          <Search className="h-5 w-5" />
-          Browse More
-        </Link>
-      </div>
 
-      {savedProperties.length > 0 ? (
-        <div className="mt-8 grid gap-5 sm:gap-6 lg:grid-cols-3">
-          {savedProperties.map((property) => <PropertyCard key={property.id} property={property} />)}
-        </div>
-      ) : (
-        <div className="mt-8 rounded-md border border-dashed border-slate-300 bg-white p-5 text-center sm:p-8">
-          <h2 className="font-display text-xl font-bold text-navy sm:text-2xl">No saved properties yet</h2>
-          <p className="mt-2 text-slate-600">Tap the heart on any listing to add it here.</p>
-        </div>
-      )}
-    </section>
+        {isLoading ? (
+          <div className="text-center py-20">
+            <div className="h-8 w-8 border-4 border-purple-650 border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <p className="text-xs text-gray-500 mt-2 font-semibold">Loading your favorites...</p>
+          </div>
+        ) : savedProperties.length === 0 ? (
+          <div className="bg-white rounded-2xl p-12 shadow-md text-center max-w-md mx-auto space-y-4 border border-gray-50">
+            <div className="h-16 w-16 rounded-full bg-[#F5F3FF] flex items-center justify-center mx-auto text-[#7C3AED]">
+              <Heart className="h-8 w-8 text-gray-300" />
+            </div>
+            <h2 className="font-display text-xl font-bold text-[#1E1B2E]">No saved PGs yet</h2>
+            <p className="text-xs text-slate-500 leading-relaxed font-medium">
+              Start searching for properties in Bangalore and tap the heart icon on any listing card to keep track of them here.
+            </p>
+            <Link
+              href="/properties"
+              className="inline-block px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm rounded-xl transition-all shadow-md"
+            >
+              Find Properties
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {savedProperties.map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

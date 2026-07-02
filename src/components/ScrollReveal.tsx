@@ -1,40 +1,82 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
-import { easeOutQuart } from "@/lib/animations";
+import React, { useEffect, useRef, useState } from "react";
+
+interface ScrollRevealProps {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+  variant?: "fade" | "slideUp" | "slideLeft" | "slideRight" | "scale";
+}
 
 export default function ScrollReveal({
   children,
-  delay = 0,
-  direction = "up",
   className = "",
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  direction?: "up" | "left" | "right" | "none";
-  className?: string;
-}) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  delay = 0,
+  variant = "slideUp",
+}: ScrollRevealProps) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
-  const variants = {
-    up: { hidden: { opacity: 0, y: 32 }, visible: { opacity: 1, y: 0 } },
-    left: { hidden: { opacity: 0, x: -32 }, visible: { opacity: 1, x: 0 } },
-    right: { hidden: { opacity: 0, x: 32 }, visible: { opacity: 1, x: 0 } },
-    none: { hidden: { opacity: 0 }, visible: { opacity: 1 } },
+  useEffect(() => {
+    if (typeof window === "undefined" || !("IntersectionObserver" in window)) {
+      setIsVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      {
+        threshold: 0.05,
+        rootMargin: "0px 0px -40px 0px",
+      }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current);
+      }
+    };
+  }, []);
+
+  // Map variants to CSS initial and active classes
+  const getVariantStyles = () => {
+    switch (variant) {
+      case "fade":
+        return isVisible ? "opacity-100" : "opacity-0 pointer-events-none";
+      case "slideLeft":
+        return isVisible
+          ? "opacity-100 translate-x-0"
+          : "opacity-0 translate-x-12 pointer-events-none";
+      case "slideRight":
+        return isVisible
+          ? "opacity-100 translate-x-0"
+          : "opacity-0 -translate-x-12 pointer-events-none";
+      case "scale":
+        return isVisible
+          ? "opacity-100 scale-100"
+          : "opacity-0 scale-95 pointer-events-none";
+      case "slideUp":
+      default:
+        return isVisible
+          ? "opacity-100 translate-y-0"
+          : "opacity-0 translate-y-8 pointer-events-none";
+    }
   };
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      className={className}
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
-      variants={variants[direction]}
-      transition={{ duration: 0.55, delay, ease: easeOutQuart }}
+      style={{ transitionDelay: `${delay}ms` }}
+      className={`transition-all duration-700 ease-out ${getVariantStyles()} ${className}`}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }

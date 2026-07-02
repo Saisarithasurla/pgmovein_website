@@ -1,73 +1,40 @@
-const sections = [
-  {
-    title: "1. Information We Collect",
-    items: [
-      "Personal details such as your name, phone number, and email address when you create an account or contact a property owner",
-      "Search and browsing activity, such as property types, areas, and filters you use",
-      "Device and usage data, including IP address, browser type, and pages visited",
-    ],
-    intro: "We may collect the following types of information:",
-  },
-  {
-    title: "2. How We Use Your Information",
-    items: [
-      "Connect you with relevant property listings and owners",
-      "Improve our website's functionality and user experience",
-      "Send updates, notifications, or promotional content (you may opt out at any time)",
-      "Respond to customer support inquiries",
-    ],
-    intro: "We use the information we collect to:",
-  },
-  {
-    title: "3. Sharing of Information",
-    body: "GharStay may share your contact details with property owners when you express interest in a listing, so they can respond to your inquiry. We do not sell your personal data to third parties for marketing purposes.",
-  },
-  {
-    title: "4. Data Security",
-    body: "We implement reasonable technical and organizational measures to protect your personal data from unauthorized access, alteration, or disclosure. However, no method of transmission over the internet is completely secure, and we cannot guarantee absolute security.",
-  },
-  {
-    title: "5. Cookies",
-    body: "GharStay may use cookies to enhance your browsing experience, remember preferences, and analyze site traffic. You can disable cookies through your browser settings, though this may affect site functionality.",
-  },
-  {
-    title: "6. Your Rights",
-    body: "You have the right to access, update, or request deletion of your personal data. To make such a request, contact us at hello@gharstay.in.",
-  },
-  {
-    title: "7. Changes to This Policy",
-    body: "We may update this Privacy Policy periodically. Changes will be posted on this page with an updated revision date.",
-  },
-  {
-    title: "8. Contact Us",
-    body: "If you have any questions about this Privacy Policy, please reach out to us at hello@gharstay.in.",
-  },
-];
+import React from "react";
 
 export default function PrivacyPage() {
   return (
-    <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-      <h1 className="font-display text-3xl font-bold text-navy sm:text-4xl">Privacy Policy</h1>
-      <p className="mt-3 text-sm font-semibold text-slate-500">Last Updated: June 30, 2026</p>
-      <p className="mt-8 leading-7 text-slate-600">
-        GharStay (&quot;we,&quot; &quot;our,&quot; &quot;us&quot;) respects your privacy and is committed to protecting the personal information you share with us. This Privacy Policy explains how we collect, use, and safeguard your data.
-      </p>
-      <div className="mt-8 space-y-7">
-        {sections.map((section) => (
-          <section key={section.title}>
-            <h2 className="font-display text-xl font-bold text-navy">{section.title}</h2>
-            {section.intro && <p className="mt-3 leading-7 text-slate-600">{section.intro}</p>}
-            {section.body && <p className="mt-3 leading-7 text-slate-600">{section.body}</p>}
-            {section.items && (
-              <ul className="mt-3 list-disc space-y-2 pl-5 leading-7 text-slate-600">
-                {section.items.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            )}
-          </section>
-        ))}
+    <div className="max-w-4xl mx-auto px-4 py-16 sm:px-6 lg:px-8 font-sans">
+      <div className="space-y-8">
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl font-black text-gray-900 tracking-tight">Privacy Policy</h1>
+          <p className="text-sm text-gray-400 font-bold">Last Updated: July 2026</p>
+        </div>
+
+        <div className="prose prose-purple max-w-none text-gray-600 text-sm leading-relaxed space-y-6">
+          <p>
+            At PGMove, we value the privacy of our visitors. This Privacy Policy details how we collect, store, and utilize your personal information.
+          </p>
+
+          <h2 className="text-lg font-bold text-gray-900 mt-6 mb-2">1. Information We Collect</h2>
+          <p>
+            When you register an enquiry on PGMove, we collect your Full Name, Mobile Number, Email Address, Move-in Date, Preferred Area, Budget Range, and professional/academic affiliation (if provided).
+          </p>
+
+          <h2 className="text-lg font-bold text-gray-900 mt-6 mb-2">2. How We Use Your Data</h2>
+          <p>
+            The collected information is used solely to facilitate connection between you and the respective PG owner. We share your contact coordinates with the property owner you enquired about, enabling them to connect with you via Call or WhatsApp.
+          </p>
+
+          <h2 className="text-lg font-bold text-gray-900 mt-6 mb-2">3. Storage &amp; Cookies</h2>
+          <p>
+            Your enquiries are saved in your browser's local storage and session storage to manage navigation flow and prevent repetitive popup alerts during your active session.
+          </p>
+
+          <h2 className="text-lg font-bold text-gray-900 mt-6 mb-2">4. Third-Party Sharing</h2>
+          <p>
+            We do not sell, rent, or lease your private contact information to third-party marketing companies. Data is only shared with verified PG hosts that you explicitly initiate contact with.
+          </p>
+        </div>
       </div>
-    </main>
+    </div>
   );
 }
