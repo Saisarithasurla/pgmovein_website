@@ -7,7 +7,7 @@ import { useProperty, Filters } from "../../context/PropertyContext";
 import { BANGALORE_AREAS, BUDGET_RANGES } from "../../data/mockData";
 import { SlidersHorizontal, Grid, List, Map, X, HelpCircle, Star, CheckCircle } from "lucide-react";
 import Link from "next/link";
-import ScrollReveal from "../../components/ScrollReveal";
+
 
 export default function SearchResultsPage() {
   const { filteredProperties, filters, setFilters, isPending, clearFilters } = useProperty();
@@ -271,67 +271,65 @@ export default function SearchResultsPage() {
                 </button>
               </div>
             ) : (
-              <ScrollReveal variant="scale">
-                <div className={`grid gap-6 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"}`}>
-                  {filteredProperties.map((property) => (
-                    <div
-                      key={property.id}
-                      onMouseEnter={() => setHoveredPropertyId(property.id)}
-                      onMouseLeave={() => setHoveredPropertyId(null)}
-                      className={`${viewMode === "list" ? "flex flex-col sm:flex-row bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow" : ""}`}
-                    >
-                      {viewMode === "list" ? (
-                        <>
-                          <Link
-                            href={`/properties/${property.id}`}
-                            className="sm:w-2/5 aspect-video sm:aspect-auto sm:h-52 overflow-hidden relative block"
-                          >
-                            <img src={property.images[0]} alt={property.name} className="w-full h-full object-cover" />
-                            {property.verified && (
-                              <span className="absolute bottom-3 left-3 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1 shadow-sm">
-                                <CheckCircle className="h-3 w-3 fill-white text-green-500" /> VERIFIED
+              <div className={`grid gap-6 ${viewMode === "grid" ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"}`}>
+                {filteredProperties.map((property) => (
+                  <div
+                    key={property.id}
+                    onMouseEnter={() => setHoveredPropertyId(property.id)}
+                    onMouseLeave={() => setHoveredPropertyId(null)}
+                    className={`${viewMode === "list" ? "flex flex-col sm:flex-row bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow" : ""}`}
+                  >
+                    {viewMode === "list" ? (
+                      <>
+                        <Link
+                          href={`/properties/${property.id}`}
+                          className="sm:w-2/5 aspect-video sm:aspect-auto sm:h-52 overflow-hidden relative block"
+                        >
+                          <img src={property.images[0]} alt={property.name} className="w-full h-full object-cover" />
+                          {property.verified && (
+                            <span className="absolute bottom-3 left-3 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1 shadow-sm">
+                              <CheckCircle className="h-3 w-3 fill-white text-green-500" /> VERIFIED
+                            </span>
+                          )}
+                        </Link>
+                        <div className="p-5 flex flex-col justify-between flex-1">
+                          <div>
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className="text-[10px] font-semibold text-purple-600 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">
+                                {property.gender}
                               </span>
-                            )}
-                          </Link>
-                          <div className="p-5 flex flex-col justify-between flex-1">
-                            <div>
-                              <div className="flex items-center justify-between mb-1.5">
-                                <span className="text-[10px] font-semibold text-purple-600 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">
-                                  {property.gender}
-                                </span>
-                                <div className="flex items-center gap-1 text-xs font-semibold text-gray-800">
-                                  <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                                  <span>{property.rating}</span>
-                                </div>
+                              <div className="flex items-center gap-1 text-xs font-semibold text-gray-800">
+                                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                                <span>{property.rating}</span>
                               </div>
-                              <h3 className="font-bold text-gray-900 text-base leading-snug">{property.name}</h3>
-                              <p className="text-xs text-gray-500 mt-1">{property.area}, Bangalore</p>
-                              <p className="text-xs text-gray-600 mt-2 line-clamp-2">{property.highlights.join(" • ")}</p>
                             </div>
-                            <div className="flex items-center justify-between pt-4 border-t border-gray-50 mt-4">
-                              <div>
-                                <span className="text-xs text-gray-400">Starts from</span>
-                                <span className="text-base font-black text-purple-700 ml-1">
-                                  ₹{property.startingRent.toLocaleString("en-IN")}
-                                </span>
-                                <span className="text-[10px] text-gray-500">/mo</span>
-                              </div>
-                              <Link
-                                href={`/properties/${property.id}`}
-                                className="text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-xl"
-                              >
-                                Details
-                              </Link>
-                            </div>
+                            <h3 className="font-bold text-gray-900 text-base leading-snug">{property.name}</h3>
+                            <p className="text-xs text-gray-500 mt-1">{property.area}, Bangalore</p>
+                            <p className="text-xs text-gray-600 mt-2 line-clamp-2">{property.highlights.join(" • ")}</p>
                           </div>
-                        </>
-                      ) : (
-                        <PropertyCard property={property} />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </ScrollReveal>
+                          <div className="flex items-center justify-between pt-4 border-t border-gray-50 mt-4">
+                            <div>
+                              <span className="text-xs text-gray-400">Starts from</span>
+                              <span className="text-base font-black text-purple-700 ml-1">
+                                ₹{property.startingRent.toLocaleString("en-IN")}
+                              </span>
+                              <span className="text-[10px] text-gray-500">/mo</span>
+                            </div>
+                            <Link
+                              href={`/properties/${property.id}`}
+                              className="text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-xl"
+                            >
+                              Details
+                            </Link>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <PropertyCard property={property} />
+                    )}
+                  </div>
+                ))}
+              </div>
             )}
           </main>
 

@@ -56,7 +56,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-[#F5F7FF]">
         <LeadProvider>
-          <Suspense fallback={<div className="p-4 text-center text-xs">Loading Search...</div>}>
+          <Suspense fallback={null}>
             <PropertyProvider>
               {/* Note: Navbar and Footer are managed globally in layout */}
               <Navbar />
