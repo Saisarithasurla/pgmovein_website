@@ -579,29 +579,6 @@ export default function PropertyDetailPage() {
       </div>
 
       {/* Sticky Bottom CTA Bar (Mobile Curated layout) */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur border-t border-purple-50 p-4 md:hidden shadow-[0_-8px_24px_rgba(0,0,0,0.05)]">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div>
-            <span className="text-[10px] text-gray-400 block uppercase font-bold tracking-wider">Starts From</span>
-            <span className="text-xl font-extrabold text-[#7C3AED]">₹{property.startingRent}</span>
-            <span className="text-[10px] text-[#6B7280] font-semibold">/mo</span>
-          </div>
-          <div className="flex-1 flex gap-2">
-            <button
-              onClick={() => handleCTA("Check Availability")}
-              className="flex-1 py-3 text-center text-xs font-extrabold text-white bg-purple-600 rounded-xl shadow-md"
-            >
-              Check Availability
-            </button>
-            <button
-              onClick={() => handleCTA("Book Visit")}
-              className="px-3.5 py-3 text-center text-xs font-bold text-[#7C3AED] border border-purple-200 rounded-xl"
-            >
-              Book Visit
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

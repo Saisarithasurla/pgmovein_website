@@ -24,14 +24,23 @@ export const metadata: Metadata = {
   description:
     "Find verified PGs, hostels, and co-living spaces in Bangalore near your office or college. Zero brokerage. Instant contact with owners.",
   keywords: "PG in Bangalore, paying guest Bangalore, PG near me, hostel Bangalore, co-living Bangalore",
+  icons: {
+    icon: [
+      { url: "/favicon.png", type: "image/png" },
+    ],
+    apple: "/favicon.png",
+    shortcut: "/favicon.png",
+  },
   openGraph: {
     title: "PGMove — Find Verified PGs in Bangalore | Zero Brokerage",
     description:
       "Find verified PGs, hostels, and co-living spaces in Bangalore near your office or college. Zero brokerage. Instant contact with owners.",
     type: "website",
+    images: ["/logo.png"],
   },
   twitter: {
     card: "summary_large_image",
+    images: ["/logo.png"],
   },
 };
 
