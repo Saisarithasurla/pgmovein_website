@@ -61,39 +61,47 @@ export default function HomePage() {
 
       <main className="flex-grow">
         {/* Section 2: Hero Banner */}
-        <section className="relative overflow-hidden bg-[#F5F7FF] pt-20 pb-28 px-4 sm:px-6 lg:px-8">
+        <section className="relative overflow-hidden bg-[#F5F7FF] pt-20 pb-16 md:pb-28 px-4 sm:px-6 lg:px-8 animate-fade-in">
           <div className="absolute inset-0 opacity-5 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:16px_16px]"></div>
 
           {/* Subtle colored background blurs */}
           <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-purple-200/20 blur-3xl -z-0"></div>
           <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-72 h-72 rounded-full bg-purple-200/10 blur-3xl -z-0"></div>
 
-          <div className="max-w-7xl mx-auto text-center relative z-10 space-y-4">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white border border-purple-100 text-purple-600 text-xs font-bold uppercase tracking-wider shadow-sm">
+          {/* Badge — pinned to the top-center of the hero */}
+          <ScrollReveal variant="scale" delay={0} className="absolute top-10 left-1/2 -translate-x-1/2 z-20">
+            <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white border border-purple-100 text-purple-600 text-xs font-bold uppercase tracking-wider shadow-sm whitespace-nowrap">
               <span>Bangalore's #1 PG Finder</span>
             </div>
+          </ScrollReveal>
 
-            {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-navy leading-snug">
-              Find Your Perfect PG <br />
-              <span className="text-purple-600">in Bangalore</span>
-            </h1>
+          <div className="max-w-7xl mx-auto text-center relative z-10 space-y-4">
+            <ScrollReveal variant="slideUp" delay={0}>
+              {/* Headline */}
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-navy leading-snug">
+                Find Your Perfect PG <br />
+                <span className="text-purple-600">in Bangalore</span>
+              </h1>
+            </ScrollReveal>
 
-            {/* Subtext */}
-            <p className="max-w-2xl mx-auto text-sm sm:text-base lg:text-lg text-slate-500 font-medium leading-relaxed">
-              Verified PGs, Hostels &amp; Co-Living spaces near your office or college. Zero brokerage. Direct connection.
-            </p>
+            <ScrollReveal variant="slideUp" delay={0}>
+              {/* Subtext */}
+              <p className="max-w-2xl mx-auto text-sm sm:text-base lg:text-lg text-slate-500 font-medium leading-relaxed">
+                Verified PGs, Hostels &amp; Co-Living spaces near your office or college. Zero brokerage. Direct connection.
+              </p>
+            </ScrollReveal>
           </div>
         </section>
 
         {/* Section 3: Search Bar */}
-        <section className="px-4 sm:px-6 lg:px-8 relative mb-20">
-          <SearchBar />
+        <section className="px-4 sm:px-6 lg:px-8 relative mb-6 md:mb-20">
+          <ScrollReveal variant="slideUp" delay={0}>
+            <SearchBar />
+          </ScrollReveal>
         </section>
 
         {/* Section 4: Popular Locations */}
-        <section id="popular-areas" className="bg-white py-16 scroll-mt-20 border-b border-gray-100">
+        <section id="popular-areas" className="bg-white pt-8 pb-16 md:py-16 scroll-mt-20 border-b border-gray-100">
           <ScrollReveal variant="slideLeft" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-12">
               <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">

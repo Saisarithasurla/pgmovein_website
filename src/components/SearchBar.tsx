@@ -44,7 +44,7 @@ export default function SearchBar() {
   return (
     <form
       onSubmit={handleSearch}
-      className="bg-white rounded-2xl md:rounded-full shadow-2xl border border-gray-150 p-4 md:py-3 md:px-6 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2 max-w-6xl mx-auto -mt-8 relative z-20"
+      className="bg-white rounded-2xl md:rounded-full shadow-2xl border border-gray-150 p-5 md:py-3 md:px-6 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 max-w-6xl mx-auto -mt-8 relative z-20"
     >
       {/* 1. Location Field (Custom Dropdown) */}
       <div 
@@ -161,7 +161,7 @@ export default function SearchBar() {
       </div>
 
       {/* 5. Date Field */}
-      <div className="flex-1 min-w-[125px] border-b md:border-b-0 pb-3 md:pb-0 flex items-center gap-2.5">
+      <div className="flex-1 min-w-[125px] flex items-center gap-2.5 pb-2 md:pb-0">
         <Calendar className="h-5 w-5 text-[#7C3AED] shrink-0" />
         <div className="w-full">
           <label className="block text-[10px] uppercase tracking-wider font-extrabold text-gray-400">
@@ -179,7 +179,7 @@ export default function SearchBar() {
       {/* 6. Search Button (Positioned at the end) */}
       <button
         type="submit"
-        className="w-full md:w-auto bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-bold px-6 py-3 rounded-xl md:rounded-full transition-all shadow-md flex items-center justify-center gap-2 shrink-0 self-center"
+        className="w-full md:w-auto bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-bold px-6 py-3 rounded-xl md:rounded-full transition-all shadow-md flex items-center justify-center gap-2 shrink-0 self-center mt-1 md:mt-0"
       >
         <Search className="h-4.5 w-4.5" />
         <span>Search</span>

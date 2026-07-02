@@ -59,10 +59,55 @@ export default function Navbar() {
     { label: "Properties", href: "/properties" },
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
-    { label: "Areas", href: "/#popular-areas" },
-    { label: "How It Works", href: "/#how-it-works" },
-    { label: "FAQ", href: "/#faq" },
+    { label: "Areas", href: "/#popular-areas", id: "popular-areas" },
+    { label: "How It Works", href: "/#how-it-works", id: "how-it-works" },
+    { label: "FAQ", href: "/#faq", id: "faq" },
   ];
+
+  const [activeSection, setActiveSection] = useState("");
+
+  useEffect(() => {
+    if (pathname !== "/") {
+      setActiveSection("");
+      return;
+    }
+
+    const sections = navLinks.filter(l => l.id).map(l => l.id as string);
+    const observerOptions = {
+      root: null,
+      rootMargin: "-20% 0px -60% 0px", // triggers when section is in the upper-middle of viewport
+      threshold: 0,
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    // Also observe the top/hero area to clear active sections when at the top of the home page
+    const handleScroll = () => {
+      if (window.scrollY < 200) {
+        setActiveSection("home");
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [pathname]);
 
   return (
     <header
@@ -94,7 +139,14 @@ export default function Navbar() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8 items-center">
             {navLinks.map((link) => {
-              const isActive = pathname === link.href;
+              // Highlight based on scroll section if we're on the home page
+              const isSectionActive = 
+                pathname === "/" && 
+                ((link.id && activeSection === link.id) || (link.href === "/" && activeSection === "home"));
+              
+              // Fallback to pathname check for standard pages
+              const isActive = isSectionActive || (pathname === link.href && !link.id);
+
               return (
                 <Link
                   key={link.label}
@@ -173,26 +225,37 @@ export default function Navbar() {
       {isOpen && (
         <div className="md:hidden fixed inset-x-0 top-[81px] bottom-0 bg-white z-50 overflow-y-auto animate-fade-in border-t border-gray-100 shadow-xl">
           <div className="px-4 pt-4 pb-12 space-y-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                onClick={(e) => {
-                  setIsOpen(false);
-                  if (link.href.startsWith("/#") && pathname === "/") {
-                    e.preventDefault();
-                    const id = link.href.replace("/#", "");
-                    const element = document.getElementById(id);
-                    if (element) {
-                      element.scrollIntoView({ behavior: "smooth" });
+            {navLinks.map((link) => {
+              const isSectionActive = 
+                pathname === "/" && 
+                ((link.id && activeSection === link.id) || (link.href === "/" && activeSection === "home"));
+              const isActive = isSectionActive || (pathname === link.href && !link.id);
+
+              return (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  onClick={(e) => {
+                    setIsOpen(false);
+                    if (link.href.startsWith("/#") && pathname === "/") {
+                      e.preventDefault();
+                      const id = link.href.replace("/#", "");
+                      const element = document.getElementById(id);
+                      if (element) {
+                        element.scrollIntoView({ behavior: "smooth" });
+                      }
                     }
-                  }
-                }}
-                className="block px-3 py-2.5 rounded-xl text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-purple-50 transition-all"
-              >
-                {link.label}
-              </Link>
-            ))}
+                  }}
+                  className={`block px-3 py-2.5 rounded-xl text-base font-semibold transition-all ${
+                    isActive 
+                      ? "text-purple-650 bg-purple-50/70 font-bold" 
+                      : "text-gray-700 hover:text-purple-600 hover:bg-purple-50"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
             
             {/* Mobile Drawer Heart Icon */}
             <Link
