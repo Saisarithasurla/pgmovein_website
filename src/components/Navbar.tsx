@@ -196,12 +196,6 @@ export default function Navbar() {
             </Link>
 
             <Link
-              href="/auth/tenant/login"
-              className="text-sm font-semibold text-purple-700 hover:text-purple-900 border border-purple-200 hover:border-purple-300 px-4 py-2 rounded-xl transition-all hover:bg-purple-50/50"
-            >
-              Login
-            </Link>
-            <Link
               href="/auth/owner/signup"
               className="text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 px-5 py-2.5 rounded-xl transition-all shadow-md shadow-purple-100 hover:shadow-lg hover:shadow-purple-200 hover:-translate-y-0.5 flex items-center gap-1.5"
             >
@@ -267,13 +261,6 @@ export default function Navbar() {
               <span>Saved Properties</span>
             </Link>
             <div className="pt-4 pb-2 border-t border-gray-100 px-3 flex flex-col gap-3">
-              <Link
-                href="/auth/tenant/login"
-                onClick={() => setIsOpen(false)}
-                className="w-full text-center font-semibold text-purple-700 border border-purple-200 px-4 py-2.5 rounded-xl transition-all hover:bg-purple-50"
-              >
-                Login
-              </Link>
               <Link
                 href="/auth/owner/signup"
                 onClick={() => setIsOpen(false)}

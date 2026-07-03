@@ -5,7 +5,6 @@ import { Eye, EyeOff, Lock, Mail, Phone, ArrowLeft } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthShell, Field } from "@/components/AuthShell";
-import { GoogleAccountButton } from "@/components/GoogleAccountButton";
 
 export default function TenantLoginPage() {
   const router = useRouter();
@@ -147,7 +146,6 @@ export default function TenantLoginPage() {
             >
               Forgot Password?
             </button>
-            <GoogleAccountButton role="tenant" />
             <p className="text-center text-sm text-slate-600">New here? <Link href="/auth/tenant/signup" className="font-bold text-saffron">Sign Up</Link></p>
           </form>
         </>
