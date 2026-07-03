@@ -20,7 +20,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "PGMove — Find Verified PGs in Bangalore | Zero Brokerage",
+  title: "PGMove - Find Verified PGs in Bangalore",
   description:
     "Find verified PGs, hostels, and co-living spaces in Bangalore near your office or college. Zero brokerage. Instant contact with owners.",
   keywords: "PG in Bangalore, paying guest Bangalore, PG near me, hostel Bangalore, co-living Bangalore",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     shortcut: "/favicon.png",
   },
   openGraph: {
-    title: "PGMove — Find Verified PGs in Bangalore | Zero Brokerage",
+    title: "PGMove - Find Verified PGs",
     description:
       "Find verified PGs, hostels, and co-living spaces in Bangalore near your office or college. Zero brokerage. Instant contact with owners.",
     type: "website",
