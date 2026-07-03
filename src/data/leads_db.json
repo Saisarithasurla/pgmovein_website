@@ -50,5 +50,53 @@
     "propertyName": "General",
     "triggerSource": "get-best-price",
     "timestamp": "2026-07-03T06:23:32.014Z"
+  },
+  {
+    "id": "k9f5wpxmw",
+    "name": "SURLA SAI SARITHA",
+    "phone": "9550586733",
+    "email": "surlasaritha@gmail.com",
+    "companyName": null,
+    "city": "Koramangala",
+    "message": "Budget: 5000-8000, Move-In: 2026-07-16",
+    "leadSource": "Nesta Ladies PG Bellandur",
+    "duplicateFlag": "CLEAN",
+    "createdDate": "2026-07-03T10:37:01.303Z"
+  },
+  {
+    "id": "njx084e6e",
+    "name": "SURLA SAI SARITHA",
+    "phone": "9550591455",
+    "email": "surlasaritha@gmail.com",
+    "companyName": null,
+    "city": "Koramangala",
+    "message": "Budget: 5000-8000, Move-In: 2026-07-30",
+    "leadSource": "General Bangalore PG Search",
+    "duplicateFlag": "CLEAN",
+    "createdDate": "2026-07-03T10:39:25.396Z"
+  },
+  {
+    "id": "1clfsfuqp",
+    "name": "SURLA SAI SARITHA",
+    "phone": "9550591455",
+    "email": "surlasaritha@gmail.com",
+    "companyName": null,
+    "city": "Koramangala",
+    "message": "Budget: 5000-8000, Move-In: 2026-07-30",
+    "leadSource": "General Bangalore PG Search",
+    "duplicateFlag": "CLEAN",
+    "createdDate": "2026-07-03T10:39:27.366Z"
+  },
+  {
+    "id": "vvmlj5dyv",
+    "name": "SURLA SAI SARITHA",
+    "phone": "9550564552",
+    "email": "surlasaritha@gmail.com",
+    "companyName": null,
+    "city": "Koramangala",
+    "message": "Budget: 5000-8000, Move-In: 2026-07-13",
+    "leadSource": "General",
+    "duplicateFlag": "CLEAN",
+    "createdDate": "2026-07-03T10:42:12.290Z"
   }
 ]

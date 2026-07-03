@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { getVisitorMetadata } from "../utils/leadCapture";
 
 export interface LeadData {
   name: string;
@@ -125,6 +126,8 @@ export const LeadProvider: React.FC<{ children: React.ReactNode }> = ({ children
       sessionStorage.setItem("leadSubmitted", "true");
     }
 
+    const visitorMeta = getVisitorMetadata();
+
     // Save to server database + Google Sheet via API
     try {
       await fetch("/api/leads", {
@@ -132,7 +135,16 @@ export const LeadProvider: React.FC<{ children: React.ReactNode }> = ({ children
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(fullLead),
+        body: JSON.stringify({
+          name: finalData.name,
+          phone: finalData.mobile,
+          email: finalData.email || null,
+          companyName: finalData.companyOrCollege || null,
+          city: finalData.preferredArea || "Bangalore",
+          message: `Budget: ${finalData.budget}, Move-In: ${finalData.moveInDate}`,
+          leadSource: activeProperty?.name || "General Bangalore PG Search",
+          ...visitorMeta,
+        }),
       });
     } catch (e) {
       console.error("Failed to POST lead to server:", e);

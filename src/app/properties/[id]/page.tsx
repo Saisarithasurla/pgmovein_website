@@ -158,57 +158,58 @@ export default function PropertyDetailPage() {
           </nav>
         </div>
 
-        {/* Image Gallery */}
-        <section className="mb-8">
-          <div className="relative aspect-[16/10] md:aspect-[21/9] w-full rounded-2xl overflow-hidden bg-white shadow-md">
-            <img
-              src={property.images[activeImageIndex]}
-              alt={property.name}
-              className="w-full h-full object-cover"
-            />
-            {/* Arrows */}
-            <button
-              onClick={() =>
-                setActiveImageIndex((prev) => (prev === 0 ? property.images.length - 1 : prev - 1))
-              }
-              className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md backdrop-blur-sm transition-all"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
-              onClick={() =>
-                setActiveImageIndex((prev) => (prev === property.images.length - 1 ? 0 : prev + 1))
-              }
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md backdrop-blur-sm transition-all"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
-            {/* Index Tracker */}
-            <span className="absolute bottom-4 right-4 bg-black/60 text-white text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm">
-              {activeImageIndex + 1} / {property.images.length}
-            </span>
-          </div>
-
-          {/* Thumbnail Strip */}
-          <div className="flex gap-3 mt-4 overflow-x-auto pb-2 scrollbar-thin">
-            {property.images.map((img, idx) => (
+        {/* Top Hero Section: Image Gallery & Property Header side-by-side on desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 items-start">
+          {/* Left Column: Image Gallery */}
+          <section>
+            <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden bg-white shadow-md">
+              <img
+                src={property.images[activeImageIndex]}
+                alt={property.name}
+                className="w-full h-full object-cover"
+              />
+              {/* Arrows */}
               <button
-                key={idx}
-                onClick={() => setActiveImageIndex(idx)}
-                className={`w-24 h-16 rounded-lg overflow-hidden shrink-0 border-2 transition-all relative ${
-                  activeImageIndex === idx ? "border-purple-650 scale-95 shadow-md" : "border-transparent opacity-70 hover:opacity-100"
-                }`}
+                onClick={() =>
+                  setActiveImageIndex((prev) => (prev === 0 ? property.images.length - 1 : prev - 1))
+                }
+                className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md backdrop-blur-sm transition-all"
               >
-                <img src={img} alt="" className="w-full h-full object-cover" />
+                <ChevronLeft className="h-5 w-5" />
               </button>
-            ))}
-          </div>
-        </section>
+              <button
+                onClick={() =>
+                  setActiveImageIndex((prev) => (prev === property.images.length - 1 ? 0 : prev + 1))
+                }
+                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md backdrop-blur-sm transition-all"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+              {/* Index Tracker */}
+              <span className="absolute bottom-4 right-4 bg-black/60 text-white text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm">
+                {activeImageIndex + 1} / {property.images.length}
+              </span>
+            </div>
 
-        {/* Property Header */}
-        <section className="mb-8 pb-6 border-b border-gray-200 space-y-5">
-          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-            <div className="space-y-3">
+            {/* Thumbnail Strip */}
+            <div className="flex gap-3 mt-4 overflow-x-auto pb-2 scrollbar-thin">
+              {property.images.map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveImageIndex(idx)}
+                  className={`w-24 h-16 rounded-lg overflow-hidden shrink-0 border-2 transition-all relative ${
+                    activeImageIndex === idx ? "border-purple-650 scale-95 shadow-md" : "border-transparent opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  <img src={img} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Right Column: Property Header & CTA Buttons */}
+          <section className="space-y-6">
+            <div className="space-y-4">
               <div className="flex flex-wrap items-center gap-2">
                 {property.verified && (
                   <span className="bg-green-500 text-white text-[10px] font-black px-2 py-0.5 rounded flex items-center gap-1 shadow-sm">
@@ -246,85 +247,85 @@ export default function PropertyDetailPage() {
                   ))}
                 </div>
                 <span>{property.rating}</span>
-                <span className="text-gray-400 font-normal">({property.reviews} ratings)</span>
+                <span className="text-gray-400 font-normal font-semibold">({property.reviews} ratings)</span>
               </div>
             </div>
 
-            <div className="bg-[#F5F3FF] border border-purple-100 p-4 rounded-2xl md:text-right shrink-0">
-              <span className="text-xs text-gray-500 uppercase tracking-wider block font-bold">Starting Rent</span>
-              <span className="text-3xl font-extrabold text-[#7C3AED]">₹{property.startingRent.toLocaleString("en-IN")}</span>
-              <span className="text-xs text-gray-600"> / month</span>
+            <div className="bg-[#F5F3FF] border border-purple-100 p-5 rounded-2xl flex items-center justify-between shadow-sm">
+              <div>
+                <span className="text-xs text-gray-500 uppercase tracking-wider block font-bold">Starting Rent</span>
+                <span className="text-3xl font-extrabold text-[#7C3AED]">₹{property.startingRent.toLocaleString("en-IN")}</span>
+                <span className="text-xs text-gray-655 font-bold"> / month</span>
+              </div>
+              <div className="text-right text-xs text-gray-550 font-medium">
+                <p>Deposit: ₹{property.securityDeposit.toLocaleString("en-IN")}</p>
+                <p className="text-green-600 font-bold mt-0.5">No Brokerage</p>
+              </div>
             </div>
-          </div>
 
-          {/* Primary CTA Buttons — always side-by-side */}
-          <div className="flex flex-row gap-3">
-            {/* Primary: Check Availability */}
-            <button
-              id="btn-check-availability"
-              onClick={() => handleCTA("Check Availability")}
-              className="flex-1 flex items-center justify-center gap-1.5 h-11 sm:h-12 px-3 sm:px-6 bg-[#6D28D9] hover:bg-[#5B21B6] text-white font-bold text-xs sm:text-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <CheckCircle className="h-4 w-4 shrink-0" />
-              <span className="truncate">Check Availability</span>
-            </button>
+            {/* Primary CTA Buttons */}
+            <div className="flex flex-row gap-3 pt-2">
+              <button
+                id="btn-check-availability"
+                onClick={() => handleCTA("Check Availability")}
+                className="flex-1 flex items-center justify-center gap-1.5 h-12 px-4 bg-[#6D28D9] hover:bg-[#5B21B6] text-white font-bold text-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <CheckCircle className="h-4 w-4 shrink-0" />
+                <span className="truncate">Check Availability</span>
+              </button>
 
-            {/* Secondary: Book Visit */}
-            <button
-              id="btn-book-visit"
-              onClick={() => handleCTA("Book Visit")}
-              className="flex-1 flex items-center justify-center gap-1.5 h-11 sm:h-12 px-3 sm:px-6 bg-white hover:bg-[#F5F3FF] border-[1.5px] border-[#7C3AED] text-[#7C3AED] font-bold text-xs sm:text-sm rounded-xl transition-all duration-150 hover:scale-[1.02] hover:shadow-md active:scale-[0.98]"
-            >
-              <CalendarCheck className="h-4 w-4 shrink-0" />
-              <span className="truncate">Book Visit</span>
-            </button>
-          </div>
-        </section>
+              <button
+                id="btn-book-visit"
+                onClick={() => handleCTA("Book Visit")}
+                className="flex-1 flex items-center justify-center gap-1.5 h-12 px-4 bg-white hover:bg-[#F5F3FF] border-[1.5px] border-[#7C3AED] text-[#7C3AED] font-bold text-sm rounded-xl transition-all duration-150 hover:scale-[1.02] hover:shadow-md active:scale-[0.98]"
+              >
+                <CalendarCheck className="h-4 w-4 shrink-0" />
+                <span className="truncate">Book Visit</span>
+              </button>
+            </div>
+          </section>
+        </div>
 
         {/* Grid Split Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column (Main Specs Tab Layout) */}
           <div className="lg:col-span-2 space-y-6">
-            
+
             {/* Tabs Navigation */}
             <div className="flex border-b border-gray-200 bg-white rounded-xl shadow-sm p-1.5 overflow-x-auto whitespace-nowrap gap-1">
               <button
                 onClick={() => setActiveTab("rooms")}
-                className={`py-3 px-4 text-xs sm:text-sm font-bold rounded-lg transition-all ${
-                  activeTab === "rooms"
+                className={`py-3 px-4 text-xs sm:text-sm font-bold rounded-lg transition-all ${activeTab === "rooms"
                     ? "bg-[#F5F3FF] text-[#7C3AED]"
                     : "text-gray-500 hover:text-gray-800"
-                }`}
+                  }`}
               >
                 Rooms & Pricing
               </button>
               <button
                 onClick={() => setActiveTab("amenities")}
-                className={`py-3 px-4 text-xs sm:text-sm font-bold rounded-lg transition-all ${
-                  activeTab === "amenities"
+                className={`py-3 px-4 text-xs sm:text-sm font-bold rounded-lg transition-all ${activeTab === "amenities"
                     ? "bg-[#F5F3FF] text-[#7C3AED]"
                     : "text-gray-500 hover:text-gray-800"
-                }`}
+                  }`}
               >
                 Amenities
               </button>
               <button
                 onClick={() => setActiveTab("rules")}
-                className={`py-3 px-4 text-xs sm:text-sm font-bold rounded-lg transition-all ${
-                  activeTab === "rules"
+                className={`py-3 px-4 text-xs sm:text-sm font-bold rounded-lg transition-all ${activeTab === "rules"
                     ? "bg-[#F5F3FF] text-[#7C3AED]"
                     : "text-gray-500 hover:text-gray-800"
-                }`}
+                  }`}
               >
                 Food & Rules
               </button>
               <button
                 onClick={() => setActiveTab("location")}
-                className={`py-3 px-4 text-xs sm:text-sm font-bold rounded-lg transition-all ${
-                  activeTab === "location"
+                className={`py-3 px-4 text-xs sm:text-sm font-bold rounded-lg transition-all ${activeTab === "location"
                     ? "bg-[#F5F3FF] text-[#7C3AED]"
                     : "text-gray-500 hover:text-gray-800"
-                }`}
+                  }`}
               >
                 Location & Map
               </button>
@@ -472,7 +473,7 @@ export default function PropertyDetailPage() {
                     <div className="h-48 rounded-xl overflow-hidden bg-slate-100 border border-gray-150 relative flex items-center justify-center select-none">
                       <div className="absolute inset-0 bg-cover opacity-30" style={{ backgroundImage: "url('https://picsum.photos/600/400?random=102')" }}></div>
                       <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:24px_24px] opacity-40"></div>
-                      
+
                       <div className="relative z-10 text-center animate-bounce">
                         <MapPin className="h-6 w-6 text-[#7C3AED] fill-purple-200 mx-auto" />
                       </div>
