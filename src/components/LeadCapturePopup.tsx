@@ -8,9 +8,7 @@ import OTPVerification from "@/components/OTPVerification";
 import ThankYouScreen from "@/components/ThankYouScreen";
 
 export default function LeadCapturePopup() {
-  const { isPopupOpen, popupStep, setStep, closePopup, leadData, setLeadData } = useLead();
-
-  console.log("PGMove: LeadCapturePopup render status:", { isPopupOpen, popupStep });
+  const { isPopupOpen, popupStep, setStep, closePopup, leadData, setLeadData, openPopup } = useLead();
 
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
@@ -23,6 +21,22 @@ export default function LeadCapturePopup() {
   // Validation state
   const [errors, setErrors] = useState<Partial<Record<keyof LeadData | "global", string>>>({});
   const [isLoading, setIsLoading] = useState(false);
+
+  // Global 20-second auto-popup trigger (fires on any page)
+  useEffect(() => {
+    const submitted = sessionStorage.getItem("leadSubmitted") === "true";
+    if (submitted) return; // Already submitted this session — don't show again
+
+    const timer = setTimeout(() => {
+      const stillSubmitted = sessionStorage.getItem("leadSubmitted") === "true";
+      if (!stillSubmitted) {
+        openPopup("auto-time");
+      }
+    }, 20000);
+
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run once on mount
 
   // Sync state with Context when pre-filled from quick enquiry form
   useEffect(() => {

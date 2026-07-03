@@ -10,6 +10,7 @@ import {
   Star,
   CheckCircle,
   Calendar,
+  CalendarCheck,
   Wifi,
   Wind,
   Utensils,
@@ -44,50 +45,29 @@ export default function PropertyDetailPage() {
   const [enquiryMobile, setEnquiryMobile] = useState("");
   const [enquirySubmitted, setEnquirySubmitted] = useState(false);
 
-  const hasFiredTimeTrigger = useRef(false);
   const hasFiredScrollTrigger = useRef(false);
 
   // 1. Behavior Triggers for Lead Popup
   useEffect(() => {
     if (!property) return;
 
-    console.log("PGMove: Auto-triggers initialized. Waiting 20s...");
-
-    // Trigger 1: Time Based (20 seconds)
-    const timeTimer = setTimeout(() => {
-      const shown = sessionStorage.getItem("leadPopupShown") === "true";
-      const submitted = sessionStorage.getItem("leadSubmitted") === "true";
-      console.log("PGMove: Time trigger evaluation:", { shown, submitted, hasFired: hasFiredTimeTrigger.current });
-      if (!shown && !submitted && !hasFiredTimeTrigger.current) {
-        hasFiredTimeTrigger.current = true;
-        console.log("PGMove: Launching auto-time lead popup");
-        openPopup("auto-time", { id: property.id, name: property.name });
-      }
-    }, 20000);
-
-    // Trigger 2: Scroll Based (70% page height)
+    // Scroll Trigger: 70% page height
     const handleScroll = () => {
       const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
       if (scrollHeight <= 0) return;
       const scrollPct = (window.scrollY / scrollHeight) * 100;
 
       if (scrollPct >= 70) {
-        const shown = sessionStorage.getItem("leadPopupShown") === "true";
         const submitted = sessionStorage.getItem("leadSubmitted") === "true";
-        if (!shown && !submitted && !hasFiredTimeTrigger.current && !hasFiredScrollTrigger.current) {
+        if (!submitted && !hasFiredScrollTrigger.current) {
           hasFiredScrollTrigger.current = true;
-          console.log("PGMove: Launching auto-scroll lead popup");
           openPopup("auto-scroll", { id: property.id, name: property.name });
         }
       }
     };
 
     window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      clearTimeout(timeTimer);
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [property, openPopup]);
 
   // Sync wishlist status
@@ -226,53 +206,78 @@ export default function PropertyDetailPage() {
         </section>
 
         {/* Property Header */}
-        <section className="mb-8 pb-6 border-b border-gray-200 flex flex-col md:flex-row md:items-start justify-between gap-6">
-          <div className="space-y-3">
-            <div className="flex flex-wrap items-center gap-2">
-              {property.verified && (
-                <span className="bg-green-500 text-white text-[10px] font-black px-2 py-0.5 rounded flex items-center gap-1 shadow-sm">
-                  <CheckCircle className="h-3 w-3 fill-white text-green-500" /> VERIFIED
+        <section className="mb-8 pb-6 border-b border-gray-200 space-y-5">
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                {property.verified && (
+                  <span className="bg-green-500 text-white text-[10px] font-black px-2 py-0.5 rounded flex items-center gap-1 shadow-sm">
+                    <CheckCircle className="h-3 w-3 fill-white text-green-500" /> VERIFIED
+                  </span>
+                )}
+                <span className="text-[10px] font-semibold text-purple-750 bg-[#F5F3FF] px-2 py-0.5 rounded border border-purple-100">
+                  {property.gender} Preference
                 </span>
-              )}
-              <span className="text-[10px] font-semibold text-purple-750 bg-[#F5F3FF] px-2 py-0.5 rounded border border-purple-100">
-                {property.gender} Preference
-              </span>
-              <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded ${
-                property.availability === "Available" ? "bg-green-50 text-green-700 border border-green-150" : "bg-amber-50 text-amber-700 border border-amber-150"
-              }`}>
-                {property.availability}
-              </span>
+                <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded ${
+                  property.availability === "Available" ? "bg-green-50 text-green-700 border border-green-150" : "bg-amber-50 text-amber-700 border border-amber-150"
+                }`}>
+                  {property.availability}
+                </span>
+              </div>
+
+              <h1 className="text-2xl sm:text-3xl font-display font-bold text-[#1E1B2E] tracking-tight leading-tight">
+                {property.name}
+              </h1>
+
+              <p className="text-gray-500 text-sm flex items-center gap-1">
+                <MapPin className="h-4 w-4 text-[#7C3AED] shrink-0" />
+                {property.area}, Bangalore
+              </p>
+
+              <div className="flex items-center gap-2.5 text-sm font-semibold text-gray-800 pt-1">
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-4 w-4 ${
+                        i < Math.floor(property.rating) ? "fill-amber-400 text-amber-400" : "text-gray-200"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span>{property.rating}</span>
+                <span className="text-gray-400 font-normal">({property.reviews} ratings)</span>
+              </div>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-display font-bold text-[#1E1B2E] tracking-tight leading-tight">
-              {property.name}
-            </h1>
-
-            <p className="text-gray-500 text-sm flex items-center gap-1">
-              <MapPin className="h-4 w-4 text-[#7C3AED] shrink-0" />
-              {property.area}, Bangalore
-            </p>
-
-            <div className="flex items-center gap-2.5 text-sm font-semibold text-gray-800 pt-1">
-              <div className="flex gap-0.5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-4 w-4 ${
-                      i < Math.floor(property.rating) ? "fill-amber-400 text-amber-400" : "text-gray-200"
-                    }`}
-                  />
-                ))}
-              </div>
-              <span>{property.rating}</span>
-              <span className="text-gray-400 font-normal">({property.reviews} ratings)</span>
+            <div className="bg-[#F5F3FF] border border-purple-100 p-4 rounded-2xl md:text-right shrink-0">
+              <span className="text-xs text-gray-500 uppercase tracking-wider block font-bold">Starting Rent</span>
+              <span className="text-3xl font-extrabold text-[#7C3AED]">₹{property.startingRent.toLocaleString("en-IN")}</span>
+              <span className="text-xs text-gray-600"> / month</span>
             </div>
           </div>
 
-          <div className="bg-[#F5F3FF] border border-purple-100 p-4 rounded-2xl md:text-right shrink-0">
-            <span className="text-xs text-gray-500 uppercase tracking-wider block font-bold">Starting Rent</span>
-            <span className="text-3xl font-extrabold text-[#7C3AED]">₹{property.startingRent.toLocaleString("en-IN")}</span>
-            <span className="text-xs text-gray-600"> / month</span>
+          {/* Primary CTA Buttons — always side-by-side */}
+          <div className="flex flex-row gap-3">
+            {/* Primary: Check Availability */}
+            <button
+              id="btn-check-availability"
+              onClick={() => handleCTA("Check Availability")}
+              className="flex-1 flex items-center justify-center gap-1.5 h-11 sm:h-12 px-3 sm:px-6 bg-[#6D28D9] hover:bg-[#5B21B6] text-white font-bold text-xs sm:text-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <CheckCircle className="h-4 w-4 shrink-0" />
+              <span className="truncate">Check Availability</span>
+            </button>
+
+            {/* Secondary: Book Visit */}
+            <button
+              id="btn-book-visit"
+              onClick={() => handleCTA("Book Visit")}
+              className="flex-1 flex items-center justify-center gap-1.5 h-11 sm:h-12 px-3 sm:px-6 bg-white hover:bg-[#F5F3FF] border-[1.5px] border-[#7C3AED] text-[#7C3AED] font-bold text-xs sm:text-sm rounded-xl transition-all duration-150 hover:scale-[1.02] hover:shadow-md active:scale-[0.98]"
+            >
+              <CalendarCheck className="h-4 w-4 shrink-0" />
+              <span className="truncate">Book Visit</span>
+            </button>
           </div>
         </section>
 
@@ -577,8 +582,6 @@ export default function PropertyDetailPage() {
           </section>
         )}
       </div>
-
-      {/* Sticky Bottom CTA Bar (Mobile Curated layout) */}
     </div>
   );
 }

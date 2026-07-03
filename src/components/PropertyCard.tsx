@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Property } from "../data/mockData";
 import { Heart, Star, CheckCircle, Wifi, Wind, Utensils, Car, Users, ShieldAlert } from "lucide-react";
+import { useLead } from "../context/LeadContext";
 
 interface PropertyCardProps {
   property: Property;
@@ -11,6 +12,7 @@ interface PropertyCardProps {
 
 export default function PropertyCard({ property }: PropertyCardProps) {
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const { openPopup } = useLead();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -157,23 +159,35 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         </div>
 
         {/* Pricing & CTA */}
-        <div className="mt-6 pt-4 border-t border-gray-50 flex items-center justify-between">
-          <div>
-            <span className="text-[10px] text-gray-400 block uppercase tracking-wider font-semibold">
-              Starting Rent
-            </span>
-            <span className="text-lg font-extrabold text-purple-700">
-              ₹{property.startingRent.toLocaleString("en-IN")}
-            </span>
-            <span className="text-xs text-gray-500 font-normal">/mo</span>
+        <div className="mt-6 pt-4 border-t border-gray-50 space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-[10px] text-gray-400 block uppercase tracking-wider font-semibold">
+                Starting Rent
+              </span>
+              <span className="text-lg font-extrabold text-purple-700">
+                ₹{property.startingRent.toLocaleString("en-IN")}
+              </span>
+              <span className="text-xs text-gray-500 font-normal">/mo</span>
+            </div>
+
+            <Link
+              href={`/properties/${property.id}`}
+              className="text-xs font-semibold text-white bg-purple-600 hover:bg-purple-700 px-4 py-2.5 rounded-xl transition-all shadow-sm hover:shadow"
+            >
+              View Details
+            </Link>
           </div>
 
-          <Link
-            href={`/properties/${property.id}`}
-            className="text-xs font-semibold text-white bg-purple-600 hover:bg-purple-700 px-4 py-2.5 rounded-xl transition-all shadow-sm hover:shadow"
+          {/* Check Availability CTA */}
+          <button
+            id={`btn-check-availability-${property.id}`}
+            onClick={() => openPopup("button-click", { id: property.id, name: property.name })}
+            className="w-full flex items-center justify-center gap-2 h-10 bg-[#6D28D9] hover:bg-[#5B21B6] text-white font-bold text-xs rounded-xl shadow-sm hover:shadow-md transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]"
           >
-            View Details
-          </Link>
+            <CheckCircle className="h-3.5 w-3.5 shrink-0" />
+            <span>Check Availability</span>
+          </button>
         </div>
       </div>
     </div>

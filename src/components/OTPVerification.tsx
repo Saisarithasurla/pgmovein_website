@@ -133,6 +133,11 @@ export default function OTPVerification() {
         <p className="text-sm text-gray-500">
           We have sent a verification code to <span className="font-semibold text-gray-700">{maskedMobile}</span>
         </p>
+        <div className="pt-2">
+          <span className="inline-block text-[11px] text-purple-750 font-bold bg-[#F5F3FF] border border-purple-100 px-3 py-1.5 rounded-xl">
+            Demo Mode: Static OTP <span className="underline font-black">123456</span> is pre-filled.
+          </span>
+        </div>
       </div>
 
       <form onSubmit={handleVerify} className="space-y-6">

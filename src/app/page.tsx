@@ -2,16 +2,29 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { ChevronDown, Star, Sparkles, Shield, Clock, BadgeCheck, Users, ArrowRight } from "lucide-react";
+import { ChevronDown, Star, Sparkles, Shield, Clock, BadgeCheck, Users, ArrowRight, Tag } from "lucide-react";
 import SearchBar from "../components/SearchBar";
 import AreaCard from "../components/AreaCard";
 import PropertyCard from "../components/PropertyCard";
 import TestimonialCard from "../components/TestimonialCard";
 import ScrollReveal from "../components/ScrollReveal";
 import { mockProperties } from "../data/mockData";
+import { useLead } from "../context/LeadContext";
 
 export default function HomePage() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const { openPopup } = useLead();
+
+  const handleGetBestPrice = () => {
+    if (typeof window !== "undefined") {
+      (window as any).dataLayer = (window as any).dataLayer || [];
+      (window as any).dataLayer.push({
+        event: "cta_click",
+        params: { button_name: "get-best-price" }
+      });
+    }
+    openPopup("get-best-price", { id: null, name: "General" });
+  };
 
   // Popular Areas details
   const popularAreas = [
@@ -68,14 +81,26 @@ export default function HomePage() {
           <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-purple-200/20 blur-3xl -z-0"></div>
           <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-72 h-72 rounded-full bg-purple-200/10 blur-3xl -z-0"></div>
 
-          {/* Badge — pinned to the top-center of the hero */}
-          <ScrollReveal variant="scale" delay={0} className="absolute top-10 left-1/2 -translate-x-1/2 z-20">
-            <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white border border-purple-100 text-purple-600 text-xs font-bold uppercase tracking-wider shadow-sm whitespace-nowrap">
-              <span>Bangalore's #1 PG Finder</span>
-            </div>
-          </ScrollReveal>
-
           <div className="max-w-7xl mx-auto text-center relative z-10 space-y-4">
+            {/* Badges — grouped together in document flow */}
+            <ScrollReveal variant="scale" delay={0} className="z-20 w-full px-4 mb-2">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-4 max-w-2xl mx-auto">
+                {/* Static Badge */}
+                <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white border border-purple-100 text-purple-600 text-xs font-bold uppercase tracking-wider shadow-sm whitespace-nowrap select-none h-[34px]">
+                  <span>Bangalore's #1 PG Finder</span>
+                </div>
+                
+                {/* Interactive Get Best Price Badge */}
+                <button
+                  onClick={handleGetBestPrice}
+                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#6D28D9] hover:bg-[#5B21B6] text-white text-xs font-bold uppercase tracking-wider shadow-sm hover:shadow-md whitespace-nowrap transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer h-[34px] group"
+                >
+                  <Tag className="h-3.5 w-3.5 text-white" />
+                  <span>Get Best Price</span>
+                </button>
+              </div>
+            </ScrollReveal>
+
             <ScrollReveal variant="slideUp" delay={0}>
               {/* Headline */}
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-navy leading-snug">

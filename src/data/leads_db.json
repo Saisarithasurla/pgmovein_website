@@ -1,0 +1,28 @@
+[
+  {
+    "name": "SURLA SAI SARITHA",
+    "mobile": "9390234442",
+    "email": "surlasaritha@gmail.com",
+    "preferredArea": "Koramangala",
+    "budget": "5000-8000",
+    "moveInDate": "2026-07-21",
+    "companyOrCollege": "",
+    "propertyId": "pg-4",
+    "propertyName": "Zolo Stay Coliving Zenith",
+    "triggerSource": "button-click",
+    "timestamp": "2026-07-03T05:29:14.287Z"
+  },
+  {
+    "name": "SURLA SAI SARITHA",
+    "mobile": "9390234442",
+    "email": "surlasaritha@gmail.com",
+    "preferredArea": "Koramangala",
+    "budget": "5000-8000",
+    "moveInDate": "2026-07-09",
+    "companyOrCollege": "",
+    "propertyId": "general-enquiry",
+    "propertyName": "General",
+    "triggerSource": "get-best-price",
+    "timestamp": "2026-07-03T05:34:29.603Z"
+  }
+]

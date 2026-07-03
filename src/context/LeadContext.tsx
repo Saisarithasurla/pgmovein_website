@@ -13,9 +13,9 @@ export interface LeadData {
 }
 
 export interface SavedLead extends LeadData {
-  propertyId: string;
+  propertyId: string | null;
   propertyName: string;
-  triggerSource: "auto-time" | "auto-scroll" | "button-click";
+  triggerSource: "auto-time" | "auto-scroll" | "button-click" | "get-best-price";
   timestamp: string;
 }
 
@@ -24,17 +24,17 @@ export type PopupStep = "form" | "otp" | "thanks";
 interface LeadContextType {
   isPopupOpen: boolean;
   popupStep: PopupStep | null;
-  triggerSource: "auto-time" | "auto-scroll" | "button-click" | null;
-  activeProperty: { id: string; name: string } | null;
+  triggerSource: "auto-time" | "auto-scroll" | "button-click" | "get-best-price" | null;
+  activeProperty: { id: string | null; name: string } | null;
   leadData: LeadData;
   setLeadData: React.Dispatch<React.SetStateAction<LeadData>>;
   openPopup: (
-    source: "auto-time" | "auto-scroll" | "button-click",
-    property?: { id: string; name: string }
+    source: "auto-time" | "auto-scroll" | "button-click" | "get-best-price",
+    property?: { id: string | null; name: string }
   ) => void;
   closePopup: () => void;
   setStep: (step: PopupStep) => void;
-  submitLead: (finalData: LeadData) => void;
+  submitLead: (finalData: LeadData) => void | Promise<void>;
   isSubmitted: boolean;
 }
 
@@ -53,8 +53,8 @@ const LeadContext = createContext<LeadContextType | undefined>(undefined);
 export const LeadProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupStep, setPopupStep] = useState<PopupStep | null>(null);
-  const [triggerSource, setTriggerSource] = useState<"auto-time" | "auto-scroll" | "button-click" | null>(null);
-  const [activeProperty, setActiveProperty] = useState<{ id: string; name: string } | null>(null);
+  const [triggerSource, setTriggerSource] = useState<"auto-time" | "auto-scroll" | "button-click" | "get-best-price" | null>(null);
+  const [activeProperty, setActiveProperty] = useState<{ id: string | null; name: string } | null>(null);
   const [leadData, setLeadData] = useState<LeadData>(defaultLeadData);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -67,8 +67,8 @@ export const LeadProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const openPopup = (
-    source: "auto-time" | "auto-scroll" | "button-click",
-    property?: { id: string; name: string }
+    source: "auto-time" | "auto-scroll" | "button-click" | "get-best-price",
+    property?: { id: string | null; name: string }
   ) => {
     // If it's an auto-trigger (time or scroll) and they've already submitted a lead in this session, skip
     if ((source === "auto-time" || source === "auto-scroll")) {
@@ -98,7 +98,7 @@ export const LeadProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setPopupStep(step);
   };
 
-  const submitLead = (finalData: LeadData) => {
+  const submitLead = async (finalData: LeadData) => {
     const fullLead: SavedLead = {
       ...finalData,
       propertyId: activeProperty?.id || "general-enquiry",
@@ -125,8 +125,18 @@ export const LeadProvider: React.FC<{ children: React.ReactNode }> = ({ children
       sessionStorage.setItem("leadSubmitted", "true");
     }
 
-    // TODO: POST /api/leads -> save to database
-    // TODO: POST to Google Sheets API via Apps Script webhook
+    // Save to server database + Google Sheet via API
+    try {
+      await fetch("/api/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(fullLead),
+      });
+    } catch (e) {
+      console.error("Failed to POST lead to server:", e);
+    }
 
     setIsSubmitted(true);
     setPopupStep("thanks");

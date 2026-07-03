@@ -7,10 +7,12 @@ import { useProperty, Filters } from "../../context/PropertyContext";
 import { BANGALORE_AREAS, BUDGET_RANGES } from "../../data/mockData";
 import { SlidersHorizontal, Grid, List, Map, X, HelpCircle, Star, CheckCircle } from "lucide-react";
 import Link from "next/link";
+import { useLead } from "../../context/LeadContext";
 
 
 export default function SearchResultsPage() {
   const { filteredProperties, filters, setFilters, isPending, clearFilters } = useProperty();
+  const { openPopup } = useLead();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [showMapView, setShowMapView] = useState(false);
@@ -307,20 +309,31 @@ export default function SearchResultsPage() {
                             <p className="text-xs text-gray-500 mt-1">{property.area}, Bangalore</p>
                             <p className="text-xs text-gray-600 mt-2 line-clamp-2">{property.highlights.join(" • ")}</p>
                           </div>
-                          <div className="flex items-center justify-between pt-4 border-t border-gray-50 mt-4">
-                            <div>
-                              <span className="text-xs text-gray-400">Starts from</span>
-                              <span className="text-base font-black text-purple-700 ml-1">
-                                ₹{property.startingRent.toLocaleString("en-IN")}
-                              </span>
-                              <span className="text-[10px] text-gray-500">/mo</span>
+                          <div className="pt-4 border-t border-gray-50 mt-4 space-y-3">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <span className="text-xs text-gray-400">Starts from</span>
+                                <span className="text-base font-black text-purple-700 ml-1">
+                                  ₹{property.startingRent.toLocaleString("en-IN")}
+                                </span>
+                                <span className="text-[10px] text-gray-500">/mo</span>
+                              </div>
+                              <Link
+                                href={`/properties/${property.id}`}
+                                className="text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-xl"
+                              >
+                                Details
+                              </Link>
                             </div>
-                            <Link
-                              href={`/properties/${property.id}`}
-                              className="text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-xl"
+                            {/* Check Availability CTA */}
+                            <button
+                              id={`btn-check-availability-${property.id}`}
+                              onClick={() => openPopup("button-click", { id: property.id, name: property.name })}
+                              className="w-full flex items-center justify-center gap-2 h-10 bg-[#6D28D9] hover:bg-[#5B21B6] text-white font-bold text-xs rounded-xl shadow-sm hover:shadow-md transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
                             >
-                              Details
-                            </Link>
+                              <CheckCircle className="h-3.5 w-3.5 shrink-0" />
+                              <span>Check Availability</span>
+                            </button>
                           </div>
                         </div>
                       </>
