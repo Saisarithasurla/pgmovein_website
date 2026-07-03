@@ -58,30 +58,53 @@ export default function AboutPage() {
         {/* Our Story Section */}
         <ScrollReveal variant="slideLeft" className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
           {/* Left Column: Story details */}
-          <div className="lg:col-span-7 space-y-6">
-            <h2 className="font-display text-3xl font-extrabold text-[#1E1B2E] tracking-tight">Our Story</h2>
-            <div className="text-sm sm:text-base text-[#6B7280] font-medium leading-relaxed space-y-4">
+          <div className="lg:col-span-7 space-y-7">
+            {/* Section label */}
+            <div className="flex items-center gap-3">
+              <h2 className="font-display text-3xl font-extrabold text-[#1E1B2E] tracking-tight">Our Story</h2>
+              <span className="text-[10px] font-bold text-[#7C3AED] uppercase tracking-widest bg-[#F5F3FF] border border-purple-100 px-3 py-1 rounded-full">
+                Since 2024
+              </span>
+            </div>
+
+            <div className="space-y-5 text-sm sm:text-base text-[#6B7280] font-medium leading-relaxed">
               <p>
-                PGMove was created in 2026 by a team of engineering professionals who faced the daunting task of finding clean, affordable paying guest rooms when relocating to Bangalore. Realizing the search process was broken—fraught with outdated listings, hidden brokerage, and fake pictures—we set out to construct a transparent alternative.
+                It started with a frustrating house-hunt. Our founders — engineers who moved to Bangalore for work — wasted weeks on fake listings, broker fees, and PGs that looked nothing like their photos.
               </p>
               <p>
-                By bypassing traditional brokers, PGMove facilitates direct dialogue between hosts and tenants. Our platform has grown to host hundreds of premium unisex, ladies, and gentlemen PGs across Electronic City, HSR Layout, Koramangala, and other critical commercial areas in Bangalore.
+                That experience sparked a simple question: <span className="text-[#1E1B2E] font-semibold">what if finding a PG was honest and straightforward?</span> So we built PGMove — where every listing is physically verified before it goes live.
+              </p>
+
+              {/* Highlighted quote */}
+              <blockquote className="border-l-4 border-[#7C3AED] pl-5 py-2 bg-[#F5F3FF]/60 rounded-r-xl">
+                <p className="text-[#4C1D95] font-semibold text-sm italic leading-relaxed">
+                  &ldquo;We don&apos;t just list PGs — we visit, verify, and only then show them to you. That&apos;s our promise.&rdquo;
+                </p>
+              </blockquote>
+
+              <p>
+                Today, PGMove connects tenants directly with trusted PG owners across Koramangala, Whitefield, HSR Layout, Indiranagar and more — zero brokerage, zero surprises.
               </p>
             </div>
           </div>
 
-          {/* Right Column: Bangalore Room Exterior */}
+          {/* Right Column: Image */}
           <div className="lg:col-span-5">
-            <div className="relative rounded-2xl overflow-hidden shadow-lg border border-gray-200 group">
+            <div className="relative rounded-2xl overflow-hidden shadow-xl border border-gray-100 group">
               <img
-                src="https://picsum.photos/600/500?random=25"
-                alt="Co-living Community Room in Bangalore"
-                className="w-full h-[360px] object-cover transition-transform duration-500 group-hover:scale-105"
+                src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=600&q=80"
+                alt="Co-living space in Bangalore"
+                className="w-full h-[380px] object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent flex items-end p-6">
-                <p className="text-white text-sm font-semibold tracking-wide leading-snug">
-                  Connecting people with friendly co-living environments.
-                </p>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent flex items-end p-6">
+                <div className="space-y-1">
+                  <p className="text-white text-sm font-bold leading-snug">
+                    Verified. Trusted. Home.
+                  </p>
+                  <p className="text-white/70 text-xs font-medium">
+                    Every PG personally checked by our team.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

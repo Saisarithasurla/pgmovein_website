@@ -24,5 +24,31 @@
     "propertyName": "General",
     "triggerSource": "get-best-price",
     "timestamp": "2026-07-03T05:34:29.603Z"
+  },
+  {
+    "name": "Test Lead",
+    "mobile": "9876543210",
+    "email": "",
+    "preferredArea": "Whitefield",
+    "budget": "8000-12000",
+    "moveInDate": "60720-02-20",
+    "companyOrCollege": "",
+    "propertyId": "general-enquiry",
+    "propertyName": "General Bangalore PG Search",
+    "triggerSource": "auto-time",
+    "timestamp": "2026-07-03T06:17:53.584Z"
+  },
+  {
+    "name": "Test Lead",
+    "mobile": "9876543210",
+    "email": "",
+    "preferredArea": "Whitefield",
+    "budget": "8000-12000",
+    "moveInDate": "60720-02-20",
+    "companyOrCollege": "",
+    "propertyId": "general-enquiry",
+    "propertyName": "General",
+    "triggerSource": "get-best-price",
+    "timestamp": "2026-07-03T06:23:32.014Z"
   }
 ]

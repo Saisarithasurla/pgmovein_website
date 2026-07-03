@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Property } from "../data/mockData";
-import { Heart, Star, CheckCircle, Wifi, Wind, Utensils, Car, Users, ShieldAlert } from "lucide-react";
-import { useLead } from "../context/LeadContext";
+import { Heart, Star, CheckCircle, Wifi, Wind, Utensils, Car, Users } from "lucide-react";
 
 interface PropertyCardProps {
   property: Property;
@@ -12,7 +11,6 @@ interface PropertyCardProps {
 
 export default function PropertyCard({ property }: PropertyCardProps) {
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const { openPopup } = useLead();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -179,15 +177,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
             </Link>
           </div>
 
-          {/* Check Availability CTA */}
-          <button
-            id={`btn-check-availability-${property.id}`}
-            onClick={() => openPopup("button-click", { id: property.id, name: property.name })}
-            className="w-full flex items-center justify-center gap-2 h-10 bg-[#6D28D9] hover:bg-[#5B21B6] text-white font-bold text-xs rounded-xl shadow-sm hover:shadow-md transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]"
-          >
-            <CheckCircle className="h-3.5 w-3.5 shrink-0" />
-            <span>Check Availability</span>
-          </button>
+
         </div>
       </div>
     </div>

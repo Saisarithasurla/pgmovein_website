@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { ChevronDown, Star, Sparkles, Shield, Clock, BadgeCheck, Users, ArrowRight, Tag } from "lucide-react";
-import SearchBar from "../components/SearchBar";
 import AreaCard from "../components/AreaCard";
 import PropertyCard from "../components/PropertyCard";
 import TestimonialCard from "../components/TestimonialCard";
@@ -83,7 +82,7 @@ export default function HomePage() {
 
           <div className="max-w-7xl mx-auto text-center relative z-10 space-y-4">
             {/* Badges — grouped together in document flow */}
-            <ScrollReveal variant="scale" delay={0} className="z-20 w-full px-4 mb-2">
+            <ScrollReveal variant="scale" delay={0} className="z-20 w-full px-4 mb-2 -mt-4 md:-mt-6">
               <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-4 max-w-2xl mx-auto">
                 {/* Static Badge */}
                 <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white border border-purple-100 text-purple-600 text-xs font-bold uppercase tracking-wider shadow-sm whitespace-nowrap select-none h-[34px]">
@@ -118,30 +117,40 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Section 3: Search Bar */}
-        <section className="px-4 sm:px-6 lg:px-8 relative mb-6 md:mb-20">
-          <ScrollReveal variant="slideUp" delay={0}>
-            <SearchBar />
-          </ScrollReveal>
-        </section>
+
 
         {/* Section 4: Popular Locations */}
         <section id="popular-areas" className="bg-white pt-8 pb-16 md:py-16 scroll-mt-20 border-b border-gray-100">
-          <ScrollReveal variant="slideLeft" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto mb-12">
-              <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-                Popular Areas in Bangalore
-              </h2>
-              <p className="text-gray-500 mt-2 font-medium">
-                Explore high-demand IT hubs and college locations with verified property options.
-              </p>
-            </div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <ScrollReveal variant="slideUp">
+              <div className="text-center max-w-3xl mx-auto mb-12">
+                <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+                  Popular Areas in Bangalore
+                </h2>
+                <p className="text-gray-500 mt-2 font-medium">
+                  Explore high-demand IT hubs and college locations with verified property options.
+                </p>
+              </div>
+            </ScrollReveal>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {popularAreas.map((area, idx) => (
-                <AreaCard key={idx} name={area.name} pgCount={area.count} />
+              {popularAreas.slice(0, 4).map((area, idx) => (
+                <ScrollReveal key={idx} variant="scale" delay={idx * 75}>
+                  <AreaCard name={area.name} pgCount={area.count} />
+                </ScrollReveal>
               ))}
             </div>
-          </ScrollReveal>
+
+            {/* View All Areas link */}
+            <div className="text-center mt-8">
+              <Link
+                href="/areas"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-[#7C3AED] hover:text-[#6D28D9] border border-[#7C3AED] hover:border-[#6D28D9] px-6 py-2.5 rounded-xl transition-all duration-200 hover:bg-purple-50"
+              >
+                View All Areas
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
         </section>
 
         {/* Section 5: Featured PGs */}
