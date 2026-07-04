@@ -19,9 +19,7 @@ export default function ScrollReveal({
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Disable reveal animation on mobile screens to prevent items being hidden until scrolled
-    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-    if (isMobile || typeof window === "undefined" || !("IntersectionObserver" in window)) {
+    if (typeof window === "undefined" || !("IntersectionObserver" in window)) {
       setIsVisible(true);
       return;
     }
