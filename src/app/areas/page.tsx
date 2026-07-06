@@ -165,8 +165,10 @@ export default function AllAreasPage() {
                     className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
                     style={{ backgroundImage: `url(${area.image})` }}
                   />
+                  {/* Purple brand color theme tint overlay */}
+                  <div className="absolute inset-0 bg-[#7C3AED]/20 mix-blend-multiply transition-opacity duration-300 group-hover:opacity-40" />
                   {/* Gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent group-hover:from-black/85 transition-all duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent transition-all duration-300" />
 
                   {/* Tag badge top-left */}
                   <div className="absolute top-3 left-3 z-10">
