@@ -3,13 +3,15 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ArrowRight, Heart } from "lucide-react";
+import { Menu, X, Heart, MessageSquare } from "lucide-react";
+import ContactModal from "@/components/ContactModal";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(0);
+  const [showContact, setShowContact] = useState(false);
 
   useEffect(() => {
     const updateCount = () => {
@@ -110,6 +112,7 @@ export default function Navbar() {
   }, [pathname]);
 
   return (
+    <>
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled
@@ -195,12 +198,12 @@ export default function Navbar() {
               )}
             </Link>
 
-            <Link
-              href="/auth/owner/signup"
+            <button
+              onClick={() => setShowContact(true)}
               className="text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 px-5 py-2.5 rounded-xl transition-all shadow-md shadow-purple-100 hover:shadow-lg hover:shadow-purple-200 hover:-translate-y-0.5 flex items-center gap-1.5"
             >
-              List Your PG <ArrowRight className="h-4 w-4" />
-            </Link>
+              <MessageSquare className="h-4 w-4" /> Contact Us
+            </button>
           </div>
 
           {/* Mobile hamburger menu */}
@@ -261,17 +264,20 @@ export default function Navbar() {
               <span>Saved Properties</span>
             </Link>
             <div className="pt-4 pb-2 border-t border-gray-100 px-3 flex flex-col gap-3">
-              <Link
-                href="/auth/owner/signup"
-                onClick={() => setIsOpen(false)}
+              <button
+                onClick={() => { setIsOpen(false); setShowContact(true); }}
                 className="w-full text-center font-semibold text-white bg-purple-600 px-4 py-2.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
               >
-                List Your PG <ArrowRight className="h-4 w-4" />
-              </Link>
+                <MessageSquare className="h-4 w-4" /> Contact Us
+              </button>
             </div>
           </div>
         </div>
       )}
     </header>
+
+    {/* Contact Modal */}
+    {showContact && <ContactModal onClose={() => setShowContact(false)} />}
+    </>
   );
 }

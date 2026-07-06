@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { Suspense } from "react";
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
-import LeadCapturePopup from "../components/LeadCapturePopup";
+import PublicShell from "../components/PublicShell";
 import { LeadProvider } from "../context/LeadContext";
 import { PropertyProvider } from "../context/PropertyContext";
 import "./globals.css";
@@ -58,13 +56,11 @@ export default function RootLayout({
         <LeadProvider>
           <Suspense fallback={null}>
             <PropertyProvider>
-              {/* Note: Navbar and Footer are managed globally in layout */}
-              <Navbar />
-              <main className="flex-1">
+              {/* PublicShell conditionally renders Navbar/Footer/LeadPopup.
+                  Agent routes (/agent/*) get a clean layout without public chrome. */}
+              <PublicShell>
                 {children}
-              </main>
-              <Footer />
-              <LeadCapturePopup />
+              </PublicShell>
             </PropertyProvider>
           </Suspense>
         </LeadProvider>

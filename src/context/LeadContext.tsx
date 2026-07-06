@@ -21,7 +21,7 @@ export interface SavedLead extends LeadData {
   timestamp: string;
 }
 
-export type PopupStep = "form" | "otp" | "thanks";
+export type PopupStep = "form" | "thanks";
 
 interface LeadContextType {
   isPopupOpen: boolean;

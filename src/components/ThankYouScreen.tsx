@@ -26,12 +26,12 @@ export default function ThankYouScreen() {
     router.push("/properties");
   };
 
+  // Countdown timer — only decrements state, no side-effects
   useEffect(() => {
     const interval = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(interval);
-          handleRedirect();
           return 0;
         }
         return prev - 1;
@@ -40,6 +40,13 @@ export default function ThankYouScreen() {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Redirect when countdown reaches 0 — runs as a proper effect, not during render
+  useEffect(() => {
+    if (countdown === 0) {
+      handleRedirect();
+    }
+  }, [countdown]);
 
   return (
     <div className="text-center py-6 space-y-6 flex flex-col items-center">

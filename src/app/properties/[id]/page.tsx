@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import PropertyCard from "../../../components/PropertyCard";
 import { useLead } from "../../../context/LeadContext";
+import { useProperty } from "../../../context/PropertyContext";
 import { mockProperties } from "../../../data/mockData";
 
 export default function PropertyDetailPage() {
@@ -34,8 +35,9 @@ export default function PropertyDetailPage() {
   const router = useRouter();
   const propertyId = params.id as string;
   const { openPopup, isSubmitted, leadData, setLeadData } = useLead();
+  const { properties: allProperties } = useProperty();
 
-  const property = mockProperties.find((p) => p.id === propertyId);
+  const property = allProperties.find((p) => p.id === propertyId);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isSaved, setIsSaved] = useState(false);
   const [activeTab, setActiveTab] = useState("rooms"); // tabs: rooms, amenities, rules, location
@@ -133,7 +135,7 @@ export default function PropertyDetailPage() {
   };
 
   // Filter similar properties (same area or price)
-  const similarProperties = mockProperties
+  const similarProperties = allProperties
     .filter((p) => p.id !== property.id && p.area === property.area)
     .slice(0, 3);
 

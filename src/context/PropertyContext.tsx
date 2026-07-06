@@ -43,6 +43,25 @@ export const PropertyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const [filters, setFilters] = useState<Filters>(defaultFilters);
 
+  // Supabase-fetched properties (agent-added)
+  const [supabaseProperties, setSupabaseProperties] = useState<Property[]>([]);
+
+  useEffect(() => {
+    fetch("/api/properties")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.properties)) {
+          setSupabaseProperties(data.properties);
+        }
+      })
+      .catch(() => {
+        // Silently fail — mock data will still be available
+      });
+  }, []);
+
+  // Merge static mock properties with Supabase-fetched properties
+  const allProperties = [...mockProperties, ...supabaseProperties];
+
   // 1. Initialize filters from URL on mount
   useEffect(() => {
     const areas = searchParams.get("area")?.split(",").filter(Boolean) || [];
@@ -79,7 +98,7 @@ export const PropertyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // 2. Perform filtering & sorting
   const getFilteredProperties = () => {
-    return mockProperties
+    return allProperties
       .filter((p) => {
         // Area Match
         if (filters.areas.length > 0 && !filters.areas.some(a => a.toLowerCase() === p.area.toLowerCase())) {
@@ -181,7 +200,7 @@ export const PropertyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   return (
     <PropertyContext.Provider
       value={{
-        properties: mockProperties,
+        properties: allProperties,
         filteredProperties,
         filters,
         setFilters: setFiltersWithUrlSync,
