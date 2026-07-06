@@ -453,14 +453,20 @@ export default function PropertyDetailPage() {
                 {/* House Rules */}
                 <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-50">
                   <h3 className="font-sans font-bold text-[#1E1B2E] text-base mb-4">House Rules & Curfews</h3>
-                  <ul className="space-y-3">
-                    {property.houseRules.map((rule, idx) => (
-                      <li key={idx} className="flex items-start gap-3 text-xs sm:text-sm text-[#6B7280] font-semibold">
-                        <span className="text-red-500 mt-0.5 font-bold shrink-0">✕</span>
-                        <span>{rule}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  {property.houseRules && property.houseRules.length > 0 ? (
+                    <ul className="space-y-3">
+                      {property.houseRules.map((rule, idx) => (
+                        <li key={idx} className="flex items-start gap-3 text-xs sm:text-sm text-[#6B7280] font-semibold">
+                          <span className="text-red-500 mt-0.5 font-bold shrink-0">✕</span>
+                          <span>{rule}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="text-xs sm:text-sm font-semibold text-green-700 bg-green-50 p-4 rounded-xl border border-green-150">
+                      🟢 No strict curfews or special rules are imposed on residents at this property. Enjoy your stay!
+                    </div>
+                  )}
                 </div>
               </div>
             )}
