@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { supabaseBrowser } from "../../../lib/supabaseBrowserClient";
-import { BANGALORE_AREAS } from "../../../data/mockData";
+import { BANGALORE_AREAS, BANGALORE_AREA_GROUPS } from "../../../data/mockData";
 import {
   LogOut,
   Plus,
@@ -597,8 +597,16 @@ export default function AgentDashboardPage() {
                           onChange={(e) => setFormData({ ...formData, area: e.target.value })}
                           className="w-full text-sm font-semibold p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 bg-gray-50/50 cursor-pointer"
                         >
-                          {BANGALORE_AREAS.map((a) => (
-                            <option key={a} value={a}>{a}</option>
+                          {/* Group options by parent area */}
+                          {BANGALORE_AREA_GROUPS.map((group) => (
+                            <optgroup key={group.name} label={group.name}>
+                              <option value={group.name}>{group.name} (All Area)</option>
+                              {group.subAreas.map((sub) => (
+                                <option key={sub} value={sub}>
+                                  {sub}
+                                </option>
+                              ))}
+                            </optgroup>
                           ))}
                         </select>
                       </div>

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Property } from "../data/mockData";
-import { Heart, Star, CheckCircle, Wifi, Wind, Utensils, Car, Users } from "lucide-react";
+import { Heart, Star, CheckCircle, Wifi, Wind, Utensils, Car, Users, Building, Shield, Brush, Tv, Zap, Thermometer } from "lucide-react";
 
 interface PropertyCardProps {
   property: Property;
@@ -81,8 +81,22 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         return <Utensils className="h-3.5 w-3.5" />;
       case "parking":
         return <Car className="h-3.5 w-3.5" />;
+      case "gym":
+        return <Building className="h-3.5 w-3.5" />;
+      case "cctv":
+        return <Shield className="h-3.5 w-3.5" />;
+      case "laundry":
+        return <Brush className="h-3.5 w-3.5" />;
+      case "tv":
+        return <Tv className="h-3.5 w-3.5" />;
+      case "powerbackup":
+        return <Zap className="h-3.5 w-3.5" />;
+      case "housekeeping":
+        return <Brush className="h-3.5 w-3.5" />;
+      case "hotwater":
+        return <Thermometer className="h-3.5 w-3.5" />;
       default:
-        return null;
+        return <CheckCircle className="h-3.5 w-3.5" />;
     }
   };
 
