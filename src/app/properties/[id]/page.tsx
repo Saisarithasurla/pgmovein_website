@@ -197,9 +197,8 @@ export default function PropertyDetailPage() {
                 <button
                   key={idx}
                   onClick={() => setActiveImageIndex(idx)}
-                  className={`w-24 h-16 rounded-lg overflow-hidden shrink-0 border-2 transition-all relative ${
-                    activeImageIndex === idx ? "border-purple-650 scale-95 shadow-md" : "border-transparent opacity-70 hover:opacity-100"
-                  }`}
+                  className={`w-24 h-16 rounded-lg overflow-hidden shrink-0 border-2 transition-all relative ${activeImageIndex === idx ? "border-purple-650 scale-95 shadow-md" : "border-transparent opacity-70 hover:opacity-100"
+                    }`}
                 >
                   <img src={img} alt="" className="w-full h-full object-cover" />
                 </button>
@@ -219,9 +218,8 @@ export default function PropertyDetailPage() {
                 <span className="text-[10px] font-semibold text-purple-750 bg-[#F5F3FF] px-2 py-0.5 rounded border border-purple-100">
                   {property.gender} Preference
                 </span>
-                <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded ${
-                  property.availability === "Available" ? "bg-green-50 text-green-700 border border-green-150" : "bg-amber-50 text-amber-700 border border-amber-150"
-                }`}>
+                <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded ${property.availability === "Available" ? "bg-green-50 text-green-700 border border-green-150" : "bg-amber-50 text-amber-700 border border-amber-150"
+                  }`}>
                   {property.availability}
                 </span>
               </div>
@@ -240,9 +238,8 @@ export default function PropertyDetailPage() {
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star
                       key={i}
-                      className={`h-4 w-4 ${
-                        i < Math.floor(property.rating) ? "fill-amber-400 text-amber-400" : "text-gray-200"
-                      }`}
+                      className={`h-4 w-4 ${i < Math.floor(property.rating) ? "fill-amber-400 text-amber-400" : "text-gray-200"
+                        }`}
                     />
                   ))}
                 </div>
@@ -296,8 +293,8 @@ export default function PropertyDetailPage() {
               <button
                 onClick={() => setActiveTab("rooms")}
                 className={`py-3 px-4 text-xs sm:text-sm font-bold rounded-lg transition-all ${activeTab === "rooms"
-                    ? "bg-[#F5F3FF] text-[#7C3AED]"
-                    : "text-gray-500 hover:text-gray-800"
+                  ? "bg-[#F5F3FF] text-[#7C3AED]"
+                  : "text-gray-500 hover:text-gray-800"
                   }`}
               >
                 Rooms & Pricing
@@ -305,8 +302,8 @@ export default function PropertyDetailPage() {
               <button
                 onClick={() => setActiveTab("amenities")}
                 className={`py-3 px-4 text-xs sm:text-sm font-bold rounded-lg transition-all ${activeTab === "amenities"
-                    ? "bg-[#F5F3FF] text-[#7C3AED]"
-                    : "text-gray-500 hover:text-gray-800"
+                  ? "bg-[#F5F3FF] text-[#7C3AED]"
+                  : "text-gray-500 hover:text-gray-800"
                   }`}
               >
                 Amenities
@@ -314,8 +311,8 @@ export default function PropertyDetailPage() {
               <button
                 onClick={() => setActiveTab("rules")}
                 className={`py-3 px-4 text-xs sm:text-sm font-bold rounded-lg transition-all ${activeTab === "rules"
-                    ? "bg-[#F5F3FF] text-[#7C3AED]"
-                    : "text-gray-500 hover:text-gray-800"
+                  ? "bg-[#F5F3FF] text-[#7C3AED]"
+                  : "text-gray-500 hover:text-gray-800"
                   }`}
               >
                 Food & Rules
@@ -323,8 +320,8 @@ export default function PropertyDetailPage() {
               <button
                 onClick={() => setActiveTab("location")}
                 className={`py-3 px-4 text-xs sm:text-sm font-bold rounded-lg transition-all ${activeTab === "location"
-                    ? "bg-[#F5F3FF] text-[#7C3AED]"
-                    : "text-gray-500 hover:text-gray-800"
+                  ? "bg-[#F5F3FF] text-[#7C3AED]"
+                  : "text-gray-500 hover:text-gray-800"
                   }`}
               >
                 Location & Map

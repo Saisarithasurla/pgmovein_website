@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { supabase } from "../../../lib/supabaseClient";
 import {
   Users,
   Calendar,
@@ -54,10 +55,17 @@ export default function AdminLeadsPage() {
   const fetchLeads = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/admin/leads");
-      const data = await res.json();
-      if (data.success) {
-        setLeads(data.leads);
+      const { data, error } = await supabase
+        .from("leads")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data) {
+        setLeads(data);
       }
     } catch (error) {
       console.error("Error fetching leads:", error);
@@ -68,19 +76,20 @@ export default function AdminLeadsPage() {
 
   const handleStatusChange = async (id: string, newStatus: string) => {
     try {
-      const res = await fetch("/api/admin/leads", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, status: newStatus }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setLeads((prev) =>
-          prev.map((lead) => (lead.id === id ? { ...lead, status: newStatus } : lead))
-        );
-        if (selectedLead && selectedLead.id === id) {
-          setSelectedLead((prev) => (prev ? { ...prev, status: newStatus } : null));
-        }
+      const { error } = await supabase
+        .from("leads")
+        .update({ status: newStatus })
+        .eq("id", id);
+
+      if (error) {
+        throw error;
+      }
+
+      setLeads((prev) =>
+        prev.map((lead) => (lead.id === id ? { ...lead, status: newStatus } : lead))
+      );
+      if (selectedLead && selectedLead.id === id) {
+        setSelectedLead((prev) => (prev ? { ...prev, status: newStatus } : null));
       }
     } catch (error) {
       console.error("Error updating status:", error);

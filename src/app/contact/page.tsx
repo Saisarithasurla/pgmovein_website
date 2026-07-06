@@ -122,7 +122,9 @@ export default function ContactPage() {
               <div>
                 <h3 className="font-display font-bold text-navy text-base">Call Support</h3>
                 <p className="text-xs text-gray-500 mt-1 leading-relaxed">Speak with customer care directly.</p>
-                <p className="text-[#7C3AED] font-extrabold text-sm mt-3">+91 9000000000</p>
+                <a href="tel:+919108421609" className="text-[#7C3AED] hover:text-[#5B21B6] font-extrabold text-sm mt-3 block transition-colors">
+                  +91 91084 21609
+                </a>
               </div>
             </div>
 
@@ -133,7 +135,9 @@ export default function ContactPage() {
               <div>
                 <h3 className="font-display font-bold text-navy text-base">Email Support</h3>
                 <p className="text-xs text-gray-500 mt-1 leading-relaxed">Queries resolved in 24 hours.</p>
-                <p className="text-[#7C3AED] font-extrabold text-sm mt-3">hello@pgmove.in</p>
+                <a href="mailto:agent@pgmove.in" className="text-[#7C3AED] hover:text-[#5B21B6] font-extrabold text-sm mt-3 block transition-colors">
+                  agent@pgmove.in
+                </a>
               </div>
             </div>
 

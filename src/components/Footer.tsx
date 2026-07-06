@@ -138,11 +138,15 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-purple-500" />
-                <span className="text-gray-300">+91 9000000000</span>
+                <a href="tel:+919108421609" className="text-gray-300 hover:text-white transition-colors">
+                  +91 91084 21609
+                </a>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-purple-500" />
-                <span className="text-gray-300">hello@pgmove.in</span>
+                <a href="mailto:agent@pgmove.in" className="text-gray-300 hover:text-white transition-colors">
+                  agent@pgmove.in
+                </a>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 text-purple-500 mt-0.5" />

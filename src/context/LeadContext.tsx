@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { getVisitorMetadata } from "../utils/leadCapture";
+import { supabase } from "../lib/supabaseClient";
 
 export interface LeadData {
   name: string;
@@ -128,26 +129,44 @@ export const LeadProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const visitorMeta = getVisitorMetadata();
 
-    // Save to server database + Google Sheet via API
+    // Direct client-side insert to Supabase database (bypasses server runtime)
     try {
-      await fetch("/api/leads", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const isValidUUID = (str: string) => {
+        const regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        return regex.test(str);
+      };
+      const dbPropertyId = activeProperty?.id && isValidUUID(activeProperty.id) ? activeProperty.id : null;
+
+      const { error: dbError } = await supabase.from("leads").insert([
+        {
+          property_id: dbPropertyId,
           name: finalData.name,
-          phone: finalData.mobile,
+          phone: finalData.mobile.replace(/\D/g, ""), // clean non-digits
           email: finalData.email || null,
-          companyName: finalData.companyOrCollege || null,
+          company_name: finalData.companyOrCollege || null,
           city: finalData.preferredArea || "Bangalore",
           message: `Budget: ${finalData.budget}, Move-In: ${finalData.moveInDate}`,
-          leadSource: activeProperty?.name || "General Bangalore PG Search",
-          ...visitorMeta,
-        }),
-      });
+          lead_source: activeProperty?.name || "General Bangalore PG Search",
+          // Visitor metadata
+          landing_page_url: visitorMeta.landingPageUrl || null,
+          referrer_url: visitorMeta.referrerUrl || null,
+          device_type: visitorMeta.deviceType || null,
+          browser: visitorMeta.browser || null,
+          os: visitorMeta.os || null,
+          screen_resolution: visitorMeta.screenResolution || null,
+          timezone: visitorMeta.timezone || null,
+          // UTM parameters
+          utm_source: visitorMeta.utmSource || null,
+          utm_medium: visitorMeta.utmMedium || null,
+          utm_campaign: visitorMeta.utmCampaign || null,
+        },
+      ]);
+      
+      if (dbError) {
+        throw dbError;
+      }
     } catch (e) {
-      console.error("Failed to POST lead to server:", e);
+      console.error("Failed to save lead directly to Supabase:", e);
     }
 
     setIsSubmitted(true);

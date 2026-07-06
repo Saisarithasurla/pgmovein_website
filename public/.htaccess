@@ -1,0 +1,18 @@
+DirectoryIndex index.html
+
+RewriteEngine On
+RewriteBase /
+
+# Force trailing slash on non-file routes to align with trailingSlash: true in next.config.mjs
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !\/$
+RewriteCond %{REQUEST_URI} !^/api/
+RewriteRule ^(.*)$ $1/ [L,R=301]
+
+# Handle routing to static HTML subfolders (e.g. /about/ -> /about/index.html)
+RewriteCond %{DOCUMENT_ROOT}/$1/index.html -f
+RewriteRule ^(.*)/$ $1/index.html [L]
+
+# Fallback error page
+ErrorDocument 404 /404/index.html
