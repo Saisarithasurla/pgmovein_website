@@ -22,7 +22,21 @@ const featuredAreasDetails: Record<string, { tag: string; image: string; desc: s
   "Yeshwanthpur": { count: 7, tag: "Industrial", image: "https://images.unsplash.com/photo-1514565131-fce0801e6785?w=600&q=80", desc: "Key industrial and commercial zone with excellent rail connectivity." }
 };
 
-const allAreas = BANGALORE_AREAS.map(areaName => {
+// A curated set of unique Bengaluru/city lifestyle Unsplash images to prevent duplicate placeholders
+const placeholderImages = [
+  "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=600&q=80", // Bangalore City
+  "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=600&q=80", // Skyline
+  "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600&q=80", // Interior/Co-living cozy
+  "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&q=80", // Architecture
+  "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80", // Modern house/living
+  "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=600&q=80", // Balcony/Apartment view
+  "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80", // Minimalist room
+  "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80", // Living room
+  "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80", // Real estate building
+  "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80", // Corporate building
+];
+
+const allAreas = BANGALORE_AREAS.map((areaName, index) => {
   const featured = featuredAreasDetails[areaName];
   if (featured) {
     return {
@@ -30,11 +44,13 @@ const allAreas = BANGALORE_AREAS.map(areaName => {
       ...featured
     };
   }
+  // Assign a unique placeholder image based on index to ensure different images with similar urban tone/aesthetic
+  const image = placeholderImages[index % placeholderImages.length];
   return {
     name: areaName,
     count: 0,
     tag: "Bengaluru",
-    image: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=600&q=80",
+    image,
     desc: `Find paying guests and co-living spaces in ${areaName}, Bengaluru.`
   };
 });
