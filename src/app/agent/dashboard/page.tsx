@@ -198,6 +198,19 @@ export default function AgentDashboardPage() {
     }
   }, [toast]);
 
+  // ───── Dropdown Outside Click handler ─────
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      const container = document.getElementById("area-dropdown-container");
+      const menu = document.getElementById("area-dropdown-menu");
+      if (container && menu && !container.contains(e.target as Node)) {
+        menu.classList.add("hidden");
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, []);
+
   // ───── Logout ─────
   const handleLogout = async () => {
     await supabaseBrowser.auth.signOut();
@@ -592,22 +605,58 @@ export default function AgentDashboardPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
                         <label className="block text-xs font-bold text-gray-600 mb-1.5">Area *</label>
-                        <select
-                          value={formData.area}
-                          onChange={(e) => setFormData({ ...formData, area: e.target.value })}
-                          className="w-full text-sm font-semibold p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 bg-gray-50/50 cursor-pointer"
-                        >
-                          {BANGALORE_AREA_GROUPS.map((group) => (
-                            <optgroup key={group.name} label={group.name}>
-                              {/* Parent Area Option */}
-                              <option value={group.name}>{group.name} (All PGs)</option>
-                              {/* Sub Area Options */}
-                              {group.subAreas.map((sub) => (
-                                <option key={sub} value={sub}>{sub}</option>
-                              ))}
-                            </optgroup>
-                          ))}
-                        </select>
+                        <div className="relative" id="area-dropdown-container">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const el = document.getElementById("area-dropdown-menu");
+                              if (el) el.classList.toggle("hidden");
+                            }}
+                            className="w-full text-left text-sm font-semibold p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 bg-gray-50/50 hover:bg-white transition-colors cursor-pointer flex items-center justify-between"
+                          >
+                            <span>{formData.area}</span>
+                            <ChevronDown className="h-4 w-4 text-gray-400" />
+                          </button>
+                          <div
+                            id="area-dropdown-menu"
+                            className="hidden absolute left-0 right-0 mt-1.5 max-h-60 overflow-y-auto bg-white border border-gray-200 rounded-xl shadow-lg z-50 py-1"
+                          >
+                            {BANGALORE_AREA_GROUPS.map((group) => (
+                              <div key={group.name} className="border-b border-gray-50 last:border-0">
+                                <div className="px-3.5 py-1.5 text-xs font-bold text-purple-700 bg-purple-50/50">
+                                  {group.name}
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setFormData({ ...formData, area: group.name });
+                                    document.getElementById("area-dropdown-menu")?.classList.add("hidden");
+                                  }}
+                                  className={`w-full text-left px-5 py-2 text-sm transition-colors hover:bg-purple-50 font-medium ${
+                                    formData.area === group.name ? "text-purple-650 bg-purple-50/30" : "text-gray-700"
+                                  }`}
+                                >
+                                  {group.name} (All PGs)
+                                </button>
+                                {group.subAreas.map((sub) => (
+                                  <button
+                                    key={sub}
+                                    type="button"
+                                    onClick={() => {
+                                      setFormData({ ...formData, area: sub });
+                                      document.getElementById("area-dropdown-menu")?.classList.add("hidden");
+                                    }}
+                                    className={`w-full text-left px-5 py-2 text-xs transition-colors hover:bg-purple-50 pl-7 font-medium ${
+                                      formData.area === sub ? "text-purple-650 bg-purple-50/30" : "text-gray-600"
+                                    }`}
+                                  >
+                                    {sub}
+                                  </button>
+                                ))}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       </div>
                       <div>
                         <label className="block text-xs font-bold text-gray-600 mb-1.5">
