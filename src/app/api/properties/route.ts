@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "../../../lib/supabaseClient";
 import type { Property } from "../../../data/mockData";
 
+export const dynamic = "force-dynamic";
+
 /**
  * GET /api/properties
  * Fetches all properties from Supabase and transforms them
