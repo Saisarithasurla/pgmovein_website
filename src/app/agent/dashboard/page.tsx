@@ -55,6 +55,7 @@ interface SupabaseProperty {
   nearby_metro: string[];
   latitude: number;
   longitude: number;
+  address?: string;
   owner_name: string;
   verified: boolean;
   highlights: string[];
@@ -66,8 +67,8 @@ type FormData = {
   name: string;
   area: string;
   city: string;
-  gender: "Male" | "Female" | "Unisex";
-  type: "PG" | "Hostel" | "Co-Living";
+  gender: "Male" | "Female" | "Unisex" | "1BHK" | "2BHK" | "3BHK";
+  type: "PG" | "Flat";
   sharing_single: string;
   sharing_double: string;
   sharing_triple: string;
@@ -86,6 +87,7 @@ type FormData = {
   nearby_metro: string[];
   latitude: string;
   longitude: string;
+  address: string;
   owner_name: string;
   highlights: string[];
 };
@@ -114,6 +116,7 @@ const INITIAL_FORM: FormData = {
   nearby_metro: [],
   latitude: "12.9716",
   longitude: "77.5946",
+  address: "",
   owner_name: "",
   highlights: [],
 };
@@ -324,6 +327,7 @@ export default function AgentDashboardPage() {
       nearby_metro: formData.nearby_metro,
       latitude: parseFloat(formData.latitude) || 12.9716,
       longitude: parseFloat(formData.longitude) || 77.5946,
+      address: formData.address.trim(),
       owner_name: formData.owner_name.trim(),
       highlights: formData.highlights,
     };
@@ -405,8 +409,9 @@ export default function AgentDashboardPage() {
        nearby_companies: prop.nearby_companies || [],
        nearby_colleges: prop.nearby_colleges || [],
        nearby_metro: prop.nearby_metro || [],
-       latitude: prop.latitude?.toString() || "",
-       longitude: prop.longitude?.toString() || "",
+       latitude: prop.latitude?.toString() || "12.9716",
+       longitude: prop.longitude?.toString() || "77.5946",
+       address: (prop as any).address || "",
        owner_name: prop.owner_name,
        highlights: prop.highlights || [],
     });
@@ -598,32 +603,63 @@ export default function AgentDashboardPage() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-gray-600 mb-1.5">Gender</label>
+                        <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                          {formData.type === "PG" ? "Gender Preference" : "BHK Configuration"}
+                        </label>
                         <div className="flex gap-2">
-                          {(["Male", "Female", "Unisex"] as const).map((g) => (
-                            <button
-                              key={g}
-                              type="button"
-                              onClick={() => setFormData({ ...formData, gender: g })}
-                              className={`flex-1 py-2.5 text-xs font-bold rounded-xl border transition-all ${
-                                formData.gender === g
-                                  ? "bg-purple-600 text-white border-purple-600 shadow-sm"
-                                  : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
-                              }`}
-                            >
-                              {g}
-                            </button>
-                          ))}
+                          {formData.type === "PG" ? (
+                            ([
+                              { label: "Boys", value: "Male" },
+                              { label: "Girls", value: "Female" },
+                              { label: "Coliving", value: "Unisex" }
+                            ] as const).map((g) => (
+                              <button
+                                key={g.value}
+                                type="button"
+                                onClick={() => setFormData({ ...formData, gender: g.value })}
+                                className={`flex-1 py-2.5 text-xs font-bold rounded-xl border transition-all ${
+                                  formData.gender === g.value
+                                    ? "bg-purple-600 text-white border-purple-600 shadow-sm"
+                                    : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                                }`}
+                              >
+                                {g.label}
+                              </button>
+                            ))
+                          ) : (
+                            ([
+                              { label: "1 BHK", value: "1BHK" },
+                              { label: "2 BHK", value: "2BHK" },
+                              { label: "3 BHK", value: "3BHK" }
+                            ] as const).map((b) => (
+                              <button
+                                key={b.value}
+                                type="button"
+                                onClick={() => setFormData({ ...formData, gender: b.value })}
+                                className={`flex-1 py-2.5 text-xs font-bold rounded-xl border transition-all ${
+                                  formData.gender === b.value
+                                    ? "bg-purple-600 text-white border-purple-600 shadow-sm"
+                                    : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                                }`}
+                              >
+                                {b.label}
+                              </button>
+                            ))
+                          )}
                         </div>
                       </div>
                       <div>
                         <label className="block text-xs font-bold text-gray-600 mb-1.5">Type</label>
                         <div className="flex gap-2">
-                          {(["PG", "Hostel", "Co-Living"] as const).map((t) => (
+                          {(["PG", "Flat"] as const).map((t) => (
                             <button
                               key={t}
                               type="button"
-                              onClick={() => setFormData({ ...formData, type: t })}
+                              onClick={() => setFormData({ 
+                                ...formData, 
+                                type: t,
+                                gender: t === "PG" ? "Male" : "1BHK"
+                              })}
                               className={`flex-1 py-2.5 text-xs font-bold rounded-xl border transition-all ${
                                 formData.type === t
                                   ? "bg-purple-600 text-white border-purple-600 shadow-sm"
@@ -642,13 +678,19 @@ export default function AgentDashboardPage() {
 
               {/* ─── Section: Pricing ─── */}
               <div className="px-6 sm:px-8">
-                <SectionHeader id="pricing" title="Pricing & Sharing *" icon={Building2} />
+                <SectionHeader id="pricing" title={formData.type === "PG" ? "Pricing & Sharing *" : "Pricing & Configurations *"} icon={Building2} />
                 {expandedSection === "pricing" && (
                   <div className="pb-6 space-y-4 animate-fade-in">
-                    <p className="text-xs text-gray-500 font-medium">Enter rent per month for each sharing type. At least one is required.</p>
+                    <p className="text-xs text-gray-500 font-medium">
+                      {formData.type === "PG" 
+                        ? "Enter rent per month for each sharing type. At least one is required."
+                        : "Enter rent per month for BHK configurations. At least one is required."}
+                    </p>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-xs font-bold text-gray-600 mb-1.5">Single (₹/month)</label>
+                        <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                          {formData.type === "PG" ? "Single (₹/month)" : "1 BHK Rent (₹/month)"}
+                        </label>
                         <input
                           type="number"
                           value={formData.sharing_single}
@@ -658,7 +700,9 @@ export default function AgentDashboardPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-gray-600 mb-1.5">Double (₹/month)</label>
+                        <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                          {formData.type === "PG" ? "Double (₹/month)" : "2 BHK Rent (₹/month)"}
+                        </label>
                         <input
                           type="number"
                           value={formData.sharing_double}
@@ -668,7 +712,9 @@ export default function AgentDashboardPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-gray-600 mb-1.5">Triple (₹/month)</label>
+                        <label className="block text-xs font-bold text-gray-600 mb-1.5">
+                          {formData.type === "PG" ? "Triple (₹/month)" : "3 BHK Rent (₹/month)"}
+                        </label>
                         <input
                           type="number"
                           value={formData.sharing_triple}
@@ -907,25 +953,16 @@ export default function AgentDashboardPage() {
                 <SectionHeader id="location" title="Location & Nearby Places" icon={MapPin} />
                 {expandedSection === "location" && (
                   <div className="pb-6 space-y-4 animate-fade-in">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-bold text-gray-600 mb-1.5">Latitude</label>
-                        <input
-                          type="text"
-                          value={formData.latitude}
-                          onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
-                          className="w-full text-sm font-semibold p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 bg-gray-50/50 hover:bg-white transition-colors"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-600 mb-1.5">Longitude</label>
-                        <input
-                          type="text"
-                          value={formData.longitude}
-                          onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
-                          className="w-full text-sm font-semibold p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 bg-gray-50/50 hover:bg-white transition-colors"
-                        />
-                      </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 mb-1.5">Property Address / Landmark *</label>
+                      <textarea
+                        required
+                        rows={2}
+                        value={formData.address}
+                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                        placeholder="e.g., 1st Cross, HSR Layout Sector 3, near BDA Complex, Bangalore"
+                        className="w-full text-sm font-semibold p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 bg-gray-50/50 hover:bg-white transition-colors resize-none"
+                      />
                     </div>
 
                     {/* Nearby Companies */}
@@ -1095,7 +1132,9 @@ export default function AgentDashboardPage() {
                   />
                   <div className="absolute top-3 left-3 flex gap-1.5">
                     <span className="text-[10px] font-bold bg-white/90 backdrop-blur-sm text-purple-700 px-2 py-0.5 rounded shadow-sm">
-                      {prop.gender}
+                      {prop.type === "PG"
+                        ? ({ Male: "Boys", Female: "Girls", Unisex: "Coliving" } as Record<string, string>)[prop.gender] ?? prop.gender
+                        : ({ "1BHK": "1 BHK", "2BHK": "2 BHK", "3BHK": "3 BHK" } as Record<string, string>)[prop.gender] ?? prop.gender}
                     </span>
                     <span className="text-[10px] font-bold bg-white/90 backdrop-blur-sm text-gray-700 px-2 py-0.5 rounded shadow-sm">
                       {prop.type}

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useTransition } from "react";
-import { Property, mockProperties } from "../data/mockData";
+import { Property, mockProperties, BANGALORE_AREA_GROUPS } from "../data/mockData";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 export interface Filters {
@@ -60,7 +60,7 @@ export const PropertyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, []);
 
   // Merge static mock properties with Supabase-fetched properties
-  const allProperties = [...mockProperties, ...supabaseProperties];
+  const allProperties = supabaseProperties;
 
   // 1. Initialize filters from URL on mount
   useEffect(() => {
@@ -97,12 +97,32 @@ export const PropertyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   // 2. Perform filtering & sorting
+  // Build sub-area → parent map for smart area matching
+  const subAreaToParent: Record<string, string> = {};
+  BANGALORE_AREA_GROUPS.forEach((group) => {
+    group.subAreas.forEach((sub) => {
+      subAreaToParent[sub.toLowerCase()] = group.name.toLowerCase();
+    });
+  });
+
   const getFilteredProperties = () => {
     return allProperties
       .filter((p) => {
-        // Area Match
-        if (filters.areas.length > 0 && !filters.areas.some(a => a.toLowerCase() === p.area.toLowerCase())) {
-          return false;
+        // Area Match: support parent area and sub-area selection
+        if (filters.areas.length > 0) {
+          const propArea = p.area.toLowerCase();
+          const propParent = subAreaToParent[propArea]; // parent of property's area (if sub-area)
+          const matched = filters.areas.some((a) => {
+            const filterArea = a.toLowerCase();
+            // Direct match
+            if (filterArea === propArea) return true;
+            // Filter is a parent area, property's area is a sub-area of that parent
+            if (propParent && propParent === filterArea) return true;
+            // Filter is a sub-area, property has the parent area
+            if (subAreaToParent[filterArea] === propArea) return true;
+            return false;
+          });
+          if (!matched) return false;
         }
 
         // Budget Match
@@ -188,7 +208,9 @@ export const PropertyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   ) => {
     setFilters((prev) => {
       const next = typeof value === "function" ? value(prev) : value;
-      updateUrl(next);
+      setTimeout(() => {
+        updateUrl(next);
+      }, 0);
       return next;
     });
   };

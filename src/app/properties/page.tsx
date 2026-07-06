@@ -4,8 +4,8 @@ import React, { useState, useRef } from "react";
 import PropertyCard from "../../components/PropertyCard";
 import PropertyCardSkeleton from "../../components/PropertyCardSkeleton";
 import { useProperty, Filters } from "../../context/PropertyContext";
-import { BANGALORE_AREAS, BUDGET_RANGES } from "../../data/mockData";
-import { SlidersHorizontal, Grid, List, Map, X, HelpCircle, Star, CheckCircle } from "lucide-react";
+import { BANGALORE_AREA_GROUPS, BUDGET_RANGES } from "../../data/mockData";
+import { SlidersHorizontal, Grid, List, Map, X, HelpCircle, Star, CheckCircle, ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useLead } from "../../context/LeadContext";
 
@@ -17,6 +17,7 @@ export default function SearchResultsPage() {
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [showMapView, setShowMapView] = useState(false);
   const [hoveredPropertyId, setHoveredPropertyId] = useState<string | null>(null);
+  const [expandedAreas, setExpandedAreas] = useState<Set<string>>(new Set());
   const mobileMapRef = useRef<HTMLDivElement>(null);
 
   const amenitiesList = [
@@ -97,18 +98,6 @@ export default function SearchResultsPage() {
               </button>
             </div>
 
-            {/* Map Toggle */}
-            <button
-              onClick={toggleMapView}
-              className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl border text-sm font-semibold transition-all ${
-                showMapView
-                  ? "bg-purple-600 text-white border-purple-600 shadow-md shadow-purple-100"
-                  : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
-              }`}
-            >
-              <Map className="h-4 w-4" />
-              <span>Map View</span>
-            </button>
 
             {/* Mobile Filters Trigger */}
             <button
@@ -122,7 +111,7 @@ export default function SearchResultsPage() {
         </div>
 
         {/* Main Content Layout */}
-        <div className={`grid gap-8 pt-8 ${showMapView ? "grid-cols-1 md:grid-cols-4" : "grid-cols-1 md:grid-cols-3 lg:grid-cols-4"}`}>
+        <div className="grid gap-8 pt-8 grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
 
           {/* 1. Sidebar Filters — Desktop only */}
           <aside className="hidden md:block md:col-span-1 space-y-6 self-start sticky top-24">
@@ -138,20 +127,60 @@ export default function SearchResultsPage() {
             </div>
 
             {/* Area Filter */}
-            <div className="space-y-3">
+            <div className="space-y-2">
               <h3 className="font-bold text-gray-900 text-sm">Location / Area</h3>
-              <div className="max-h-48 overflow-y-auto space-y-2 pr-2">
-                {BANGALORE_AREAS.map((area) => (
-                  <label key={area} className="flex items-center gap-2.5 text-sm text-gray-600 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={filters.areas.includes(area)}
-                      onChange={() => handleCheckboxChange("areas", area)}
-                      className="rounded text-purple-600 focus:ring-purple-500 border-gray-300"
-                    />
-                    <span>{area}</span>
-                  </label>
-                ))}
+              <div className="space-y-1.5 max-h-80 overflow-y-auto pr-1">
+                {BANGALORE_AREA_GROUPS.map((group) => {
+                  const isExpanded = expandedAreas.has(group.name);
+                  const isParentChecked = filters.areas.includes(group.name);
+                  return (
+                    <div key={group.name}>
+                      {/* Parent row */}
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          id={`area-${group.name}`}
+                          checked={isParentChecked}
+                          onChange={() => handleCheckboxChange("areas", group.name)}
+                          className="rounded text-purple-600 focus:ring-purple-500 border-gray-300 flex-shrink-0"
+                        />
+                        <label
+                          htmlFor={`area-${group.name}`}
+                          className="flex-1 text-sm text-gray-700 font-normal cursor-pointer select-none"
+                        >
+                          {group.name}
+                        </label>
+                        <button
+                          onClick={() => {
+                            const next = new Set(expandedAreas);
+                            if (isExpanded) next.delete(group.name); else next.add(group.name);
+                            setExpandedAreas(next);
+                          }}
+                          className="p-1 rounded text-gray-500 hover:text-purple-600 hover:bg-purple-50 transition-colors flex-shrink-0"
+                          title="Show sub-areas"
+                        >
+                          {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                        </button>
+                      </div>
+                      {/* Sub-areas */}
+                      {isExpanded && (
+                        <div className="ml-5 mt-1.5 mb-1 space-y-1.5 border-l-2 border-purple-100 pl-3">
+                          {group.subAreas.map((sub) => (
+                            <label key={sub} className="flex items-center gap-2 text-xs text-gray-700 cursor-pointer hover:text-purple-600">
+                              <input
+                                type="checkbox"
+                                checked={filters.areas.includes(sub)}
+                                onChange={() => handleCheckboxChange("areas", sub)}
+                                className="rounded text-purple-600 focus:ring-purple-400 border-gray-300 flex-shrink-0"
+                              />
+                              <span>{sub}</span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -177,15 +206,19 @@ export default function SearchResultsPage() {
             <div className="space-y-3 pt-4 border-t border-gray-100">
               <h3 className="font-bold text-gray-900 text-sm">Gender Preference</h3>
               <div className="space-y-2">
-                {["Male", "Female", "Unisex"].map((gender) => (
-                  <label key={gender} className="flex items-center gap-2.5 text-sm text-gray-600 cursor-pointer">
+                {[
+                  { value: "Male", label: "Boys" },
+                  { value: "Female", label: "Girls" },
+                  { value: "Unisex", label: "Co-Living" },
+                ].map(({ value, label }) => (
+                  <label key={value} className="flex items-center gap-2.5 text-sm text-gray-600 cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={filters.genders.includes(gender)}
-                      onChange={() => handleCheckboxChange("genders", gender)}
+                      checked={filters.genders.includes(value)}
+                      onChange={() => handleCheckboxChange("genders", value)}
                       className="rounded text-purple-600 focus:ring-purple-500 border-gray-300"
                     />
-                    <span>{gender === "Unisex" ? "Unisex / Co-Living" : gender}</span>
+                    <span>{label}</span>
                   </label>
                 ))}
               </div>
@@ -229,7 +262,7 @@ export default function SearchResultsPage() {
           </aside>
 
           {/* 2. Listings Area */}
-          <main className={`col-span-1 ${showMapView ? "md:col-span-2" : "md:col-span-2 lg:col-span-3"}`}>
+          <main className="col-span-1 md:col-span-2 lg:col-span-3">
             {/* Sort & Quick info */}
             <div className="flex items-center justify-between mb-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
               <div className="text-xs font-semibold text-gray-500">
@@ -345,104 +378,7 @@ export default function SearchResultsPage() {
               </div>
             )}
           </main>
-
-          {/* 3. Map View Panel — Desktop only (sticky side column) */}
-          {showMapView && filteredProperties.length > 0 && (
-            <aside className="hidden md:block md:col-span-1 sticky top-24 self-start border border-gray-200 rounded-2xl overflow-hidden shadow-sm h-[calc(100vh-140px)] bg-slate-50">
-              <div className="p-4 bg-white border-b border-gray-100 flex items-center justify-between">
-                <span className="font-bold text-sm text-gray-900">Bangalore Map Locator</span>
-                <span className="text-xs font-semibold text-gray-400">Showing pins</span>
-              </div>
-              <div className="relative w-full h-full bg-slate-100 select-none">
-                <div
-                  className="absolute inset-0 bg-cover opacity-20 pointer-events-none"
-                  style={{ backgroundImage: "url('https://picsum.photos/800/1000?random=100')" }}
-                />
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:32px_32px] opacity-60" />
-                {filteredProperties.map((p) => {
-                  const xPct = ((p.longitude - 77.55) / 0.25) * 100;
-                  const yPct = (1 - (p.latitude - 12.80) / 0.22) * 100;
-                  const isHovered = hoveredPropertyId === p.id;
-                  return (
-                    <Link
-                      key={p.id}
-                      href={`/properties/${p.id}`}
-                      style={{
-                        left: `${Math.max(18, Math.min(82, xPct))}%`,
-                        top: `${Math.max(18, Math.min(82, yPct))}%`,
-                      }}
-                      className="absolute transform -translate-x-1/2 -translate-y-1/2 group/pin z-20 cursor-pointer"
-                    >
-                      <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black shadow-md border transition-all ${isHovered ? "bg-purple-600 text-white scale-110 border-purple-700 z-30" : "bg-white text-purple-700 hover:bg-purple-50 border-purple-200"}`}>
-                        <span>₹{Math.round(p.startingRent / 1000)}k</span>
-                      </div>
-                      <div className={`w-2.5 h-2.5 rotate-45 mx-auto -mt-1 shadow-md border-r border-b rounded-br-sm transition-colors ${isHovered ? "bg-purple-600 border-purple-700" : "bg-white border-purple-200"}`} />
-                      <div className="hidden group-hover/pin:block absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-white rounded-xl shadow-xl border border-gray-100 p-2 w-48 z-40 pointer-events-none">
-                        <img src={p.images[0]} alt="" className="w-full h-20 object-cover rounded-lg" />
-                        <h4 className="font-extrabold text-xs text-gray-900 mt-1.5 truncate">{p.name}</h4>
-                        <div className="flex items-center justify-between mt-1 text-[10px]">
-                          <span className="text-gray-500">{p.area}</span>
-                          <span className="font-bold text-purple-600">₹{p.startingRent}/mo</span>
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                })}
-                <div className="absolute top-6 left-6 bg-white/90 backdrop-blur px-3 py-1.5 rounded-lg border border-gray-100 shadow-sm text-[10px] font-medium text-gray-500 max-w-[200px]">
-                  📌 Pins show starting rent. Click to view full details.
-                </div>
-              </div>
-            </aside>
-          )}
-        </div>
-
-        {/* Mobile Map View — full-width below listings, only on small screens */}
-        {showMapView && filteredProperties.length > 0 && (
-          <div ref={mobileMapRef} className="md:hidden mt-6 pb-4">
-            <div className="border border-gray-200 rounded-2xl overflow-hidden shadow-sm bg-slate-50">
-              <div className="p-4 bg-white border-b border-gray-100 flex items-center justify-between">
-                <span className="font-bold text-sm text-gray-900">Bangalore Map Locator</span>
-                <button
-                  onClick={() => setShowMapView(false)}
-                  className="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-              <div className="relative w-full h-[380px] bg-slate-100 select-none">
-                <div
-                  className="absolute inset-0 bg-cover opacity-20 pointer-events-none"
-                  style={{ backgroundImage: "url('https://picsum.photos/800/1000?random=100')" }}
-                />
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:32px_32px] opacity-60" />
-                {filteredProperties.map((p) => {
-                  const xPct = ((p.longitude - 77.55) / 0.25) * 100;
-                  const yPct = (1 - (p.latitude - 12.80) / 0.22) * 100;
-                  return (
-                    <Link
-                      key={p.id}
-                      href={`/properties/${p.id}`}
-                      style={{
-                        left: `${Math.max(18, Math.min(82, xPct))}%`,
-                        top: `${Math.max(18, Math.min(82, yPct))}%`,
-                      }}
-                      className="absolute transform -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer"
-                    >
-                      <div className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black shadow-md border bg-white text-purple-700 border-purple-200 active:bg-purple-600 active:text-white transition-colors">
-                        <span>₹{Math.round(p.startingRent / 1000)}k</span>
-                      </div>
-                      <div className="w-2.5 h-2.5 rotate-45 mx-auto -mt-1 shadow-md border-r border-b rounded-br-sm bg-white border-purple-200" />
-                    </Link>
-                  );
-                })}
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-lg border border-gray-100 shadow-sm text-[10px] font-medium text-gray-500 max-w-[180px]">
-                  📌 Tap a pin to view details.
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
+        </div> {/* end main content layout grid */}
       </div>{/* end flex-grow container */}
 
       {/* 4. Mobile Drawer Filters Overlay */}
@@ -462,18 +398,55 @@ export default function SearchResultsPage() {
               {/* Areas */}
               <div className="space-y-2">
                 <h4 className="font-bold text-gray-900 text-sm">Location / Area</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  {BANGALORE_AREAS.map((area) => (
-                    <label key={area} className="flex items-center gap-2 text-sm text-gray-600">
-                      <input
-                        type="checkbox"
-                        checked={filters.areas.includes(area)}
-                        onChange={() => handleCheckboxChange("areas", area)}
-                        className="rounded text-purple-600"
-                      />
-                      <span>{area}</span>
-                    </label>
-                  ))}
+                <div className="space-y-1.5">
+                  {BANGALORE_AREA_GROUPS.map((group) => {
+                    const isExpanded = expandedAreas.has(group.name);
+                    const isParentChecked = filters.areas.includes(group.name);
+                    return (
+                      <div key={group.name}>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            id={`m-area-${group.name}`}
+                            checked={isParentChecked}
+                            onChange={() => handleCheckboxChange("areas", group.name)}
+                            className="rounded text-purple-600 border-gray-300 flex-shrink-0"
+                          />
+                          <label
+                            htmlFor={`m-area-${group.name}`}
+                            className="flex-1 text-sm text-gray-700 font-normal cursor-pointer select-none"
+                          >
+                            {group.name}
+                          </label>
+                          <button
+                            onClick={() => {
+                              const next = new Set(expandedAreas);
+                              if (isExpanded) next.delete(group.name); else next.add(group.name);
+                              setExpandedAreas(next);
+                            }}
+                            className="p-1 rounded text-gray-500 hover:text-purple-600 hover:bg-purple-50 transition-colors flex-shrink-0"
+                          >
+                            {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                          </button>
+                        </div>
+                        {isExpanded && (
+                          <div className="ml-5 mt-1.5 mb-1 space-y-1.5 border-l-2 border-purple-100 pl-3">
+                            {group.subAreas.map((sub) => (
+                              <label key={sub} className="flex items-center gap-2 text-xs text-gray-700 cursor-pointer hover:text-purple-600">
+                                <input
+                                  type="checkbox"
+                                  checked={filters.areas.includes(sub)}
+                                  onChange={() => handleCheckboxChange("areas", sub)}
+                                  className="rounded text-purple-600 border-gray-300 flex-shrink-0"
+                                />
+                                <span>{sub}</span>
+                              </label>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -499,17 +472,21 @@ export default function SearchResultsPage() {
               <div className="space-y-2 pt-4 border-t border-gray-100">
                 <h4 className="font-bold text-gray-900 text-sm">Gender</h4>
                 <div className="flex gap-2">
-                  {["Male", "Female", "Unisex"].map((g) => (
+                  {[
+                    { value: "Male", label: "Boys" },
+                    { value: "Female", label: "Girls" },
+                    { value: "Unisex", label: "Co-Living" },
+                  ].map(({ value, label }) => (
                     <button
-                      key={g}
-                      onClick={() => handleCheckboxChange("genders", g)}
+                      key={value}
+                      onClick={() => handleCheckboxChange("genders", value)}
                       className={`flex-1 py-2 px-3 border text-xs font-semibold rounded-xl transition-all ${
-                        filters.genders.includes(g)
+                        filters.genders.includes(value)
                           ? "bg-purple-600 text-white border-purple-600"
                           : "bg-white text-gray-700 border-gray-200"
                       }`}
                     >
-                      {g}
+                      {label}
                     </button>
                   ))}
                 </div>

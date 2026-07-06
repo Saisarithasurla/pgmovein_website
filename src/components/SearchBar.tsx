@@ -132,9 +132,9 @@ export default function SearchBar() {
             className="w-full bg-transparent border-0 p-0 text-xs font-semibold text-gray-800 focus:ring-0 focus:outline-none cursor-pointer mt-0.5"
           >
             <option value="">Select Gender</option>
-            <option value="Male">Male Only</option>
-            <option value="Female">Female Only</option>
-            <option value="Unisex">Unisex / Co</option>
+            <option value="Male">Boys Only</option>
+            <option value="Female">Girls Only</option>
+            <option value="Unisex">Co-Living</option>
           </select>
         </div>
       </div>

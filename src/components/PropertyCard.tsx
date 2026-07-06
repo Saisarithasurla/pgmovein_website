@@ -42,8 +42,31 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         return "bg-blue-50 text-blue-700 border-blue-100";
       case "Female":
         return "bg-pink-50 text-pink-700 border-pink-100";
+      case "1BHK":
+      case "2BHK":
+      case "3BHK":
+        return "bg-orange-50 text-orange-700 border-orange-100";
       default:
         return "bg-purple-50 text-purple-700 border-purple-100";
+    }
+  };
+
+  // Map gender/config value to display label
+  const getGenderLabel = (gender: string, type: string) => {
+    if (type === "PG") {
+      switch (gender) {
+        case "Male": return "Boys";
+        case "Female": return "Girls";
+        case "Unisex": return "Co-Living";
+        default: return gender;
+      }
+    }
+    // For Flat type
+    switch (gender) {
+      case "1BHK": return "1 BHK";
+      case "2BHK": return "2 BHK";
+      case "3BHK": return "3 BHK";
+      default: return gender;
     }
   };
 
@@ -90,6 +113,15 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           loading="lazy"
         />
 
+        {/* PG / Flat type badge - top left */}
+        <span className={`absolute top-3 left-3 text-[10px] font-black px-2 py-1 rounded-md shadow-sm backdrop-blur-sm ${
+          property.type === "PG"
+            ? "bg-purple-600 text-white"
+            : "bg-orange-500 text-white"
+        }`}>
+          {property.type === "PG" ? "PG" : "Flat"}
+        </span>
+
         {/* Verification badge */}
         {property.verified && (
           <span className="absolute bottom-3 left-3 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-md flex items-center gap-1 shadow-sm">
@@ -101,14 +133,14 @@ export default function PropertyCard({ property }: PropertyCardProps) {
       {/* Card Content */}
       <div className="p-5 flex flex-col flex-grow justify-between">
         <div>
-          {/* Header Row: Gender Preference & Rating */}
+          {/* Header Row: Gender/BHK Badge & Rating */}
           <div className="flex items-center justify-between mb-2">
             <span
               className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${getGenderColor(
                 property.gender
               )}`}
             >
-              {property.gender}
+              {getGenderLabel(property.gender, property.type)}
             </span>
             <div className="flex items-center gap-1 text-sm font-semibold text-gray-800">
               <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
@@ -131,7 +163,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           {/* Sharing Info */}
           <div className="mt-3 flex items-center gap-1 text-xs text-gray-600">
             <Users className="h-3.5 w-3.5 text-gray-400" />
-            <span>{sharingString} Sharing</span>
+            <span>{property.type === "Flat" ? getGenderLabel(property.gender, property.type) : `${sharingString} Sharing`}</span>
           </div>
 
           {/* Amenities Summary */}

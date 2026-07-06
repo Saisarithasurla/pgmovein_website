@@ -7,7 +7,7 @@ import AreaCard from "../components/AreaCard";
 import PropertyCard from "../components/PropertyCard";
 import TestimonialCard from "../components/TestimonialCard";
 import ScrollReveal from "../components/ScrollReveal";
-import { mockProperties } from "../data/mockData";
+import { useProperty } from "../context/PropertyContext";
 import { useLead } from "../context/LeadContext";
 
 export default function HomePage() {
@@ -37,8 +37,10 @@ export default function HomePage() {
     { name: "Bellandur", count: 14 }
   ];
 
+  const { properties } = useProperty();
+
   // Featured properties
-  const featuredProperties = mockProperties.filter((p) => p.featured).slice(0, 6);
+  const featuredProperties = properties.filter((p) => p.featured).slice(0, 6);
 
   // FAQ list
   const faqs = [

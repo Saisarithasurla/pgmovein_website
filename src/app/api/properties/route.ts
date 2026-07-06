@@ -56,6 +56,7 @@ export async function GET() {
       },
       latitude: parseFloat(row.latitude) || 12.9716,
       longitude: parseFloat(row.longitude) || 77.5946,
+      address: row.address || "",
       ownerName: row.owner_name || "",
       verified: row.verified || false,
       highlights: row.highlights || [],

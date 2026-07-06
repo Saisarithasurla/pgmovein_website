@@ -4,20 +4,22 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Heart, Sparkles } from "lucide-react";
 import PropertyCard from "../../components/PropertyCard";
-import { mockProperties, Property } from "../../data/mockData";
+import { useProperty } from "../../context/PropertyContext";
+import { Property } from "../../data/mockData";
 
 export default function SavedPropertiesPage() {
+  const { properties } = useProperty();
   const [savedProperties, setSavedProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const wishlist: string[] = JSON.parse(localStorage.getItem("pgmove_wishlist") || "[]");
-      const matched = mockProperties.filter((p) => wishlist.includes(p.id));
+      const matched = properties.filter((p) => wishlist.includes(p.id));
       setSavedProperties(matched);
       setIsLoading(false);
     }
-  }, []);
+  }, [properties]);
 
   return (
     <div className="bg-[#F5F7FF] min-h-screen font-sans py-16">

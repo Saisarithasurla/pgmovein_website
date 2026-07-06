@@ -24,11 +24,11 @@ import {
   MapPin,
   Clock,
   Compass,
+  X,
 } from "lucide-react";
 import PropertyCard from "../../../components/PropertyCard";
 import { useLead } from "../../../context/LeadContext";
 import { useProperty } from "../../../context/PropertyContext";
-import { mockProperties } from "../../../data/mockData";
 
 export default function PropertyDetailPage() {
   const params = useParams();
@@ -41,6 +41,7 @@ export default function PropertyDetailPage() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isSaved, setIsSaved] = useState(false);
   const [activeTab, setActiveTab] = useState("rooms"); // tabs: rooms, amenities, rules, location
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   // Form states for the quick enquiry widget
   const [enquiryName, setEnquiryName] = useState("");
@@ -164,25 +165,33 @@ export default function PropertyDetailPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 items-start">
           {/* Left Column: Image Gallery */}
           <section>
-            <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden bg-white shadow-md">
+            <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden bg-white shadow-md cursor-pointer group" onClick={() => setIsImageModalOpen(true)}>
               <img
                 src={property.images[activeImageIndex]}
                 alt={property.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-350 group-hover:scale-[1.01]"
               />
+              {/* Verified Badge overlay on image */}
+              {property.verified && (
+                <span className="absolute top-4 left-4 z-10 bg-green-500 text-white text-[10px] font-black px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-md backdrop-blur-sm">
+                  <CheckCircle className="h-3.5 w-3.5 fill-white text-green-500" /> VERIFIED
+                </span>
+              )}
               {/* Arrows */}
               <button
-                onClick={() =>
-                  setActiveImageIndex((prev) => (prev === 0 ? property.images.length - 1 : prev - 1))
-                }
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveImageIndex((prev) => (prev === 0 ? property.images.length - 1 : prev - 1));
+                }}
                 className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md backdrop-blur-sm transition-all"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
               <button
-                onClick={() =>
-                  setActiveImageIndex((prev) => (prev === property.images.length - 1 ? 0 : prev + 1))
-                }
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveImageIndex((prev) => (prev === property.images.length - 1 ? 0 : prev + 1));
+                }}
                 className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md backdrop-blur-sm transition-all"
               >
                 <ChevronRight className="h-5 w-5" />
@@ -212,13 +221,10 @@ export default function PropertyDetailPage() {
           <section className="space-y-6">
             <div className="space-y-4">
               <div className="flex flex-wrap items-center gap-2">
-                {property.verified && (
-                  <span className="bg-green-500 text-white text-[10px] font-black px-2 py-0.5 rounded flex items-center gap-1 shadow-sm">
-                    <CheckCircle className="h-3 w-3 fill-white text-green-500" /> VERIFIED
-                  </span>
-                )}
                 <span className="text-[10px] font-semibold text-purple-750 bg-[#F5F3FF] px-2 py-0.5 rounded border border-purple-100">
-                  {property.gender} Preference
+                  {property.type === "PG"
+                    ? (({ Male: "Boys", Female: "Girls", Unisex: "Co-Living" } as Record<string, string>)[property.gender] ?? property.gender) + " Preference"
+                    : (({ "1BHK": "1 BHK", "2BHK": "2 BHK", "3BHK": "3 BHK" } as Record<string, string>)[property.gender] ?? property.gender)}
                 </span>
                 <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded ${property.availability === "Available" ? "bg-green-50 text-green-700 border border-green-150" : "bg-amber-50 text-amber-700 border border-amber-150"
                   }`}>
@@ -459,23 +465,15 @@ export default function PropertyDetailPage() {
               </div>
             )}
 
-            {/* Tab 4: Location & Map */}
+            {/* Tab 4: Location & Address */}
             {activeTab === "location" && (
               <div className="space-y-6 animate-fade-in">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Address Map */}
+                  {/* Address */}
                   <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-50 space-y-4">
                     <div>
                       <h3 className="font-display font-bold text-[#1E1B2E] text-base">Location Address</h3>
-                      <p className="text-xs text-[#6B7280] mt-1">{property.area}, Bangalore, KA, India</p>
-                    </div>
-                    <div className="h-48 rounded-xl overflow-hidden bg-slate-100 border border-gray-150 relative flex items-center justify-center select-none">
-                      <div className="absolute inset-0 bg-cover opacity-30" style={{ backgroundImage: "url('https://picsum.photos/600/400?random=102')" }}></div>
-                      <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:24px_24px] opacity-40"></div>
-
-                      <div className="relative z-10 text-center animate-bounce">
-                        <MapPin className="h-6 w-6 text-[#7C3AED] fill-purple-200 mx-auto" />
-                      </div>
+                      <p className="text-xs text-[#6B7280] mt-1">{property.address || `${property.area}, Bangalore, KA, India`}</p>
                     </div>
                   </div>
 
@@ -582,6 +580,57 @@ export default function PropertyDetailPage() {
           </section>
         )}
       </div>
+
+      {/* Image Lightbox Modal */}
+      {isImageModalOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in"
+          onClick={() => setIsImageModalOpen(false)}
+        >
+          <button
+            onClick={() => setIsImageModalOpen(false)}
+            className="absolute top-4 right-4 z-[110] p-2.5 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
+          >
+            <X className="h-6 w-6" />
+          </button>
+
+          <div
+            className="relative max-w-4xl w-full max-h-[85vh] flex flex-col justify-center items-center rounded-2xl overflow-hidden animate-scale-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={property.images[activeImageIndex]}
+              alt={property.name}
+              className="max-w-full max-h-[75vh] object-contain rounded-xl shadow-2xl border border-white/10"
+            />
+
+            {/* Lightbox Navigation */}
+            <button
+              onClick={() =>
+                setActiveImageIndex((prev) => (prev === 0 ? property.images.length - 1 : prev - 1))
+              }
+              className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white shadow-lg backdrop-blur-sm transition-all"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+            <button
+              onClick={() =>
+                setActiveImageIndex((prev) => (prev === property.images.length - 1 ? 0 : prev + 1))
+              }
+              className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white shadow-lg backdrop-blur-sm transition-all"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </button>
+
+            {/* Lightbox Index / Info */}
+            <div className="mt-4 text-white text-sm font-bold bg-black/40 px-4 py-1.5 rounded-full backdrop-blur-sm flex items-center gap-2">
+              <span>{property.name}</span>
+              <span className="text-white/40">•</span>
+              <span>{activeImageIndex + 1} / {property.images.length}</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

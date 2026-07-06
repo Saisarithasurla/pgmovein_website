@@ -54,39 +54,39 @@ export default function ContactModal({ onClose }: ContactModalProps) {
   return (
     /* Backdrop */
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm animate-fade-in"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div className="bg-white w-full max-w-md min-h-[540px] flex flex-col rounded-2xl shadow-2xl overflow-hidden animate-slide-up">
 
         {/* Header */}
-        <div className="bg-gradient-to-br from-purple-600 to-indigo-600 px-6 py-5 relative">
+        <div className="bg-white px-6 py-5 relative border-b border-gray-100">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors"
+            className="absolute top-4 right-4 p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors"
           >
             <X className="h-4 w-4" />
           </button>
-          <h2 className="text-xl font-black text-white tracking-tight">Get in Touch</h2>
-          <p className="text-purple-200 text-sm mt-0.5">We typically respond within 30 minutes</p>
+          <h2 className="text-xl font-black text-gray-900 tracking-tight">Get in Touch</h2>
+          <p className="text-gray-500 text-sm mt-0.5">We typically respond within 30 minutes</p>
 
           {/* Tabs */}
-          <div className="flex gap-2 mt-4">
+          <div className="flex gap-2 mt-4 w-full">
             <button
               onClick={() => setTab("customer")}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-bold transition-all ${
-                tab === "customer" ? "bg-white text-purple-600" : "bg-white/20 text-white hover:bg-white/30"
+              className={`flex-1 flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold transition-all whitespace-nowrap ${
+                tab === "customer" ? "bg-purple-600 text-white shadow" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
-              <User className="h-3.5 w-3.5" /> Looking for PG
+              <User className="h-3.5 w-3.5 flex-shrink-0" /> Looking for PG
             </button>
             <button
               onClick={() => setTab("owner")}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-bold transition-all ${
-                tab === "owner" ? "bg-white text-purple-600" : "bg-white/20 text-white hover:bg-white/30"
+              className={`flex-1 flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold transition-all whitespace-nowrap ${
+                tab === "owner" ? "bg-purple-600 text-white shadow" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
-              <Building2 className="h-3.5 w-3.5" /> PG Owner
+              <Building2 className="h-3.5 w-3.5 flex-shrink-0" /> PG Owner
             </button>
           </div>
         </div>
@@ -209,46 +209,52 @@ export default function ContactModal({ onClose }: ContactModalProps) {
                   href="https://wa.me/919108421609?text=Hi%2C%20I%20want%20to%20list%20my%20PG%20on%20PGMove.in"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-3 rounded-xl border border-green-200 bg-green-50 hover:bg-green-100 transition-all group"
+                  className="flex items-center gap-3.5 p-3 rounded-xl border border-green-200 bg-green-50/50 hover:bg-green-50 transition-all group"
                 >
-                  <div className="h-9 w-9 bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                    <MessageCircle className="h-4.5 w-4.5 text-white" />
+                  <div className="h-10 w-10 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform shadow-sm">
+                    <MessageCircle className="h-5 w-5 text-white" />
                   </div>
-                  <div>
-                    <p className="font-bold text-gray-900 text-xs">WhatsApp Us</p>
-                    <p className="text-[11px] text-gray-500">+91 91084 21609 · Instant reply</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-gray-900 text-sm">WhatsApp Us</p>
+                    <p className="text-xs text-gray-500 mt-0.5">+91 91084 21609 · Instant reply</p>
                   </div>
-                  <span className="ml-auto text-green-605 font-bold text-[10px] bg-green-100 px-2 py-0.5 rounded-full">Open Chat →</span>
+                  <div className="text-green-600 font-bold text-xs flex-shrink-0 pr-1 group-hover:translate-x-0.5 transition-transform">
+                    Chat →
+                  </div>
                 </a>
 
                 {/* Phone */}
                 <a
                   href="tel:+919108421609"
-                  className="flex items-center gap-3 p-3 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 transition-all group"
+                  className="flex items-center gap-3.5 p-3 rounded-xl border border-blue-200 bg-blue-50/50 hover:bg-blue-50 transition-all group"
                 >
-                  <div className="h-9 w-9 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                    <Phone className="h-4.5 w-4.5 text-white" />
+                  <div className="h-10 w-10 bg-blue-500 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform shadow-sm">
+                    <Phone className="h-5 w-5 text-white" />
                   </div>
-                  <div>
-                    <p className="font-bold text-gray-900 text-xs">Call Us</p>
-                    <p className="text-[11px] text-gray-500">+91 91084 21609 · Mon–Sat, 9am–7pm</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-gray-900 text-sm">Call Us</p>
+                    <p className="text-xs text-gray-500 mt-0.5">+91 91084 21609 · Mon–Sat</p>
                   </div>
-                  <span className="ml-auto text-blue-605 font-bold text-[10px] bg-blue-100 px-2 py-0.5 rounded-full">Call Now →</span>
+                  <div className="text-blue-600 font-bold text-xs flex-shrink-0 pr-1 group-hover:translate-x-0.5 transition-transform">
+                    Call →
+                  </div>
                 </a>
 
                 {/* Email */}
                 <a
-                  href="mailto:owners@pgmove.in?subject=I want to list my PG"
-                  className="flex items-center gap-3 p-3 rounded-xl border border-purple-200 bg-purple-50 hover:bg-purple-100 transition-all group"
+                  href="mailto:agent@pgmove.in?subject=I want to list my PG"
+                  className="flex items-center gap-3.5 p-3 rounded-xl border border-purple-200 bg-purple-50/50 hover:bg-purple-50 transition-all group"
                 >
-                  <div className="h-9 w-9 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                    <Mail className="h-4.5 w-4.5 text-white" />
+                  <div className="h-10 w-10 bg-purple-600 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform shadow-sm">
+                    <Mail className="h-5 w-5 text-white" />
                   </div>
-                  <div>
-                    <p className="font-bold text-gray-900 text-xs">Email Us</p>
-                    <p className="text-[11px] text-gray-500">owners@pgmove.in · Reply within 24hrs</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-gray-900 text-sm">Email Us</p>
+                    <p className="text-xs text-gray-500 mt-0.5">agent@pgmove.in · Reply within 24h</p>
                   </div>
-                  <span className="ml-auto text-purple-605 font-bold text-[10px] bg-purple-100 px-2 py-0.5 rounded-full">Send Mail →</span>
+                  <div className="text-purple-600 font-bold text-xs flex-shrink-0 pr-1 group-hover:translate-x-0.5 transition-transform">
+                    Mail →
+                  </div>
                 </a>
               </div>
             </div>
