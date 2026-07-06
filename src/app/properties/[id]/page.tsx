@@ -341,7 +341,7 @@ export default function PropertyDetailPage() {
               <div className="space-y-6 animate-fade-in">
                 {/* Pricing & Deposit Details */}
                 <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-50">
-                  <h3 className="font-display font-bold text-[#1E1B2E] text-base mb-4">Pricing & Deposit Details</h3>
+                  <h3 className="font-sans font-bold text-[#1E1B2E] text-base mb-4">Pricing & Deposit Details</h3>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div className="p-4 bg-gray-50 rounded-xl">
                       <span className="text-[10px] text-gray-400 font-bold block uppercase tracking-wider">Starting Rent</span>
@@ -366,7 +366,7 @@ export default function PropertyDetailPage() {
 
                 {/* Sharing Options Table */}
                 <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-50">
-                  <h3 className="font-display font-bold text-[#1E1B2E] text-base mb-4">Sharing Options & Rates</h3>
+                  <h3 className="font-sans font-bold text-[#1E1B2E] text-base mb-4">Sharing Options & Rates</h3>
                   <div className="overflow-hidden border border-gray-100 rounded-xl">
                     <table className="min-w-full divide-y divide-gray-100 text-sm">
                       <thead className="bg-gray-55 font-bold text-gray-700 text-xs uppercase">
@@ -404,7 +404,7 @@ export default function PropertyDetailPage() {
             {/* Tab 2: Amenities */}
             {activeTab === "amenities" && (
               <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-50 animate-fade-in">
-                <h3 className="font-display font-bold text-[#1E1B2E] text-base mb-4">Amenities Offered</h3>
+                <h3 className="font-sans font-bold text-[#1E1B2E] text-base mb-4">Amenities Offered</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {property.amenities.map((amenity, idx) => (
                     <div key={idx} className="flex items-center gap-3 p-3 bg-gray-55/40 rounded-xl">
@@ -424,7 +424,7 @@ export default function PropertyDetailPage() {
                 {/* Food Details */}
                 <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-50 flex flex-col justify-between">
                   <div>
-                    <h3 className="font-display font-bold text-[#1E1B2E] text-base mb-4">Food & Catering</h3>
+                    <h3 className="font-sans font-bold text-[#1E1B2E] text-base mb-4">Food & Catering</h3>
                     {property.food.available ? (
                       <div className="space-y-4">
                         <div className="flex flex-wrap gap-2 text-xs font-bold text-gray-700">
@@ -452,7 +452,7 @@ export default function PropertyDetailPage() {
 
                 {/* House Rules */}
                 <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-50">
-                  <h3 className="font-display font-bold text-[#1E1B2E] text-base mb-4">House Rules & Curfews</h3>
+                  <h3 className="font-sans font-bold text-[#1E1B2E] text-base mb-4">House Rules & Curfews</h3>
                   <ul className="space-y-3">
                     {property.houseRules.map((rule, idx) => (
                       <li key={idx} className="flex items-start gap-3 text-xs sm:text-sm text-[#6B7280] font-semibold">
@@ -472,14 +472,14 @@ export default function PropertyDetailPage() {
                   {/* Address */}
                   <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-50 space-y-4">
                     <div>
-                      <h3 className="font-display font-bold text-[#1E1B2E] text-base">Location Address</h3>
+                      <h3 className="font-sans font-bold text-[#1E1B2E] text-base">Location Address</h3>
                       <p className="text-xs text-[#6B7280] mt-1">{property.address || `${property.area}, Bangalore, KA, India`}</p>
                     </div>
                   </div>
 
                   {/* Nearby Landmarks */}
                   <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-50 space-y-4">
-                    <h3 className="font-display font-bold text-[#1E1B2E] text-base">Nearby Landmarks</h3>
+                    <h3 className="font-sans font-bold text-[#1E1B2E] text-base">Nearby Landmarks</h3>
                     <div className="space-y-3 text-xs font-semibold">
                       <div className="space-y-1">
                         <h4 className="font-bold text-[#7C3AED] uppercase text-[10px] tracking-wider">🏢 Tech Parks</h4>
@@ -510,7 +510,7 @@ export default function PropertyDetailPage() {
                     <CheckCircle className="h-6 w-6 text-[#7C3AED] fill-[#F5F3FF]" />
                   </div>
                   <div className="space-y-1">
-                    <h4 className="font-display font-bold text-gray-900 text-base">Enquiry Sent!</h4>
+                    <h4 className="font-sans font-bold text-gray-900 text-base">Enquiry Sent!</h4>
                     <p className="text-xs text-gray-500 leading-relaxed font-semibold px-2">
                       Thank you, {enquiryName}. We have received your query for {property.name}. Our support team will get in touch with you shortly.
                     </p>
@@ -518,7 +518,7 @@ export default function PropertyDetailPage() {
                 </div>
               ) : (
                 <>
-                  <h3 className="font-display font-bold text-[#1E1B2E] text-base">Quick Enquiry</h3>
+                  <h3 className="font-sans font-bold text-[#1E1B2E] text-base">Quick Enquiry</h3>
                   <form onSubmit={handleQuickEnquirySubmit} className="space-y-4">
                     <div>
                       <label className="block text-[10px] uppercase font-bold text-[#6B7280] mb-1">Your Name</label>
@@ -562,7 +562,7 @@ export default function PropertyDetailPage() {
           <section className="mt-16 pt-10 border-t border-gray-200">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
               <div>
-                <h3 className="font-display font-bold text-[#1E1B2E] text-2xl tracking-tight">Similar PGs in {property.area}</h3>
+                <h3 className="font-sans font-bold text-[#1E1B2E] text-2xl tracking-tight">Similar PGs in {property.area}</h3>
                 <p className="text-sm text-[#6B7280] mt-1">Check out other verified options available nearby</p>
               </div>
               <Link
