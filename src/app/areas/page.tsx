@@ -5,20 +5,39 @@ import Link from "next/link";
 import { MapPin, ArrowUpRight, Search, Home, ChevronRight } from "lucide-react";
 import ScrollReveal from "../../components/ScrollReveal";
 
-const allAreas = [
-  { name: "Koramangala", count: 24, tag: "IT Hub", image: "/areas/koramangala.png", desc: "Vibrant startup zone with cafes, tech offices & great connectivity." },
-  { name: "Whitefield", count: 18, tag: "Tech Park", image: "/areas/whitefield.png", desc: "Major IT corridor with top MNC campuses and modern infrastructure." },
-  { name: "HSR Layout", count: 20, tag: "Residential", image: "/areas/hsr-layout.png", desc: "Well-planned residential hub favoured by tech professionals & families." },
-  { name: "Marathahalli", count: 15, tag: "ORR Corridor", image: "/areas/marathahalli.png", desc: "Bustling commercial area on Outer Ring Road close to major IT parks." },
-  { name: "Indiranagar", count: 12, tag: "Upscale", image: "/areas/indiranagar.png", desc: "Trendy neighbourhood with top restaurants, pubs and shopping streets." },
-  { name: "Electronic City", count: 16, tag: "IT Hub", image: "/areas/electronic-city.png", desc: "Home to Infosys, Wipro & hundreds of tech companies on NICE Road." },
-  { name: "BTM Layout", count: 22, tag: "Budget-Friendly", image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=600&q=80", desc: "Popular among students & freshers with affordable PG options." },
-  { name: "Bellandur", count: 14, tag: "Growing Hub", image: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80", desc: "Rapidly expanding area near Sarjapur Road with modern apartments." },
-  { name: "Sarjapur Road", count: 11, tag: "Emerging", image: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=80", desc: "Fast-developing corridor connecting Electronic City and Whitefield." },
-  { name: "JP Nagar", count: 9, tag: "Residential", image: "https://images.unsplash.com/photo-1448630360428-65456885c650?w=600&q=80", desc: "South Bangalore's premier residential area with great metro access." },
-  { name: "Hebbal", count: 8, tag: "North BLR", image: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=600&q=80", desc: "Rapidly growing north Bangalore hub near airport and Manyata Tech Park." },
-  { name: "Yeshwanthpur", count: 7, tag: "Industrial", image: "https://images.unsplash.com/photo-1514565131-fce0801e6785?w=600&q=80", desc: "Key industrial and commercial zone with excellent rail connectivity." },
-];
+import { BANGALORE_AREAS } from "../../data/mockData";
+
+const featuredAreasDetails: Record<string, { tag: string; image: string; desc: string; count: number }> = {
+  "Koramangala": { count: 24, tag: "IT Hub", image: "/areas/koramangala.png", desc: "Vibrant startup zone with cafes, tech offices & great connectivity." },
+  "Whitefield": { count: 18, tag: "Tech Park", image: "/areas/whitefield.png", desc: "Major IT corridor with top MNC campuses and modern infrastructure." },
+  "HSR Layout": { count: 20, tag: "Residential", image: "/areas/hsr-layout.png", desc: "Well-planned residential hub favoured by tech professionals & families." },
+  "Marathahalli": { count: 15, tag: "ORR Corridor", image: "/areas/marathahalli.png", desc: "Bustling commercial area on Outer Ring Road close to major IT parks." },
+  "Indiranagar": { count: 12, tag: "Upscale", image: "/areas/indiranagar.png", desc: "Trendy neighbourhood with top restaurants, pubs and shopping streets." },
+  "Electronic City": { count: 16, tag: "IT Hub", image: "/areas/electronic-city.png", desc: "Home to Infosys, Wipro & hundreds of tech companies on NICE Road." },
+  "BTM Layout": { count: 22, tag: "Budget-Friendly", image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=600&q=80", desc: "Popular among students & freshers with affordable PG options." },
+  "Bellandur": { count: 14, tag: "Growing Hub", image: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80", desc: "Rapidly expanding area near Sarjapur Road with modern apartments." },
+  "Sarjapur Road": { count: 11, tag: "Emerging", image: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=80", desc: "Fast-developing corridor connecting Electronic City and Whitefield." },
+  "JP Nagar": { count: 9, tag: "Residential", image: "https://images.unsplash.com/photo-1448630360428-65456885c650?w=600&q=80", desc: "South Bangalore's premier residential area with great metro access." },
+  "Hebbal": { count: 8, tag: "North BLR", image: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=600&q=80", desc: "Rapidly growing north Bangalore hub near airport and Manyata Tech Park." },
+  "Yeshwanthpur": { count: 7, tag: "Industrial", image: "https://images.unsplash.com/photo-1514565131-fce0801e6785?w=600&q=80", desc: "Key industrial and commercial zone with excellent rail connectivity." }
+};
+
+const allAreas = BANGALORE_AREAS.map(areaName => {
+  const featured = featuredAreasDetails[areaName];
+  if (featured) {
+    return {
+      name: areaName,
+      ...featured
+    };
+  }
+  return {
+    name: areaName,
+    count: 0,
+    tag: "Bengaluru",
+    image: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=600&q=80",
+    desc: `Find paying guests and co-living spaces in ${areaName}, Bengaluru.`
+  };
+});
 
 const tagColors: Record<string, string> = {
   "IT Hub": "bg-purple-100 text-purple-700",
@@ -31,6 +50,7 @@ const tagColors: Record<string, string> = {
   "Emerging": "bg-cyan-100 text-cyan-700",
   "North BLR": "bg-indigo-100 text-indigo-700",
   "Industrial": "bg-gray-100 text-gray-700",
+  "Bengaluru": "bg-purple-100 text-purple-700",
 };
 
 export default function AllAreasPage() {
