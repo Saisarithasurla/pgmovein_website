@@ -94,7 +94,7 @@ type FormData = {
 
 const INITIAL_FORM: FormData = {
   name: "",
-  area: BANGALORE_AREAS[0],
+  area: "",
   city: "Bangalore",
   gender: "Male",
   type: "PG",
@@ -614,7 +614,9 @@ export default function AgentDashboardPage() {
                             }}
                             className="w-full text-left text-sm font-semibold p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 bg-gray-50/50 hover:bg-white transition-colors cursor-pointer flex items-center justify-between"
                           >
-                            <span>{formData.area}</span>
+                            <span className={formData.area ? "text-gray-900" : "text-gray-400 font-normal"}>
+                              {formData.area || "Select Area / Location"}
+                            </span>
                             <ChevronDown className="h-4 w-4 text-gray-400" />
                           </button>
                           <div
