@@ -429,17 +429,17 @@ export default function PropertyDetailPage() {
                       <div className="space-y-4">
                         <div className="flex flex-wrap gap-2 text-xs font-bold text-gray-700">
                           <span className="px-3 py-1 bg-green-50 text-green-700 border border-green-150 rounded-lg">
-                            🟢 {property.food.type} Catering
+                            🟢 {property.food.type === "Both" ? "Veg and Non-Veg" : property.food.type === "NonVeg" ? "Non-Veg" : "Veg"}
                           </span>
                           <span className="px-3 py-1 bg-gray-50 border border-gray-150 rounded-lg">
                             Meals: {property.food.meals.join(", ")}
                           </span>
                         </div>
-                        <div className="text-xs text-[#6B7280] bg-gray-50 p-4 rounded-xl space-y-1">
-                          <p className="font-bold text-gray-750">Meal Timings:</p>
-                          <p>• Breakfast: 7:30 AM - 9:30 AM</p>
-                          <p>• Lunch: 1:00 PM - 2:30 PM (Weekends)</p>
-                          <p>• Dinner: 8:00 PM - 10:00 PM</p>
+                        <div className="text-xs text-gray-700 bg-gray-50 p-4 rounded-xl space-y-1.5 border border-gray-100/80">
+                          <p className="font-extrabold text-gray-900 text-sm mb-1">Meal Timings:</p>
+                          <p className="font-semibold text-gray-800"><span className="text-[#7C3AED] font-bold">•</span> Breakfast: 7:30 AM - 9:30 AM</p>
+                          <p className="font-semibold text-gray-800"><span className="text-[#7C3AED] font-bold">•</span> Lunch: 1:00 PM - 2:30 PM (Weekends)</p>
+                          <p className="font-semibold text-gray-800"><span className="text-[#7C3AED] font-bold">•</span> Dinner: 8:00 PM - 10:00 PM</p>
                         </div>
                       </div>
                     ) : (
