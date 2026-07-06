@@ -597,14 +597,13 @@ export default function AgentDashboardPage() {
                           onChange={(e) => setFormData({ ...formData, area: e.target.value })}
                           className="w-full text-sm font-semibold p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 bg-gray-50/50 cursor-pointer"
                         >
-                          {/* Group options by parent area */}
                           {BANGALORE_AREA_GROUPS.map((group) => (
                             <optgroup key={group.name} label={group.name}>
-                              <option value={group.name}>{group.name} (All Area)</option>
+                              {/* Parent Area Option */}
+                              <option value={group.name}>{group.name} (All PGs)</option>
+                              {/* Sub Area Options */}
                               {group.subAreas.map((sub) => (
-                                <option key={sub} value={sub}>
-                                  {sub}
-                                </option>
+                                <option key={sub} value={sub}>{sub}</option>
                               ))}
                             </optgroup>
                           ))}
@@ -772,7 +771,22 @@ export default function AgentDashboardPage() {
               <div className="px-6 sm:px-8">
                 <SectionHeader id="amenities" title="Amenities" icon={CheckCircle} />
                 {expandedSection === "amenities" && (
-                  <div className="pb-6 animate-fade-in">
+                  <div className="pb-6 animate-fade-in space-y-4">
+                    <div className="flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const allSelected = ALL_AMENITIES.every((a) => formData.amenities.includes(a));
+                          setFormData({
+                            ...formData,
+                            amenities: allSelected ? [] : [...ALL_AMENITIES]
+                          });
+                        }}
+                        className="py-1 px-3 text-xs font-bold rounded-lg border border-purple-200 text-purple-650 hover:bg-purple-50 transition-colors"
+                      >
+                        {ALL_AMENITIES.every((a) => formData.amenities.includes(a)) ? "Deselect All" : "Select All"}
+                      </button>
+                    </div>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                       {ALL_AMENITIES.map((amenity) => (
                         <button
