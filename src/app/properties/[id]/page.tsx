@@ -29,6 +29,7 @@ import {
 import PropertyCard from "../../../components/PropertyCard";
 import { useLead } from "../../../context/LeadContext";
 import { useProperty } from "../../../context/PropertyContext";
+import { BANGALORE_AREA_GROUPS } from "../../../data/mockData";
 
 export default function PropertyDetailPage() {
   const params = useParams();
@@ -238,7 +239,13 @@ export default function PropertyDetailPage() {
 
               <p className="text-gray-500 text-sm flex items-center gap-1">
                 <MapPin className="h-4 w-4 text-[#7C3AED] shrink-0" />
-                {property.area}, Bangalore
+                {(() => {
+                  const parentGroup = BANGALORE_AREA_GROUPS.find((g) => g.subAreas.includes(property.area));
+                  if (parentGroup) {
+                    return `${property.area}, ${parentGroup.name}`;
+                  }
+                  return property.area;
+                })()}, Bangalore
               </p>
 
               <div className="flex items-center gap-2.5 text-sm font-semibold text-gray-800 pt-1">

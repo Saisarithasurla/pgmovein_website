@@ -658,59 +658,59 @@ export default function AgentDashboardPage() {
                           ))}
                         </div>
 
-                        {/* Expandable subareas directly below the selection */}
-                        {(() => {
-                          const currentGroup = BANGALORE_AREA_GROUPS.find((g) => g.name === selectedMainArea);
-                          if (!currentGroup || currentGroup.subAreas.length === 0) return null;
+                      </div>
+                      {/* Expandable subareas directly below the selection row */}
+                      {(() => {
+                        const currentGroup = BANGALORE_AREA_GROUPS.find((g) => g.name === selectedMainArea);
+                        if (!currentGroup || currentGroup.subAreas.length === 0) return null;
 
-                          return (
-                            <div className="mt-3 p-4 bg-purple-50/30 rounded-2xl border border-purple-100/60 space-y-3 animate-fade-in">
-                              <span className="block text-[10px] font-extrabold text-purple-750 uppercase tracking-widest">Select Sub-Area:</span>
-                              <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
-                                <button
-                                  type="button"
-                                  onClick={() => setFormData({ ...formData, area: selectedMainArea })}
-                                  className={`flex items-center gap-2 p-2.5 rounded-xl border text-left text-xs transition-all ${
-                                    formData.area === selectedMainArea
-                                      ? "bg-purple-600 text-white border-purple-600 font-bold shadow-sm"
-                                      : "bg-white text-gray-700 border-gray-150 hover:bg-purple-50/50 hover:border-purple-200"
-                                  }`}
-                                >
-                                  <span className={`h-4 w-4 shrink-0 rounded-full border flex items-center justify-center text-[9px] ${
-                                    formData.area === selectedMainArea ? "bg-white text-purple-650 border-white" : "border-gray-300 bg-gray-50"
-                                  }`}>
-                                    {formData.area === selectedMainArea ? "✓" : ""}
-                                  </span>
-                                  <span className="truncate">{selectedMainArea} (All)</span>
-                                </button>
+                        return (
+                          <div className="sm:col-span-3 mt-1 p-4 bg-purple-50/30 rounded-2xl border border-purple-100/60 space-y-3 animate-fade-in">
+                            <span className="block text-[10px] font-extrabold text-purple-750 uppercase tracking-widest">Select Sub-Area:</span>
+                            <div className="flex flex-wrap gap-2.5">
+                              <button
+                                type="button"
+                                onClick={() => setFormData({ ...formData, area: selectedMainArea })}
+                                className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-xs font-bold transition-all duration-150 cursor-pointer shadow-xs ${
+                                  formData.area === selectedMainArea
+                                    ? "bg-purple-600 text-white border-purple-600 shadow-sm"
+                                    : "bg-white text-gray-600 border-gray-200 hover:border-purple-200 hover:text-purple-650"
+                                }`}
+                              >
+                                <span className={`h-4.5 w-4.5 shrink-0 rounded-full border flex items-center justify-center text-[10px] transition-colors ${
+                                  formData.area === selectedMainArea ? "bg-white text-purple-600 border-white font-black" : "border-gray-200 bg-gray-50"
+                                }`}>
+                                  {formData.area === selectedMainArea ? "✓" : ""}
+                                </span>
+                                <span>{selectedMainArea} (All)</span>
+                              </button>
 
-                                {currentGroup.subAreas.map((sub) => {
-                                  const isSelected = formData.area === sub;
-                                  return (
-                                    <button
-                                      key={sub}
-                                      type="button"
-                                      onClick={() => setFormData({ ...formData, area: sub })}
-                                      className={`flex items-center gap-2 p-2.5 rounded-xl border text-left text-xs transition-all ${
-                                        isSelected
-                                          ? "bg-purple-600 text-white border-purple-600 font-bold shadow-sm"
-                                          : "bg-white text-gray-700 border-gray-150 hover:bg-purple-50/50 hover:border-purple-200"
-                                      }`}
-                                    >
-                                      <span className={`h-4 w-4 shrink-0 rounded-full border flex items-center justify-center text-[9px] ${
-                                        isSelected ? "bg-white text-purple-650 border-white" : "border-gray-300 bg-gray-50"
-                                      }`}>
-                                        {isSelected ? "✓" : ""}
-                                      </span>
-                                      <span className="truncate">{sub}</span>
-                                    </button>
-                                  );
-                                })}
-                              </div>
+                              {currentGroup.subAreas.map((sub) => {
+                                const isSelected = formData.area === sub;
+                                return (
+                                  <button
+                                    key={sub}
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, area: sub })}
+                                    className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-xs font-bold transition-all duration-150 cursor-pointer shadow-xs ${
+                                      isSelected
+                                        ? "bg-purple-600 text-white border-purple-600 shadow-sm"
+                                        : "bg-white text-gray-600 border-gray-200 hover:border-purple-200 hover:text-purple-650"
+                                    }`}
+                                  >
+                                    <span className={`h-4.5 w-4.5 shrink-0 rounded-full border flex items-center justify-center text-[10px] transition-colors ${
+                                      isSelected ? "bg-white text-purple-600 border-white font-black" : "border-gray-200 bg-gray-50"
+                                    }`}>
+                                      {isSelected ? "✓" : ""}
+                                    </span>
+                                    <span>{sub}</span>
+                                  </button>
+                                );
+                              })}
+                            </div>
                             </div>
                           );
                         })()}
-                      </div>
                       <div>
                         <label className="block text-xs font-bold text-gray-600 mb-1.5">
                           {formData.type === "PG" ? "Gender Preference" : "BHK Configuration"}
