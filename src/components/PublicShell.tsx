@@ -7,15 +7,15 @@ import LeadCapturePopup from "./LeadCapturePopup";
 
 /**
  * Conditionally renders the Navbar, Footer, and LeadCapturePopup.
- * These are hidden on /agent/* routes (login, dashboard) since
- * agent pages have their own custom layouts.
+ * These are hidden on /agent/* and /admin/* routes (login, dashboard) since
+ * they have their own custom layouts.
  */
 export default function PublicShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isAgentRoute = pathname?.startsWith("/agent");
+  const isInternalRoute = pathname?.startsWith("/agent") || pathname?.startsWith("/admin");
 
-  if (isAgentRoute) {
-    // Agent pages: no public chrome, just render children directly
+  if (isInternalRoute) {
+    // Internal pages: no public chrome, just render children directly
     return <>{children}</>;
   }
 

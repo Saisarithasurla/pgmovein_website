@@ -132,7 +132,7 @@ const ALL_AMENITIES = [
 const MEAL_OPTIONS = ["Breakfast", "Lunch", "Dinner"];
 
 // ────────────────────────────── Component ────────────────────────────
-export default function AgentDashboardPage() {
+export function AddPropertyTab() {
   const router = useRouter();
 
   // Auth state
@@ -142,7 +142,6 @@ export default function AgentDashboardPage() {
   // UI state
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM);
-  const [selectedMainArea, setSelectedMainArea] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
   const [expandedSection, setExpandedSection] = useState<string>("basic");
@@ -165,7 +164,7 @@ export default function AgentDashboardPage() {
     const check = async () => {
       const { data: { user } } = await supabaseBrowser.auth.getUser();
       if (!user) {
-        router.replace("/agent/login");
+        router.replace("/admin/login");
         return;
       }
       setUser(user);
@@ -205,8 +204,8 @@ export default function AgentDashboardPage() {
   // ───── Dropdown Outside Click handler ─────
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
-      const container = document.getElementById("main-area-dropdown-container");
-      const menu = document.getElementById("main-area-dropdown-menu");
+      const container = document.getElementById("area-dropdown-container");
+      const menu = document.getElementById("area-dropdown-menu");
       if (container && menu && !container.contains(e.target as Node)) {
         menu.classList.add("hidden");
       }
@@ -355,7 +354,7 @@ export default function AgentDashboardPage() {
       const { error } = await supabaseBrowser.from("properties").update(payload).eq("id", editingId);
       resultError = error;
     } else {
-      const { error } = await supabaseBrowser.from("properties").insert({ ...payload, agent_id: user.id });
+      const { error } = await supabaseBrowser.from("properties").insert({ ...payload, agent_id: user.id, verified: true });
       resultError = error;
     }
 
@@ -366,7 +365,6 @@ export default function AgentDashboardPage() {
     } else {
       setToast({ type: "success", message: editingId ? "Property updated successfully!" : "Property added successfully!" });
       setFormData(INITIAL_FORM);
-      setSelectedMainArea("");
       setImageFiles([]);
       setEditingId(null);
       setShowForm(false);
@@ -406,10 +404,6 @@ export default function AgentDashboardPage() {
 
   const handleEdit = (prop: SupabaseProperty) => {
     setEditingId(prop.id);
-    const mainAreaGroup = BANGALORE_AREA_GROUPS.find(
-      (g) => g.name === prop.area || g.subAreas.includes(prop.area)
-    );
-    setSelectedMainArea(mainAreaGroup ? mainAreaGroup.name : prop.area);
     setFormData({
        name: prop.name,
        area: prop.area,
@@ -518,33 +512,8 @@ export default function AgentDashboardPage() {
         </div>
       )}
 
-      {/* ════════════════ Header ════════════════ */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-          <div className="flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-600 text-sm font-black text-white">
-              P
-            </span>
-            <div>
-              <span className="text-sm font-bold text-gray-900 tracking-tight">PGMove</span>
-              <span className="text-xs text-gray-400 block -mt-0.5">Agent Dashboard</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-xs font-semibold text-gray-500 hidden sm:block">{user?.email}</span>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-100 rounded-xl transition-all"
-            >
-              <LogOut className="h-3.5 w-3.5" />
-              Logout
-            </button>
-          </div>
-        </div>
-      </header>
-
       {/* ════════════════ Main Content ════════════════ */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="py-8 px-6 sm:px-8">
 
         {/* Stats Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
@@ -625,57 +594,63 @@ export default function AgentDashboardPage() {
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      {/* Consolidated Area Selector */}
-                      <div className="relative" id="main-area-dropdown-container">
+                      <div>
                         <label className="block text-xs font-bold text-gray-600 mb-1.5">Area *</label>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const el = document.getElementById("main-area-dropdown-menu");
-                            if (el) el.classList.toggle("hidden");
-                          }}
-                          className="w-full text-left text-sm font-semibold p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 bg-gray-50/50 hover:bg-white transition-colors cursor-pointer flex items-center justify-between"
-                        >
-                          <span className={selectedMainArea ? "text-gray-900" : "text-gray-400 font-normal"}>
-                            {selectedMainArea || "Select Area / Location"}
-                          </span>
-                          <ChevronDown className="h-4 w-4 text-gray-400" />
-                        </button>
-                        <div
-                          id="main-area-dropdown-menu"
-                          className="hidden absolute left-0 right-0 mt-1.5 max-h-60 overflow-y-auto bg-white border border-gray-200 rounded-xl shadow-lg z-50 py-1"
-                        >
+                        <div className="relative" id="area-dropdown-container">
                           <button
                             type="button"
                             onClick={() => {
-                              setSelectedMainArea("");
-                              setFormData({ ...formData, area: "" });
-                              document.getElementById("main-area-dropdown-menu")?.classList.add("hidden");
+                              const el = document.getElementById("area-dropdown-menu");
+                              if (el) el.classList.toggle("hidden");
                             }}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 transition-colors"
+                            className="w-full text-left text-sm font-semibold p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 bg-gray-50/50 hover:bg-white transition-colors cursor-pointer flex items-center justify-between"
                           >
-                            Select Area / Location
+                            <span className={formData.area ? "text-gray-900" : "text-gray-400 font-normal"}>
+                              {formData.area || "Select Area / Location"}
+                            </span>
+                            <ChevronDown className="h-4 w-4 text-gray-400" />
                           </button>
-                          {BANGALORE_AREA_GROUPS.map((group) => (
-                            <button
-                              key={group.name}
-                              type="button"
-                              onClick={() => {
-                                setSelectedMainArea(group.name);
-                                setFormData({ ...formData, area: group.name });
-                                document.getElementById("main-area-dropdown-menu")?.classList.add("hidden");
-                              }}
-                              className={`w-full text-left px-4 py-2 text-sm transition-colors hover:bg-purple-50 font-medium ${
-                                selectedMainArea === group.name ? "text-purple-650 bg-purple-50/30" : "text-gray-700"
-                              }`}
-                            >
-                              {group.name}
-                            </button>
-                          ))}
+                          <div
+                            id="area-dropdown-menu"
+                            className="hidden absolute left-0 right-0 mt-1.5 max-h-60 overflow-y-auto bg-white border border-gray-200 rounded-xl shadow-lg z-50 py-1"
+                          >
+                            {BANGALORE_AREA_GROUPS.map((group) => (
+                              <div key={group.name} className="border-b border-gray-50 last:border-0">
+                                <div className="px-3.5 py-1.5 text-xs font-bold text-purple-700 bg-purple-50/50">
+                                  {group.name}
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setFormData({ ...formData, area: group.name });
+                                    document.getElementById("area-dropdown-menu")?.classList.add("hidden");
+                                  }}
+                                  className={`w-full text-left px-5 py-2 text-sm transition-colors hover:bg-purple-50 font-medium ${
+                                    formData.area === group.name ? "text-purple-650 bg-purple-50/30" : "text-gray-700"
+                                  }`}
+                                >
+                                  {group.name} (All PGs)
+                                </button>
+                                {group.subAreas.map((sub) => (
+                                  <button
+                                    key={sub}
+                                    type="button"
+                                    onClick={() => {
+                                      setFormData({ ...formData, area: sub });
+                                      document.getElementById("area-dropdown-menu")?.classList.add("hidden");
+                                    }}
+                                    className={`w-full text-left px-5 py-2 text-xs transition-colors hover:bg-purple-50 pl-7 font-medium ${
+                                      formData.area === sub ? "text-purple-650 bg-purple-50/30" : "text-gray-600"
+                                    }`}
+                                  >
+                                    {sub}
+                                  </button>
+                                ))}
+                              </div>
+                            ))}
+                          </div>
                         </div>
-
                       </div>
-                      {/* Move Gender and Type here to stay in the same row as Area */}
                       <div>
                         <label className="block text-xs font-bold text-gray-600 mb-1.5">
                           {formData.type === "PG" ? "Gender Preference" : "BHK Configuration"}
@@ -745,60 +720,6 @@ export default function AgentDashboardPage() {
                           ))}
                         </div>
                       </div>
-
-                      {/* Expandable subareas directly below the selection row */}
-                      {(() => {
-                        const currentGroup = BANGALORE_AREA_GROUPS.find((g) => g.name === selectedMainArea);
-                        if (!currentGroup || currentGroup.subAreas.length === 0) return null;
-
-                        return (
-                          <div className="sm:col-span-3 mt-1 p-4 bg-purple-50/30 rounded-2xl border border-purple-100/60 space-y-3 animate-fade-in">
-                            <span className="block text-[10px] font-extrabold text-purple-750 uppercase tracking-widest">Select Sub-Area:</span>
-                            <div className="flex flex-wrap gap-2.5">
-                              <button
-                                type="button"
-                                onClick={() => setFormData({ ...formData, area: selectedMainArea })}
-                                className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-xs font-bold transition-all duration-150 cursor-pointer shadow-xs ${
-                                  formData.area === selectedMainArea
-                                    ? "bg-purple-600 text-white border-purple-600 shadow-sm"
-                                    : "bg-white text-gray-600 border-gray-200 hover:border-purple-200 hover:text-purple-650"
-                                }`}
-                              >
-                                <span className={`h-4.5 w-4.5 shrink-0 rounded-full border flex items-center justify-center text-[10px] transition-colors ${
-                                  formData.area === selectedMainArea ? "bg-white text-purple-600 border-white font-black" : "border-gray-200 bg-gray-50"
-                                }`}>
-                                  {formData.area === selectedMainArea ? "✓" : ""}
-                                </span>
-                                <span>{selectedMainArea} (All)</span>
-                              </button>
-
-                              {currentGroup.subAreas.map((sub) => {
-                                const isSelected = formData.area === sub;
-                                return (
-                                  <button
-                                    key={sub}
-                                    type="button"
-                                    onClick={() => setFormData({ ...formData, area: sub })}
-                                    className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-xs font-bold transition-all duration-150 cursor-pointer shadow-xs ${
-                                      isSelected
-                                        ? "bg-purple-600 text-white border-purple-600 shadow-sm"
-                                        : "bg-white text-gray-600 border-gray-200 hover:border-purple-200 hover:text-purple-650"
-                                    }`}
-                                  >
-                                    <span className={`h-4.5 w-4.5 shrink-0 rounded-full border flex items-center justify-center text-[10px] transition-colors ${
-                                      isSelected ? "bg-white text-purple-600 border-white font-black" : "border-gray-200 bg-gray-50"
-                                    }`}>
-                                      {isSelected ? "✓" : ""}
-                                    </span>
-                                    <span>{sub}</span>
-                                  </button>
-                                );
-                              })}
-                            </div>
-                            </div>
-                          );
-                        })()}
-                      {/* Removed Gender Preference and Type inputs from here */}
                     </div>
                   </div>
                 )}

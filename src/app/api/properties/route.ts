@@ -14,6 +14,7 @@ export async function GET() {
     const { data, error } = await supabaseAdmin
       .from("properties")
       .select("*")
+      .eq("verified", true)
       .order("created_at", { ascending: false });
 
     if (error) {

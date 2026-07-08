@@ -165,8 +165,11 @@ export const LeadProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (dbError) {
         throw dbError;
       }
-    } catch (e) {
-      console.error("Failed to save lead directly to Supabase:", e);
+    } catch (e: any) {
+      console.error("Failed to save lead directly to Supabase. Full error:", JSON.stringify(e, null, 2));
+      console.error("Error Code:", e.code);
+      console.error("Error Message:", e.message);
+      console.error("Error Details:", e.details);
     }
 
     setIsSubmitted(true);
